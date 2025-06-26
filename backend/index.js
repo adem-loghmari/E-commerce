@@ -1,3 +1,4 @@
+require("dotenv").config();
 const PORT = 4000;
 const express = require("express");
 const app = express();
@@ -9,13 +10,9 @@ const cors = require("cors");
 
 app.use(express.json());
 app.use(cors());
- 
-
 
 mongoose
-  .connect(
-    "mongodb+srv://hmidaloghmariadam:ywrFza34bxo5tmXT@cluster0.ouw4eox.mongodb.net/e-commerce"
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Connection with the DB is succesful");
   })
