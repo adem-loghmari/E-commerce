@@ -10,7 +10,7 @@ const NewCollections = () => {
       .then((data) => setNew_Collections(data));
   }, []);
   return (
-    <section className="w-full py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 flex flex-col items-center">
+    <section className="w-full py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 flex flex-col items-center" id="new-collection">
       <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-wider mb-2 drop-shadow-lg">
         NEW COLLECTIONS
       </h1>
