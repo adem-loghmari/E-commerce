@@ -139,20 +139,26 @@ const Navbar = () => {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-6 nav-login-cart">
           {localStorage.getItem("auth-token") ? (
-            <button
-              onClick={() => {
-                localStorage.removeItem("auth-token");
-                window.location.replace("/");
-              }}
-              className="px-7 py-2 rounded-full bg-white/30 border border-pink-400 text-pink-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-pink-100/60 hover:text-pink-700 hover:border-pink-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-200"
-              style={{
-                background: "rgba(255,255,255,0.3)",
-                borderColor: "#f472b6",
-                color: "#db2777",
-              }}
-            >
-              Logout
-            </button>
+            <>
+              <span className="text-white font-bold text-lg px-2">
+                {localStorage.getItem("user-name") || "User"}
+              </span>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("auth-token");
+                  localStorage.removeItem("user-name");
+                  window.location.replace("/");
+                }}
+                className="px-7 py-2 rounded-full bg-white/30 border border-pink-400 text-pink-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-pink-100/60 hover:text-pink-700 hover:border-pink-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                style={{
+                  background: "rgba(255,255,255,0.3)",
+                  borderColor: "#f472b6",
+                  color: "#db2777",
+                }}
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <Link to="/login" onClick={() => setMenu("login")}>
               <button
@@ -280,6 +286,7 @@ const Navbar = () => {
                   <button
                     onClick={() => {
                       localStorage.removeItem("auth-token");
+                      localStorage.removeItem("user-name");
                       window.location.replace("/");
                       setMobileOpen(false);
                     }}

@@ -81,10 +81,10 @@ const Product = mongoose.model("product", {
     type: Boolean,
     default: true,
   },
-  sold:{
+  sold: {
     type: Number,
     default: 0,
-  }
+  },
 });
 
 //Add product
@@ -147,10 +147,10 @@ const Users = mongoose.model("Users", {
     type: Date,
     default: Date.now,
   },
-  spent:{
+  spent: {
     type: Number,
     default: 0,
-  }
+  },
 });
 
 //Creating the endpoint for creating the users
@@ -167,7 +167,7 @@ app.post("/signup", async (req, res) => {
     cart[i] = 0;
   }
   const user = new Users({
-    name: req.body.name,
+    name: req.body.username || req.body.name,
     email: req.body.email,
     password: req.body.password,
     cartData: cart,
@@ -180,7 +180,7 @@ app.post("/signup", async (req, res) => {
     },
   };
   const token = jwt.sign(data, "secret_ecom");
-  res.json({ success: true, token });
+  res.json({ success: true, token, name: user.name });
 });
 
 //Creating endpoint for user login
@@ -195,7 +195,7 @@ app.post("/login", async (req, res) => {
         },
       };
       const token = jwt.sign(data, "secret_ecom");
-      res.json({ success: true, token });
+      res.json({ success: true, token, name: user.name });
     } else {
       res.json({ success: false, errors: "Wrong Password" });
     }
@@ -293,10 +293,13 @@ app.listen(PORT, (error) => {
 
 app.post("/modifyProduct", async (req, res) => {
   const { id, ...fields } = req.body;
-  if (!id) return res.status(400).json({ success: false, error: "Product id required" });
+  if (!id)
+    return res
+      .status(400)
+      .json({ success: false, error: "Product id required" });
 
   // Remove undefined fields so only changed fields are updated
-  Object.keys(fields).forEach(key => {
+  Object.keys(fields).forEach((key) => {
     if (fields[key] === undefined || fields[key] === "") delete fields[key];
   });
 
@@ -306,7 +309,10 @@ app.post("/modifyProduct", async (req, res) => {
       { $set: fields },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ success: false, error: "Product not found" });
+    if (!updated)
+      return res
+        .status(404)
+        .json({ success: false, error: "Product not found" });
     res.json({ success: true, product: updated });
   } catch (err) {
     res.status(500).json({ success: false, error: "Update failed" });
