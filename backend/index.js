@@ -274,6 +274,15 @@ app.post("/getcart", fetchUser, async (req, res) => {
   res.json(userData.cartData);
 });
 
+// Get a single product by id
+app.get("/product/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid product id" });
+  const product = await Product.findOne({ id });
+  if (!product) return res.status(404).json({ error: "Product not found" });
+  res.json(product);
+});
+
 app.listen(PORT, (error) => {
   if (!error) {
     console.log(`Server is running on PORT ${PORT}`);
@@ -282,6 +291,24 @@ app.listen(PORT, (error) => {
   }
 });
 
+app.post("/modifyProduct", async (req, res) => {
+  const { id, ...fields } = req.body;
+  if (!id) return res.status(400).json({ success: false, error: "Product id required" });
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  // Remove undefined fields so only changed fields are updated
+  Object.keys(fields).forEach(key => {
+    if (fields[key] === undefined || fields[key] === "") delete fields[key];
+  });
+
+  try {
+    const updated = await Product.findOneAndUpdate(
+      { id: Number(id) },
+      { $set: fields },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ success: false, error: "Product not found" });
+    res.json({ success: true, product: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Update failed" });
+  }
+});

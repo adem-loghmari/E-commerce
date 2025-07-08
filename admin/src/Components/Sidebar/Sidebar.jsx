@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import add_product_icon from '../../assets/Product_Cart.svg'
-import list_product_icon from '../../assets/Product_list_icon.svg'
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false)
@@ -51,16 +49,22 @@ const Sidebar = () => {
               <p className="text-lg font-semibold text-white group-hover:text-blue-300 tracking-wide">Dashboard</p>
             </div>
           </Link>
+          <Link to="/listproduct" className="no-underline">
+            <div className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-900/40 transition group cursor-pointer">
+              <svg className="h-7 w-7 text-blue-300" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+              <p className="text-lg font-semibold text-white group-hover:text-blue-300 tracking-wide">List Product</p>
+            </div>
+          </Link>
           <Link to="/addproduct" className="no-underline">
             <div className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-900/40 transition group cursor-pointer">
-              <img src={add_product_icon} alt="Add Product" className="h-7 w-7" />
+              <svg className="h-7 w-7 text-blue-300" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
               <p className="text-lg font-semibold text-white group-hover:text-blue-300 tracking-wide">Add Product</p>
             </div>
           </Link>
-          <Link to="/listproduct" className="no-underline">
+          <Link to="/modifyproduct" className="no-underline">
             <div className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-900/40 transition group cursor-pointer">
-              <img src={list_product_icon} alt="List Product" className="h-7 w-7" />
-              <p className="text-lg font-semibold text-white group-hover:text-blue-300 tracking-wide">List Product</p>
+              <svg className="h-7 w-7 text-blue-300" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a4 4 0 01-1.414.94l-4.243 1.415 1.415-4.243a4 4 0 01.94-1.414z" /></svg>
+              <p className="text-lg font-semibold text-white group-hover:text-blue-300 tracking-wide">Modify Product</p>
             </div>
           </Link>
         </nav>
