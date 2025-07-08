@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const { type } = require("os");
 
 app.use(express.json());
 app.use(cors());
@@ -80,6 +81,10 @@ const Product = mongoose.model("product", {
     type: Boolean,
     default: true,
   },
+  sold:{
+    type: Number,
+    default: 0,
+  }
 });
 
 //Add product
@@ -142,6 +147,10 @@ const Users = mongoose.model("Users", {
     type: Date,
     default: Date.now,
   },
+  spent:{
+    type: Number,
+    default: 0,
+  }
 });
 
 //Creating the endpoint for creating the users
@@ -200,6 +209,7 @@ app.post("/login", async (req, res) => {
 app.get("/newcollections", async (req, res) => {
   let product = await Product.find({});
   let newcollections = product.slice(1).slice(-8);
+  newcollections.reverse(); // Reverse the order to show the latest products first
   console.log("NewCollection fetched");
   res.send(newcollections);
 });
@@ -271,3 +281,7 @@ app.listen(PORT, (error) => {
     console.log(`Error: ${error}`);
   }
 });
+
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;

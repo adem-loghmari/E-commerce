@@ -37,19 +37,20 @@ const ListProduct = () => {
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-8 text-white tracking-wide drop-shadow text-center">
           All Products
         </h1>
-        <div className="hidden sm:grid grid-cols-6 gap-4 bg-gray-900/80 rounded-t-xl px-2 sm:px-6 py-2 sm:py-4 font-semibold text-blue-200 text-base sm:text-lg">
+        <div className="hidden sm:grid grid-cols-7 gap-4 bg-gray-900/80 rounded-t-xl px-2 sm:px-6 py-2 sm:py-4 font-semibold text-blue-200 text-base sm:text-lg">
           <span>Product</span>
           <span>Title</span>
           <span>Old Price</span>
           <span>New Price</span>
           <span>Category</span>
+          <span className="text-center">Sold</span>
           <span>Remove</span>
         </div>
         <div className="divide-y divide-blue-900 bg-gray-950/80 rounded-b-xl shadow">
           {allproducts.map((product, index) => (
             <div
               key={product.id || index}
-              className="grid grid-cols-1 sm:grid-cols-6 gap-2 sm:gap-4 items-center px-2 sm:px-6 py-3 hover:bg-blue-950/60 transition text-sm sm:text-base"
+              className="grid grid-cols-1 sm:grid-cols-7 gap-2 sm:gap-4 items-center px-2 sm:px-6 py-3 hover:bg-blue-950/60 transition text-sm sm:text-base"
             >
               <div className="flex justify-center sm:block">
                 <img
@@ -61,7 +62,7 @@ const ListProduct = () => {
               <span className="truncate text-white text-center sm:text-left">
                 {product.name}
               </span>
-              <span className="text-blue-300 line-through text-center sm:text-left">
+              <span className="text-blue-300 text-center sm:text-left">
                 ${product.old_price}
               </span>
               <span className="text-blue-400 font-bold text-center sm:text-left">
@@ -69,6 +70,9 @@ const ListProduct = () => {
               </span>
               <span className="text-blue-200 text-center sm:text-left">
                 {product.category}
+              </span>
+              <span className="text-pink-300 font-semibold text-center">
+                {product.sold ?? 0}
               </span>
               <div className="flex justify-center sm:block">
                 <button

@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import logo from "../Assets/logo.png";
 import cart_icon from "../Assets/cart_icon.png";
@@ -7,7 +8,23 @@ import { Link } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
 const Navbar = () => {
-  const [menu, setMenu] = useState("shop");
+  const location = useLocation();
+  const path = location.pathname;
+  const initialMenu =
+    path === "/"
+      ? "shop"
+      : path === "/mens"
+      ? "mens"
+      : path === "/womens"
+      ? "womens"
+      : path === "/kids"
+      ? "kids"
+      : path === "/login"
+      ? "login"
+      : path === "/cart"
+      ? "cart"
+      : "shop";
+  const [menu, setMenu] = useState(initialMenu);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { getTotalCartItems } = useContext(ShopContext);
   const menuRef = useRef();
@@ -137,7 +154,7 @@ const Navbar = () => {
               Logout
             </button>
           ) : (
-            <Link to="/login">
+            <Link to="/login" onClick={() => setMenu("login")}>
               <button
                 className="px-7 py-2 rounded-full bg-white/30 border border-blue-400 text-blue-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-blue-100/60 hover:text-blue-700 hover:border-blue-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 style={{
@@ -150,7 +167,11 @@ const Navbar = () => {
               </button>
             </Link>
           )}
-          <Link to="/cart" className="relative group">
+          <Link
+            to="/cart"
+            className="relative group"
+            onClick={() => setMenu("cart")}
+          >
             <div className="bg-white/30 backdrop-blur-md rounded-full p-3 shadow-xl hover:scale-110 transition-transform">
               <img src={cart_icon} alt="cart icon" className="h-8 w-8" />
               <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow group-hover:scale-110 transition-transform">
@@ -162,7 +183,9 @@ const Navbar = () => {
         {/* Mobile Menu Overlay */}
         <div
           className={`fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity duration-300 ${
-            mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            mobileOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
           }`}
           onClick={() => setMobileOpen(false)}
         ></div>
@@ -191,7 +214,8 @@ const Navbar = () => {
                   <Link
                     className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
                       menu === "shop"
-                        ? "bg-pink-500/20 text-pink-300 shadow" : "text-white"
+                        ? "bg-pink-500/20 text-pink-300 shadow"
+                        : "text-white"
                     }`}
                     to="/"
                     onClick={() => {
@@ -206,7 +230,8 @@ const Navbar = () => {
                   <Link
                     className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
                       menu === "mens"
-                        ? "bg-pink-500/20 text-pink-300 shadow" : "text-white"
+                        ? "bg-pink-500/20 text-pink-300 shadow"
+                        : "text-white"
                     }`}
                     to="/mens"
                     onClick={() => {
@@ -221,7 +246,8 @@ const Navbar = () => {
                   <Link
                     className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
                       menu === "womens"
-                        ? "bg-pink-500/20 text-pink-300 shadow" : "text-white"
+                        ? "bg-pink-500/20 text-pink-300 shadow"
+                        : "text-white"
                     }`}
                     to="/womens"
                     onClick={() => {
@@ -236,7 +262,8 @@ const Navbar = () => {
                   <Link
                     className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
                       menu === "kids"
-                        ? "bg-pink-500/20 text-pink-300 shadow" : "text-white"
+                        ? "bg-pink-500/20 text-pink-300 shadow"
+                        : "text-white"
                     }`}
                     to="/kids"
                     onClick={() => {

@@ -1,18 +1,31 @@
 import React from 'react'
 import './Admin.css'
 import Sidebar from '../../Components/Sidebar/Sidebar'
-import { Route,Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import AddProduct from '../../Components/AddProduct/AddProduct'
 import ListProduct from '../../Components/ListProduct/ListProduct'
+import Dashboard from '../../Components/Dashboard/Dashboard'
+import { AdminLogin } from '../../Components/AdminLogin/AdminLogin'
+import Navbar from '../../Components/Navbar/Navbar'
+import ProtectedRoute from '../../Components/ProtectedRoute/ProtectedRoute'
+
 const Admin = () => {
   return (
     <div className='admin'>
-        <Sidebar/>
-        <Routes>
-          <Route path='/addproduct' element={<AddProduct/>}/>
-          <Route path='/listproduct' element={<ListProduct/>}/>
-          <Route path='/' element={<ListProduct/>}/>
-        </Routes>
+      <Routes>
+        <Route path='/login' element={<AdminLogin />} />
+        <Route path='/*' element={
+          <ProtectedRoute>
+            <Navbar />
+            <Sidebar />
+            <Routes>
+              <Route path='/addproduct' element={<AddProduct />} />
+              <Route path='/listproduct' element={<ListProduct />} />
+              <Route path='/' element={<Dashboard />} />
+            </Routes>
+          </ProtectedRoute>
+        } />
+      </Routes>
     </div>
   )
 }

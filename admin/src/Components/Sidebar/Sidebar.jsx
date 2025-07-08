@@ -45,6 +45,12 @@ const Sidebar = () => {
         }}
       >
         <nav className="flex flex-col gap-4">
+          <Link to="/" className="no-underline">
+            <div className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-900/40 transition group cursor-pointer">
+              <svg className="h-7 w-7 text-blue-300" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h4m-4 0a2 2 0 01-2-2V7m6 11a2 2 0 002-2v-6m0 0l2 2m-2-2v6" /></svg>
+              <p className="text-lg font-semibold text-white group-hover:text-blue-300 tracking-wide">Dashboard</p>
+            </div>
+          </Link>
           <Link to="/addproduct" className="no-underline">
             <div className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-900/40 transition group cursor-pointer">
               <img src={add_product_icon} alt="Add Product" className="h-7 w-7" />
