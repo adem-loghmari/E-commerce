@@ -10,8 +10,7 @@ const Product = () => {
   const {productId} = useParams()
   const product = all_products.find((item)=>Number(productId)===item.id)
   return (
-    <div>
-      <Breadcrums product={product}/> 
+    <div className='pt-8'>
       <ProductDisplay product={product}/>
       <DescriptionBox/>
       <RelatedProducts/>

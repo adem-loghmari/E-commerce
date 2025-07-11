@@ -87,6 +87,72 @@ const Product = mongoose.model("product", {
   },
 });
 
+// Add this right after your Product model definition
+
+// Search endpoint
+app.get("/api/search", async (req, res) => {
+  try {
+    const searchTerm = req.query.q;
+    
+    if (!searchTerm || searchTerm.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: "Search term must be at least 2 characters"
+      });
+    }
+
+    const results = await Product.find({
+      $or: [
+        { name: { $regex: searchTerm, $options: 'i' } },
+        { category: { $regex: searchTerm, $options: 'i' } }
+      ]
+    }).limit(10);
+
+    res.json({
+      success: true,
+      products: results
+    });
+
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({
+      success: false,
+      error: "Error processing search request"
+    });
+  }
+});
+
+// Suggestions endpoint
+app.get("/api/search/suggestions", async (req, res) => {
+  try {
+    const searchTerm = req.query.q;
+    
+    if (!searchTerm || searchTerm.trim().length < 2) {
+      return res.json({
+        success: true,
+        suggestions: []
+      });
+    }
+
+    const suggestions = await Product.find(
+      { name: { $regex: `^${searchTerm}`, $options: 'i' } },
+      { id: 1, name: 1, image: 1, category: 1, new_price: 1 }
+    ).limit(5);
+
+    res.json({
+      success: true,
+      suggestions: suggestions
+    });
+
+  } catch (error) {
+    console.error('Suggestions error:', error);
+    res.status(500).json({
+      success: false,
+      error: "Error fetching suggestions"
+    });
+  }
+});
+
 //Add product
 
 app.post("/addproduct", async (req, res) => {

@@ -6,6 +6,7 @@ import cart_icon from "../Assets/cart_icon.png";
 
 import { Link } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
+import SearchBar from "../Search/SearchBar";
 
 const Navbar = () => {
   const location = useLocation();
@@ -51,6 +52,7 @@ const Navbar = () => {
             SHOPPER
           </span>
         </Link>
+
         <div className="flex items-center md:hidden z-50">
           <button
             onClick={dropdown_toggle}
@@ -83,6 +85,9 @@ const Navbar = () => {
           ref={menuRef}
           className={`hidden md:flex gap-6 items-center text-lg font-semibold nav-menu`}
         >
+          <li>
+            <SearchBar />
+          </li>
           <li>
             <Link
               className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
@@ -279,6 +284,9 @@ const Navbar = () => {
                   >
                     Kids
                   </Link>
+                </li>
+                <li>
+                  <SearchBar />
                 </li>
               </ul>
               <div className="flex flex-col gap-2 w-full mt-8">
