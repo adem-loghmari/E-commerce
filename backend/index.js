@@ -93,31 +93,30 @@ const Product = mongoose.model("product", {
 app.get("/api/search", async (req, res) => {
   try {
     const searchTerm = req.query.q;
-    
+
     if (!searchTerm || searchTerm.trim().length < 2) {
       return res.status(400).json({
         success: false,
-        error: "Search term must be at least 2 characters"
+        error: "Search term must be at least 2 characters",
       });
     }
 
     const results = await Product.find({
       $or: [
-        { name: { $regex: searchTerm, $options: 'i' } },
-        { category: { $regex: searchTerm, $options: 'i' } }
-      ]
+        { name: { $regex: searchTerm, $options: "i" } },
+        { category: { $regex: searchTerm, $options: "i" } },
+      ],
     }).limit(10);
 
     res.json({
       success: true,
-      products: results
+      products: results,
     });
-
   } catch (error) {
-    console.error('Search error:', error);
+    console.error("Search error:", error);
     res.status(500).json({
       success: false,
-      error: "Error processing search request"
+      error: "Error processing search request",
     });
   }
 });
@@ -126,29 +125,28 @@ app.get("/api/search", async (req, res) => {
 app.get("/api/search/suggestions", async (req, res) => {
   try {
     const searchTerm = req.query.q;
-    
+
     if (!searchTerm || searchTerm.trim().length < 2) {
       return res.json({
         success: true,
-        suggestions: []
+        suggestions: [],
       });
     }
 
     const suggestions = await Product.find(
-      { name: { $regex: `^${searchTerm}`, $options: 'i' } },
+      { name: { $regex: `^${searchTerm}`, $options: "i" } },
       { id: 1, name: 1, image: 1, category: 1, new_price: 1 }
     ).limit(5);
 
     res.json({
       success: true,
-      suggestions: suggestions
+      suggestions: suggestions,
     });
-
   } catch (error) {
-    console.error('Suggestions error:', error);
+    console.error("Suggestions error:", error);
     res.status(500).json({
       success: false,
-      error: "Error fetching suggestions"
+      error: "Error fetching suggestions",
     });
   }
 });
@@ -196,6 +194,10 @@ app.get("/allproducts", async (req, res) => {
 //Schema Creation for user model
 
 const Users = mongoose.model("Users", {
+  id: {
+    type: Number,
+    required: true,
+  },
   name: {
     type: String,
   },
@@ -232,7 +234,17 @@ app.post("/signup", async (req, res) => {
   for (let i = 0; i < 300; i++) {
     cart[i] = 0;
   }
+  let users = await Users.find({});
+  let id;
+  if (users.length > 0) {
+    let last_user_array = users.slice(-1);
+    let last_user = last_user_array[0];
+    id = last_user.id + 1;
+  } else {
+    id = 1;
+  }
   const user = new Users({
+    id: id,
     name: req.body.username || req.body.name,
     email: req.body.email,
     password: req.body.password,
@@ -249,6 +261,18 @@ app.post("/signup", async (req, res) => {
   res.json({ success: true, token, name: user.name });
 });
 
+app.get("/allusers", async (req, res) => {
+  let users = await Users.find({});
+  res.json(users);
+});
+app.post("/removeUser", async (req, res) => {
+  await Users.findOneAndDelete({ id: req.body.id });
+  console.log("User Removed");
+  res.json({
+    success: true,
+    id: req.body.id,
+  });
+});
 //Creating endpoint for user login
 app.post("/login", async (req, res) => {
   let user = await Users.findOne({ email: req.body.email });
@@ -309,10 +333,10 @@ const fetchUser = async (req, res, next) => {
 //Creating enpoint for adding products in cartData
 app.post("/addtocart", fetchUser, async (req, res) => {
   console.log("Added", req.body.itemId);
-  let userData = await Users.findOne({ _id: req.user.id });
+  let userData = await Users.findOne({ id: req.user.id });
   userData.cartData[req.body.itemId] += 1;
   await Users.findOneAndUpdate(
-    { _id: req.user.id },
+    { id: req.user.id },
     { cartData: userData.cartData }
   );
   res.send("Added");
@@ -321,11 +345,11 @@ app.post("/addtocart", fetchUser, async (req, res) => {
 // Creating endpoint to remove product from cartData
 app.post("/removefromcart", fetchUser, async (req, res) => {
   console.log("removed", req.body.itemId);
-  let userData = await Users.findOne({ _id: req.user.id });
+  let userData = await Users.findOne({ id: req.user.id });
   if (userData.cartData[req.body.itemId] > 0) {
     userData.cartData[req.body.itemId] -= 1;
     await Users.findOneAndUpdate(
-      { _id: req.user.id },
+      { id: req.user.id },
       { cartData: userData.cartData }
     );
     res.send("Removed");
@@ -336,7 +360,7 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
 
 app.post("/getcart", fetchUser, async (req, res) => {
   console.log("Get Cart");
-  let userData = await Users.findOne({ _id: req.user.id });
+  let userData = await Users.findOne({ id: req.user.id });
   res.json(userData.cartData);
 });
 

@@ -9,6 +9,7 @@ import { AdminLogin } from '../../Components/AdminLogin/AdminLogin'
 import Navbar from '../../Components/Navbar/Navbar'
 import ProtectedRoute from '../../Components/ProtectedRoute/ProtectedRoute'
 import ModifyProduct from '../../Components/ModifyProduct/ModifyProduct'
+import UsersList from '../../Components/UsersList/UsersList'
 
 const Admin = () => {
   return (
@@ -25,6 +26,7 @@ const Admin = () => {
               <Route path='/modifyproduct' element={<ModifyProduct/>}/>
               <Route path='/modifyproduct/:id' element={<ModifyProduct/>}/>
               <Route path='/' element={<Dashboard />} />
+              <Route path='/users' element={<UsersList/>} />
             </Routes>
           </ProtectedRoute>
         } />
