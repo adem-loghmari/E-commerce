@@ -145,9 +145,6 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-6 nav-login-cart">
           {localStorage.getItem("auth-token") ? (
             <>
-              <span className="text-white font-bold text-lg px-2">
-                {localStorage.getItem("user-name") || "User"}
-              </span>
               <button
                 onClick={() => {
                   localStorage.removeItem("auth-token");
@@ -163,6 +160,9 @@ const Navbar = () => {
               >
                 Logout
               </button>
+              <span className="text-white font-bold text-lg px-2">
+                {localStorage.getItem("user-name").split(" ")[0] || "User"}
+              </span>
             </>
           ) : (
             <Link to="/login" onClick={() => setMenu("login")}>
