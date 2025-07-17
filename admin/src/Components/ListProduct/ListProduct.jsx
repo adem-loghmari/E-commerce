@@ -61,18 +61,19 @@ const ListProduct = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-0 bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 flex flex-col items-center justify-center pt-24 overflow-auto">
-      <div className="w-full max-w-5xl bg-gradient-to-br from-gray-800 via-gray-900 to-blue-950 rounded-2xl shadow-2xl p-2 sm:p-6 md:p-10 border border-blue-700 max-h-[calc(100vh-7rem)] overflow-y-auto">
+    <div className="fixed lg:ml-36 inset-0 z-0 bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 flex flex-col items-center justify-center pt-24 overflow-auto">
+      <div className="w-full  max-w-6xl bg-gradient-to-br from-gray-800 via-gray-900 to-blue-950 rounded-2xl shadow-2xl p-2 sm:p-6 md:p-10 border border-blue-700 max-h-[calc(100vh-7rem)] overflow-y-auto">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-8 text-white tracking-wide drop-shadow text-center">
           All Products
         </h1>
-        <div className="hidden sm:grid grid-cols-9 gap-4 bg-gray-900/80 rounded-t-xl px-2 sm:px-6 py-2 sm:py-4 font-semibold text-blue-200 text-base sm:text-lg">
+        <div className="hidden sm:grid grid-cols-10 gap-4 bg-gray-900/80 rounded-t-xl px-2 sm:px-6 py-2 sm:py-4 font-semibold text-blue-200 text-base sm:text-lg">
           <span className="text-center">ID</span>
           <span>Product</span>
           <span>Title</span>
           <span>Old Price</span>
           <span>New Price</span>
           <span>Category</span>
+          <span className="text-center">stock</span>
           <span className="text-center">Sold</span>
           <span>Modify</span>
           <span>Remove</span>
@@ -81,7 +82,7 @@ const ListProduct = () => {
           {allproducts.map((product, index) => (
             <div
               key={product.id || index}
-              className="grid grid-cols-1 sm:grid-cols-9 gap-2 sm:gap-4 items-center px-2 sm:px-6 py-3 hover:bg-blue-950/60 transition text-sm sm:text-base"
+              className="grid grid-cols-1 sm:grid-cols-10 gap-2 sm:gap-4 items-center px-2 sm:px-6 py-3 hover:bg-blue-950/60 transition text-sm sm:text-base"
             >
               <span className="text-blue-400 font-mono text-xs text-center break-all">
                 {product.id}
@@ -104,6 +105,9 @@ const ListProduct = () => {
               </span>
               <span className="text-blue-200 text-center sm:text-left">
                 {product.category}
+              </span>
+              <span className="text-pink-300 font-semibold text-center">
+                {product.stock ?? 0}
               </span>
               <span className="text-pink-300 font-semibold text-center">
                 {product.sold ?? 0}

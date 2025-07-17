@@ -29,13 +29,15 @@ const Product = mongoose.model("product", {
     type: Date,
     default: Date.now,
   },
-  available: {
-    type: Boolean,
-    default: true,
+  stock: {
+    type: Number,
+    default: 0,
+    required: true,
   },
   sold: {
     type: Number,
     default: 0,
+    required: true,
   },
 });
 

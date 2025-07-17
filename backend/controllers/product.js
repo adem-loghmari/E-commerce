@@ -29,6 +29,7 @@ const addProduct = async (req, res) => {
     category: req.body.category,
     new_price: req.body.new_price,
     old_price: req.body.old_price,
+    stock: req.body.stock,
   });
   console.log(product);
   await product.save();
@@ -52,7 +53,7 @@ const uploadImage = async (req, res) => {
     success: 1,
     image_url: `http://localhost:${PORT}/images/${req.file.filename}`,
   });
-}
+};
 
 // Update product with /modifyproduct
 const modifyProduct = async (req, res) => {
@@ -181,5 +182,5 @@ module.exports = {
   getPopularWomen,
   searchProducts,
   searchSuggestions,
-  uploadImage
+  uploadImage,
 };

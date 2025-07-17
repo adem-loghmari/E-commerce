@@ -143,8 +143,8 @@ const ModifyProduct = () => {
                   value={product.old_price || ""}
                   onChange={handleChange}
                   placeholder="Old Price"
-                  type="text"
-                  inputMode="decimal"
+                  type="number"
+                  inputMode="numeric"
                   className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
                 />
               </div>
@@ -155,8 +155,8 @@ const ModifyProduct = () => {
                   value={product.new_price || ""}
                   onChange={handleChange}
                   placeholder="New Price"
-                  type="text"
-                  inputMode="decimal"
+                  type="number"
+                  inputMode="numeric"
                   className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
                 />
               </div>
@@ -173,6 +173,32 @@ const ModifyProduct = () => {
                 <option value="men">Men</option>
                 <option value="kid">Kid</option>
               </select>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="block text-blue-200 font-medium mb-1">Sold</label>
+                <input
+                  name="sold"
+                  value={product.sold || ""}
+                  onChange={handleChange}
+                  placeholder="Sold"
+                  type="Number"
+                  inputMode="numeric"
+                  className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-blue-200 font-medium mb-1">Stock</label>
+                <input
+                  name="stock"
+                  value={product.stock || ""}
+                  onChange={handleChange}
+                  placeholder="Stock"
+                  type="Number"
+                  inputMode="numeric"
+                  className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
+                />
+              </div>
             </div>
             <div className="mb-2">
               <label className="block text-blue-200 font-medium mb-1">Product Image</label>
@@ -199,18 +225,7 @@ const ModifyProduct = () => {
                 )}
               </div>
             </div>
-            <div className="mb-2">
-              <label className="block text-blue-200 font-medium mb-1">Sold</label>
-              <input
-                name="sold"
-                value={product.sold || 0}
-                onChange={handleChange}
-                placeholder="Sold"
-                type="number"
-                min="0"
-                className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-              />
-            </div>
+            
             <button
               type="submit"
               disabled={loading}

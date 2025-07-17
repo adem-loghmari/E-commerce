@@ -9,6 +9,7 @@ const AddProduct = () => {
     category: "women",
     new_price: "",
     old_price: "",
+    stock: "",
   });
   const imageHandler = (e) => {
     setImage(e.target.files[0]);
@@ -106,6 +107,19 @@ const AddProduct = () => {
             <option value="men">Men</option>
             <option value="kid">Kid</option>
           </select>
+        </div>
+        <div className="mb-6">
+          <label className="block text-blue-200 font-medium mb-2">
+            Product Stock
+          </label>
+          <input
+            value={productDetails.stock}
+            onChange={changeHandler}
+            type="number"
+            name="stock"
+            placeholder="Type here..."
+            className="w-full px-4 py-2 border border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-white placeholder-blue-300"
+          />
         </div>
         <div className="mb-8">
           <label
