@@ -93,7 +93,7 @@ const Sidebar = () => {
               </p>
             </div>
           </Link>
-          <Link to="/orders" className="no-underline">
+          <Link to="/modifyorder" className="no-underline">
             <div className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-900/40 transition group cursor-pointer">
               <svg
                 className="h-7 w-7 text-blue-300"
