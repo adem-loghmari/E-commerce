@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { ShopContext } from '../../Context/ShopContext'
 import remove_icon from '../Assets/cart_cross_icon.png'
+import { Link } from 'react-router-dom';
 
 const CartItems = () => {
   const { all_products, cartItems, removeFromCart, getTotalCartAmount } = useContext(ShopContext);
@@ -73,7 +74,10 @@ const CartItems = () => {
                 <span className="text-pink-500">${getTotalCartAmount()}</span>
               </div>
             </div>
+            <Link to="/checkout" className="w-full mt-6">
+            
             <button className="w-full mt-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-lg font-bold rounded-full shadow hover:scale-105 transition-transform">PROCEED TO CHECKOUT</button>
+            </Link>
           </div>
           <div className="flex-1 bg-gray-50 rounded-2xl p-6 shadow flex flex-col items-center justify-center">
             <p className="mb-4 text-gray-700">If you have a promocode, enter it here</p>
