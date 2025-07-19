@@ -1,4 +1,5 @@
 const Users = require("../models/UsersModel");
+const Product = require("../models/ProductModel");
 const jwt = require("jsonwebtoken");
 
 // Get all users with /allusers
@@ -20,8 +21,9 @@ const signupUser = async (req, res) => {
       errors: "existing user found with same email address",
     });
   }
+  let num_products = await Product.countDocuments();
   let cart = {};
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < num_products; i++) {
     cart[i] = 0;
   }
   let users = await Users.find({});

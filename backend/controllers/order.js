@@ -1,4 +1,5 @@
 const Order = require("../models/OrderModel");
+const Product = require("../models/ProductModel");
 const Users = require("../models/UsersModel");
 const mongoose = require("mongoose");
 
@@ -30,9 +31,25 @@ const createOrder = async (req, res) => {
       paymentMethod,
       status: "pending",
     });
-
     const savedOrder = await newOrder.save();
 
+    await Users.updateOne(
+      { id: req.user.id },
+      { $set: { cartData: {} } },
+      { new: true }
+    );
+    num_products = await Product.countDocuments();
+    await Users.findOneAndUpdate(
+      { id: req.user.id },
+      {
+        $set: {
+          cartData: Object.fromEntries(
+            Array.from({ length: num_products }, (_, i) => [i + 1, 0])
+          ),
+        },
+      },
+      { new: true }
+    );
     res.status(201).json({
       success: true,
       order: savedOrder,

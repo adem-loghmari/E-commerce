@@ -171,6 +171,15 @@ const searchSuggestions = async (req, res) => {
     });
   }
 };
+const getTotalProducts = async (req, res) => {
+  try {
+    const totalProducts = await Product.countDocuments();
+    res.json({ total: totalProducts });
+  } catch (error) {
+    console.error("Error fetching total products:", error);
+    res.status(500).json({ error: "Failed to fetch total products" });
+  }
+};
 
 module.exports = {
   getAllProducts,
@@ -183,4 +192,5 @@ module.exports = {
   searchProducts,
   searchSuggestions,
   uploadImage,
+  getTotalProducts,
 };

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
 const Checkout = () => {
-  const { cartItems, getTotalCartAmount, all_products } =
+  const { cartItems, getTotalCartAmount, getTotalCartItems, all_products,resetCart } =
     useContext(ShopContext);
   const navigate = useNavigate();
 
@@ -88,10 +88,19 @@ const Checkout = () => {
         throw new Error(data.message || "Failed to place order");
       }
 
-      setOrderDetails(data.order);
-      setOrderSuccess(true);
+      const successCartProducts = [...cartProducts]; // Clone array
+    const successCartItems = {...cartItems}; // Clone object
 
-      // Optionally clear cart here if needed
+    resetCart();
+
+    setOrderDetails({
+      ...data.order,
+      displayProducts: successCartProducts,
+      displayItems: successCartItems
+    });
+    setOrderSuccess(true);
+
+
     } catch (err) {
       console.error("Order error:", err);
       setError(err.message || "Failed to place order. Please try again.");
@@ -99,6 +108,7 @@ const Checkout = () => {
       setIsProcessing(false);
     }
   };
+  
 
   if (orderSuccess && orderDetails) {
     return (
@@ -113,7 +123,7 @@ const Checkout = () => {
           <div className="border-t pt-6">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="space-y-4 mb-6">
-              {cartProducts.map((product) => (
+              {orderDetails.displayProducts.map((product) => (
                 <div
                   key={product.id}
                   className="flex justify-between items-center"
@@ -125,11 +135,11 @@ const Checkout = () => {
                       className="h-10 w-10 object-contain mr-3"
                     />
                     <span>
-                      {product.name} × {cartItems[product.id]}
+                      {product.name} × {orderDetails.displayItems[product.id]}
                     </span>
                   </div>
                   <span>
-                    ${(product.new_price * cartItems[product.id]).toFixed(2)}
+                    ${(product.new_price * orderDetails.displayItems[product.id]).toFixed(2)}
                   </span>
                 </div>
               ))}
@@ -296,7 +306,7 @@ const Checkout = () => {
 
             <button
               onClick={handlePlaceOrder}
-              disabled={isProcessing}
+              disabled={isProcessing || getTotalCartItems() === 0}
               className={`w-full mt-6 py-3 rounded-lg font-bold text-white ${
                 isProcessing ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
               }`}
