@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -113,8 +113,8 @@ const ListProduct = () => {
                 {product.sold ?? 0}
               </span>
               <div className="flex justify-center">
-                <a
-                  href={`/modifyproduct/${product.id}`}
+                <Link
+                  to={`/modifyproduct/${product.id}`}
                   className="flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-700/20 hover:bg-blue-700/40 transition"
                   title="Modify product"
                 >
@@ -131,7 +131,7 @@ const ListProduct = () => {
                       d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a4 4 0 01-1.414.94l-4.243 1.415 1.415-4.243a4 4 0 01.94-1.414z"
                     />
                   </svg>
-                </a>
+                </Link>
               </div>
               <div className="flex justify-center">
                 <button

@@ -64,6 +64,63 @@ const createOrder = async (req, res) => {
   }
 };
 
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching orders" });
+  }
+};
+
+const removeOrder = async (req, res) => {
+  await Order.findOneAndDelete({ id: req.body.id });
+  console.log("Order Removed");
+  res.json({
+    success: true,
+    id: req.body.id,
+  });
+};
+
+const modifyOrder = async (req, res) => {
+  const { id, ...fields } = req.body;
+  if (!id)
+    return res
+      .status(400)
+      .json({ success: false, error: "Order id required" });
+
+  Object.keys(fields).forEach((key) => {
+    if (fields[key] === undefined || fields[key] === "") delete fields[key];
+  });
+
+  try {
+    const updated = await Order.findOneAndUpdate(
+      { id: Number(id) },
+      { $set: fields },
+      { new: true }
+    );
+    if (!updated)
+      return res
+        .status(404)
+        .json({ success: false, error: "Order not found" });
+    res.json({ success: true, order: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Update failed" });
+  }
+};
+
+const getSingleOrder = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid order id" });
+  const order = await Order.findOne({ id });
+  if (!order) return res.status(404).json({ error: "order not found" });
+  res.json(order);
+};
+
 module.exports = {
   createOrder,
+  getAllOrders,
+  removeOrder,
+  modifyOrder,
+  getSingleOrder,
 };
