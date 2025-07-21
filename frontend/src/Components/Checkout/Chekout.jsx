@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
-
+import { countries } from "../Assets/countries";
 const Checkout = () => {
   const {
     cartItems,
@@ -155,10 +155,8 @@ const Checkout = () => {
               <span>${orderDetails.total.toFixed(2)}</span>
             </div>
           </div>
-          <Link to='/orders'>
-            <button
-              className="mt-8 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
+          <Link to="/orders">
+            <button className="mt-8 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               View Your Orders
             </button>
           </Link>
@@ -231,8 +229,11 @@ const Checkout = () => {
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded"
                   >
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
+                    {countries.map(({ country, code }) => (
+                      <option key={code} value={code}>
+                        {country}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
