@@ -24,6 +24,7 @@ const getDefaultCart = () => {
 const ShopContextProvider = (props) => {
   const [all_products, setAll_Products] = useState([]);
   const [cartItems, setCartItems] = useState(getDefaultCart());
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:4000/allproducts")
@@ -41,6 +42,18 @@ const ShopContextProvider = (props) => {
       })
         .then((resp) => resp.json())
         .then((data) => setCartItems(data));
+
+      fetch("http://localhost:4000/orderslog", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
+        },
+        body: "",
+      })
+        .then((resp) => resp.json())
+        .then((data) => setOrders(data));
     }
   }, []);
   const addToCart = (itemId) => {
@@ -105,6 +118,7 @@ const ShopContextProvider = (props) => {
     getTotalCartAmount,
     getTotalCartItems,
     resetCart,
+    orders,
   };
   return (
     <ShopContext.Provider value={contextValue}>

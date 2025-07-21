@@ -1,10 +1,15 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
 const Checkout = () => {
-  const { cartItems, getTotalCartAmount, getTotalCartItems, all_products,resetCart } =
-    useContext(ShopContext);
+  const {
+    cartItems,
+    getTotalCartAmount,
+    getTotalCartItems,
+    all_products,
+    resetCart,
+  } = useContext(ShopContext);
   const navigate = useNavigate();
 
   const [shippingInfo, setShippingInfo] = useState({
@@ -89,18 +94,16 @@ const Checkout = () => {
       }
 
       const successCartProducts = [...cartProducts]; // Clone array
-    const successCartItems = {...cartItems}; // Clone object
+      const successCartItems = { ...cartItems }; // Clone object
 
-    resetCart();
+      resetCart();
 
-    setOrderDetails({
-      ...data.order,
-      displayProducts: successCartProducts,
-      displayItems: successCartItems
-    });
-    setOrderSuccess(true);
-
-
+      setOrderDetails({
+        ...data.order,
+        displayProducts: successCartProducts,
+        displayItems: successCartItems,
+      });
+      setOrderSuccess(true);
     } catch (err) {
       console.error("Order error:", err);
       setError(err.message || "Failed to place order. Please try again.");
@@ -108,7 +111,6 @@ const Checkout = () => {
       setIsProcessing(false);
     }
   };
-  
 
   if (orderSuccess && orderDetails) {
     return (
@@ -139,7 +141,10 @@ const Checkout = () => {
                     </span>
                   </div>
                   <span>
-                    ${(product.new_price * orderDetails.displayItems[product.id]).toFixed(2)}
+                    $
+                    {(
+                      product.new_price * orderDetails.displayItems[product.id]
+                    ).toFixed(2)}
                   </span>
                 </div>
               ))}
@@ -150,13 +155,13 @@ const Checkout = () => {
               <span>${orderDetails.total.toFixed(2)}</span>
             </div>
           </div>
-
-          <button
-            onClick={() => navigate("/orders")}
-            className="mt-8 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            View Your Orders
-          </button>
+          <Link to='/orders'>
+            <button
+              className="mt-8 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              View Your Orders
+            </button>
+          </Link>
         </div>
       </div>
     );
