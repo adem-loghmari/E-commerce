@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Users = mongoose.model("Users", {
   id: {
@@ -22,10 +22,14 @@ const Users = mongoose.model("Users", {
     type: Date,
     default: Date.now,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
   spent: {
     type: Number,
     default: 0,
   },
 });
 
-module.exports = Users
+module.exports = Users;

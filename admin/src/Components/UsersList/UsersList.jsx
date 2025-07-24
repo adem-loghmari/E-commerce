@@ -66,26 +66,28 @@ const UsersList = () => {
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 text-white tracking-wide drop-shadow text-center">
           All Users
         </h1>
-        <div className="hidden sm:grid grid-cols-5 gap-4 bg-gray-900/80 rounded-t-xl px-4 py-3 font-semibold text-blue-200 text-base sm:text-lg">
+        <div className="hidden sm:grid grid-cols-6 gap-4 bg-gray-900/80 rounded-t-xl px-4 py-3 font-semibold text-blue-200 text-base sm:text-lg">
           <span className="text-center">ID</span>
-          <span className="col-span-2">User</span>
-          <span className="text-center">Spent</span>
+          <span className="text-left">Name</span>
+          <span className="text-left">Email</span>
+          <span className="text-right">Phone</span>
+          <span className="text-right">Spent</span>
           <span className="text-center">Remove</span>
         </div>
         <div className="divide-y divide-blue-900 bg-gray-950/80 rounded-b-xl shadow">
           {allusers.map((user, index) => (
             <div
               key={user.id || index}
-              className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 items-center px-4 py-3 hover:bg-blue-950/60 transition text-sm sm:text-base"
+              className="grid grid-cols-1 sm:grid-cols-7 gap-2 sm:gap-4 items-center px-4 py-3 hover:bg-blue-950/60 transition text-sm sm:text-base"
             >
               <span className="text-blue-400 font-mono text-xs text-center break-all">
                 {user.id}
               </span>
 
-              <div className="col-span-2">
-                <p className="truncate text-white">{user.name}</p>
-                <p className="truncate text-gray-400 text-xs">{user.email}</p>
-              </div>
+            
+                <span className="text-white text-center">{user.name}</span>
+                <span className="text-gray-400 text-xs col-span-2">{user.email}</span>
+                <span className="text-gray-400 text-xs">{user.phone}</span>
 
               <span className="text-pink-300 font-semibold text-center">
                 ${user.spent ?? 0}

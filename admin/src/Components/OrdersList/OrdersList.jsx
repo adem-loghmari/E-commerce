@@ -130,7 +130,7 @@ const AdminOrders = () => {
               <div className="col-span-1">
                 <p className="truncate text-white">{order.user_name}</p>
                 <p className="truncate text-gray-400 text-xs">
-                  ID: {order.user_id}
+                  {order.user_phone}
                 </p>
               </div>
 

@@ -40,6 +40,7 @@ const signupUser = async (req, res) => {
     name: req.body.username || req.body.name,
     email: req.body.email,
     password: req.body.password,
+    phone:req.body.phone,
     cartData: cart,
   });
   await user.save();

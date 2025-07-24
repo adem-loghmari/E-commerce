@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Order = mongoose.model("Order",{
+const Order = mongoose.model("Order", {
   id: {
     type: Number,
     required: true,
@@ -10,12 +10,16 @@ const Order = mongoose.model("Order",{
     ref: "Users",
     required: true,
   },
-  user_name:{
+  user_name: {
     type: String,
     required: true,
   },
-  user_id:{
-    type:Number,
+  user_id: {
+    type: Number,
+    required: true,
+  },
+  user_phone: {
+    type: String,
     required: true,
   },
   cartSnapshot: {
@@ -49,6 +53,5 @@ const Order = mongoose.model("Order",{
     default: Date.now,
   },
 });
-
 
 module.exports = Order;

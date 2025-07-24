@@ -6,6 +6,7 @@ const LoginSignUp = () => {
     username: "",
     password: "",
     email: "",
+    password:"",
   });
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -86,6 +87,14 @@ const LoginSignUp = () => {
             value={formData.email}
             type="email"
             placeholder="Email Address"
+            onChange={changeHandler}
+            className="px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg shadow w-full"
+          />
+          <input
+            name="phone"
+            value={formData.phone}
+            type="number"
+            placeholder="Phone Number"
             onChange={changeHandler}
             className="px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg shadow w-full"
           />

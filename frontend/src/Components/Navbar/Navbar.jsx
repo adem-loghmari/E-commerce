@@ -24,6 +24,8 @@ const Navbar = () => {
       ? "login"
       : path === "/cart"
       ? "cart"
+      : path === "/profile"
+      ? "profile"
       : "shop";
   const [menu, setMenu] = useState(initialMenu);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -160,9 +162,17 @@ const Navbar = () => {
               >
                 Logout
               </button>
-              <span className="text-white font-bold text-lg px-2">
+              <Link
+                className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
+                  menu === "profile"
+                    ? "bg-pink-400/30 text-pink-400 shadow-lg"
+                    : "text-white/90"
+                }`}
+                to="/profile"
+                onClick={() => setMenu("profile")}
+              >
                 {localStorage.getItem("user-name").split(" ")[0] || "User"}
-              </span>
+              </Link>
             </>
           ) : (
             <Link to="/login" onClick={() => setMenu("login")}>
@@ -291,17 +301,31 @@ const Navbar = () => {
               </ul>
               <div className="flex flex-col gap-2 w-full mt-8">
                 {localStorage.getItem("auth-token") ? (
-                  <button
-                    onClick={() => {
-                      localStorage.removeItem("auth-token");
-                      localStorage.removeItem("user-name");
-                      window.location.replace("/");
-                      setMobileOpen(false);
-                    }}
-                    className="block w-full px-4 py-4 rounded-lg bg-pink-600 text-white font-bold text-lg shadow hover:bg-pink-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-200"
-                  >
-                    Logout
-                  </button>
+                  <>
+                    <Link
+                      to="/profile"
+                      onClick={() => setMenu("profile")}
+                      className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
+                        menu === "profile"
+                          ? "bg-pink-500/20 text-pink-300 shadow"
+                          : "text-white"
+                      }`}
+                    >
+                      {localStorage.getItem("user-name").split(" ")[0] ||
+                        "User"}
+                    </Link>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("auth-token");
+                        localStorage.removeItem("user-name");
+                        window.location.replace("/");
+                        setMobileOpen(false);
+                      }}
+                      className="block w-full px-4 py-4 rounded-lg bg-pink-600 text-white font-bold text-lg shadow hover:bg-pink-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                    >
+                      Logout
+                    </button>
+                  </>
                 ) : (
                   <Link to="/login" className="block w-full">
                     <button className="block w-full px-4 py-4 rounded-lg bg-blue-600 text-white font-bold text-lg shadow hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200">

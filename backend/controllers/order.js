@@ -24,6 +24,7 @@ const createOrder = async (req, res) => {
       id,
       user: userData._id, // Use the newly created ObjectId
       user_name: userData.name,
+      user_phone: userData.phone,
       user_id: userData.id,
       cartSnapshot,
       total,
@@ -129,15 +130,19 @@ const getMyOrders = async (req, res) => {
       // Convert cartSnapshot (Map or Object) to array of items
       let items = [];
       if (order.cartSnapshot instanceof Map) {
-        items = Array.from(order.cartSnapshot.entries()).map(([productId, quantity]) => ({
-          productId,
-          quantity
-        }));
-      } else if (order.cartSnapshot && typeof order.cartSnapshot === 'object') {
-        items = Object.entries(order.cartSnapshot).map(([productId, quantity]) => ({
-          productId,
-          quantity
-        }));
+        items = Array.from(order.cartSnapshot.entries()).map(
+          ([productId, quantity]) => ({
+            productId,
+            quantity,
+          })
+        );
+      } else if (order.cartSnapshot && typeof order.cartSnapshot === "object") {
+        items = Object.entries(order.cartSnapshot).map(
+          ([productId, quantity]) => ({
+            productId,
+            quantity,
+          })
+        );
       }
 
       return {
@@ -147,26 +152,26 @@ const getMyOrders = async (req, res) => {
         createdAt: order.createdAt,
         items,
         shippingAddress: {
-          street: order.shippingAddress?.street || '',
-          city: order.shippingAddress?.city || '',
-          zipCode: order.shippingAddress?.zipCode || '',
-          country: order.shippingAddress?.country || ''
+          street: order.shippingAddress?.street || "",
+          city: order.shippingAddress?.city || "",
+          zipCode: order.shippingAddress?.zipCode || "",
+          country: order.shippingAddress?.country || "",
         },
         paymentMethod: order.paymentMethod,
         total: order.total,
         user: {
-          name: order.user_name || '',
-          id: order.user_id || ''
-        }
+          name: order.user_name || "",
+          id: order.user_id || "",
+        },
       };
     });
 
     res.status(200).json(formattedOrders);
   } catch (error) {
     console.error("Error fetching orders:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Server error while fetching orders",
-      error: error.message 
+      error: error.message,
     });
   }
 };
