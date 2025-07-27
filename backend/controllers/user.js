@@ -40,7 +40,7 @@ const signupUser = async (req, res) => {
     name: req.body.username || req.body.name,
     email: req.body.email,
     password: req.body.password,
-    phone:req.body.phone,
+    phone: req.body.phone,
     cartData: cart,
   });
   await user.save();
@@ -118,6 +118,40 @@ const getCart = async (req, res) => {
   res.json(userData.cartData);
 };
 
+//update profile
+const updateProfile = async (req, res) => {
+  const id = req.user.id;
+  const { ...fields } = req.body;
+  if (!id)
+    return res.status(400).json({ success: false, error: "User id required" });
+
+  // Remove undefined fields so only changed fields are updated
+  Object.keys(fields).forEach((key) => {
+    if (fields[key] === undefined || fields[key] === "") delete fields[key];
+  });
+
+  try {
+    const updated = await Users.findOneAndUpdate(
+      { id: Number(id) },
+      { $set: fields },
+      { new: true }
+    );
+    if (!updated)
+      return res.status(404).json({ success: false, error: "User not found" });
+    res.json({ success: true, user: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Update failed" });
+  }
+};
+
+const getUser = async (req, res) => {
+  const id = req.user.id;
+  if (!id) return res.status(400).json({ error: "User id required" });
+  const user = await Users.findOne({ id });
+  if (!user) return res.status(404).json({ error: "User not found" });
+  res.json(user);
+};
+
 module.exports = {
   removeUser,
   signupUser,
@@ -126,4 +160,6 @@ module.exports = {
   addToCart,
   removefromcart,
   getCart,
+  updateProfile,
+  getUser,
 };
