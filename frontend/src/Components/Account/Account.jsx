@@ -90,7 +90,7 @@ const Profile = () => {
       }
 
       // Add the user ID from the token (handled by fetchUser middleware)
-      const response = await fetch("http://localhost:4000/updateProfile", {
+      const response = await fetch("/api/updateProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:4000/getuser", {
+        const response = await fetch("/api/getuser", {
           headers: {
             "auth-token": localStorage.getItem("auth-token"),
           },

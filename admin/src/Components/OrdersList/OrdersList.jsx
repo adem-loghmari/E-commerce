@@ -10,7 +10,7 @@ const AdminOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const fetchOrders = async () => {
-    await fetch("http://localhost:4000/allorders")
+    await fetch("/api/allorders")
       .then((resp) => resp.json())
       .then((data) => setAllOrders(data.sort((a, b) => b.id - a.id)));
   };
@@ -38,7 +38,7 @@ const AdminOrders = () => {
       return;
     }
 
-    await fetch("http://localhost:4000/removeOrder", {
+    await fetch("/api/removeOrder", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ const AdminOrders = () => {
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
-    await fetch("http://localhost:4000/updateOrderStatus", {
+    await fetch("/api/updateOrderStatus", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

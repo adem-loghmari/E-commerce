@@ -15,7 +15,7 @@ const ModifyOrder = () => {
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/allproducts");
+        const response = await fetch("/api/allproducts");
         const data = await response.json();
         setAllProducts(data);
       } catch (err) {
@@ -36,7 +36,7 @@ const ModifyOrder = () => {
     setSuccess("");
     setOrder(null);
     try {
-      const resp = await fetch(`http://localhost:4000/order/${fetchId || orderId}`);
+      const resp = await fetch(`/api/order/${fetchId || orderId}`);
       if (!resp.ok) throw new Error("Order not found");
       const data = await resp.json();
       // Initialize cartSnapshot as array of objects for easier manipulation
@@ -140,7 +140,7 @@ const ModifyOrder = () => {
         cartSnapshot
       };
 
-      const response = await fetch("http://localhost:4000/modifyOrder", {
+      const response = await fetch("/api/modifyOrder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

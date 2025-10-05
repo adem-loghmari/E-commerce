@@ -17,7 +17,7 @@ const SearchBar = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:4000/api/search/suggestions?q=${encodeURIComponent(query)}`
+        `/api/search/suggestions?q=${encodeURIComponent(query)}`
       );
       const data = await res.json();
 

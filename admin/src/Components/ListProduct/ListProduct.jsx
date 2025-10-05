@@ -9,7 +9,7 @@ const ListProduct = () => {
   const [deleteError, setDeleteError] = useState("");
 
   const fetchInfo = async () => {
-    await fetch("http://localhost:4000/allproducts")
+    await fetch("/api/allproducts")
       .then((resp) => resp.json())
       .then((data) => setAllProducts(data.sort((a, b) => a.id - b.id)));
   };
@@ -40,7 +40,7 @@ const ListProduct = () => {
       setDeleteError("Name and ID must match the product exactly.");
       return;
     }
-    await fetch("http://localhost:4000/removeProduct", {
+    await fetch("/api/removeProduct", {
       method: "POST",
       headers: {
         Accept: "application/json",

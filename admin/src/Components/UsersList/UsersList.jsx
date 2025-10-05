@@ -9,7 +9,7 @@ const UsersList = () => {
   const [deleteError, setDeleteError] = useState("");
 
   const fetchInfo = async () => {
-    await fetch("http://localhost:4000/allusers")
+    await fetch("/api/allusers")
       .then((resp) => resp.json())
       .then((data) => setAllUsers(data.sort((a, b) => a.id - b.id)));
   };
@@ -40,7 +40,7 @@ const UsersList = () => {
       setDeleteError("Name and ID must match the user exactly.");
       return;
     }
-    await fetch("http://localhost:4000/removeUser", {
+    await fetch("/api/removeUser", {
       method: "POST",
       headers: {
         Accept: "application/json",

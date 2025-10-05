@@ -3,7 +3,7 @@ export const ShopContext = createContext(null);
 
 const getDefaultCart = () => {
   let num_products = 0; // Initialize num_products
-  fetch("http://localhost:4000/getTotalProducts")
+  fetch("/api/getTotalProducts")
     .then((resp) => {
       if (!resp.ok) throw new Error("Request failed");
       return resp.json();
@@ -27,11 +27,11 @@ const ShopContextProvider = (props) => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/allproducts")
+    fetch("/api/allproducts")
       .then((resp) => resp.json())
       .then((data) => setAll_Products(data));
     if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:4000/getcart", {
+      fetch("/api/getcart", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -43,7 +43,7 @@ const ShopContextProvider = (props) => {
         .then((resp) => resp.json())
         .then((data) => setCartItems(data));
 
-      fetch("http://localhost:4000/orderslog", {
+      fetch("/api/orderslog", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -59,7 +59,7 @@ const ShopContextProvider = (props) => {
   const addToCart = (itemId , count = 1) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + count }));
     if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:4000/addtocart", {
+      fetch("/api/addtocart", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -75,7 +75,7 @@ const ShopContextProvider = (props) => {
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
     if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:4000/removefromcart", {
+      fetch("/api/removefromcart", {
         method: "POST",
         headers: {
           Accept: "application/json",

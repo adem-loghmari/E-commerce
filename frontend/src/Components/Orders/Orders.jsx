@@ -15,7 +15,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:4000/allproducts");
+        const response = await fetch("/api/allproducts");
         const data = await response.json();
         setAllProducts(data);
         setLoading(false);

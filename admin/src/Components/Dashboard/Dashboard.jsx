@@ -9,7 +9,7 @@ const Dashboard = () => {
 
   const fetchInfo = async () => {
     setLoading(true);
-    await fetch("http://localhost:4000/allproducts")
+    await fetch("/api/allproducts")
       .then((resp) => resp.json())
       .then((data) => setAllProducts(data))
       .finally(() => setLoading(false));

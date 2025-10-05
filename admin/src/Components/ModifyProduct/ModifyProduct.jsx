@@ -26,7 +26,7 @@ const ModifyProduct = () => {
     setProduct(null);
     setImage(null);
     try {
-      const resp = await fetch(`http://localhost:4000/product/${fetchId || productId}`);
+      const resp = await fetch(`/api/product/${fetchId || productId}`);
       if (!resp.ok) throw new Error("Product not found");
       const data = await resp.json();
       setProduct(data);
@@ -55,7 +55,7 @@ const ModifyProduct = () => {
       let responseData;
       let formData = new FormData();
       formData.append("product", image);
-      await fetch("http://localhost:4000/upload", {
+      await fetch("/api/upload", {
         method: "POST",
         headers: {
           Accept: "aplication/json",
@@ -72,7 +72,7 @@ const ModifyProduct = () => {
         return;
       }
     }
-    await fetch("http://localhost:4000/modifyProduct", {
+    await fetch("/api/modifyProduct", {
       method: "POST",
       headers: {
         Accept: "application/json",

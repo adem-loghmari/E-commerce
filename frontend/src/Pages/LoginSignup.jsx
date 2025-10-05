@@ -14,7 +14,7 @@ const LoginSignUp = () => {
   const login = async () => {
     let responseData;
 
-    await fetch("http://localhost:4000/login", {
+    await fetch("/api/login", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -39,7 +39,7 @@ const LoginSignUp = () => {
     console.log(formData);
     let responseData;
 
-    await fetch("http://localhost:4000/signup", {
+    await fetch("/api/signup", {
       method: "POST",
       headers: {
         Accept: "application/json",
