@@ -32,8 +32,8 @@ const frontendPath = path.join(__dirname, "../frontend/build");
 const adminPath = path.join(__dirname, "../admin/dist"); // or ../admin/build depending on your tool
 
 // Serve frontend
-app.use("/app", express.static(frontendPath));
-app.get("/app/*", (req, res) => {
+app.use(express.static(frontendPath));
+app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
@@ -41,11 +41,6 @@ app.get("/app/*", (req, res) => {
 app.use("/admin", express.static(adminPath));
 app.get("/admin/*", (req, res) => {
   res.sendFile(path.join(adminPath, "index.html"));
-});
-
-// Basic route
-app.get("/", (req, res) => {
-  res.send("Express App is running");
 });
 
 // Start server
