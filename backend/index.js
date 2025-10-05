@@ -23,9 +23,9 @@ app.use(express.json());
 app.use("/images", express.static("upload/images"));
 
 // Routes
-app.use("/", productRouter); // Prefix all product routes with /api/products
-app.use("/", userRouter); // Prefix all user routes with /api/users
-app.use("/",orderRouter); // Prefix all order routes with /api/orders
+app.use("/api", productRouter);
+app.use("/api", userRouter);
+app.use("/api", orderRouter);
 
 
 const frontendPath = path.join(__dirname, "../frontend/build");

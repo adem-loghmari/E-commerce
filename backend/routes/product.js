@@ -11,8 +11,8 @@ router.get("/product/:id", productController.getSingleProduct);
 router.post("/modifyProduct", productController.modifyProduct);
 router.get("/newcollections", productController.getNewCollections);
 router.get("/popularinwomen", productController.getPopularWomen);
-router.get("/api/search", productController.searchProducts);
-router.get("/api/search/suggestions", productController.searchSuggestions);
+router.get("/search", productController.searchProducts);
+router.get("/search/suggestions", productController.searchSuggestions);
 router.get("/getTotalProducts", productController.getTotalProducts);
 
 module.exports = router;
