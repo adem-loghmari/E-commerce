@@ -31,22 +31,25 @@ app.use("/api", orderRouter);
 const frontendPath = path.join(__dirname, "../frontend/build");
 const adminPath = path.join(__dirname, "../admin/dist"); // or ../admin/build depending on your tool
 
-// Serve frontend
+// Serve static assets
+app.use('/admin', express.static(adminPath));
 app.use(express.static(frontendPath));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+
+// Admin client-side routing: always return admin index for /admin/*
+app.get('/admin/*', (req, res) => {
+  res.sendFile(path.join(adminPath, 'index.html'));
 });
 
-// Serve admin
-app.use("/admin", express.static(adminPath));
-app.get("/admin/*", (req, res) => {
-  res.sendFile(path.join(adminPath, "index.html"));
+// SPA support: for any non-API request, serve the frontend index.html so client-side routing works on refresh.
+// Leave API and static routes alone so they can return their proper responses or errors.
+app.get('*', (req, res) => {
+  // If the request is for the API or images, pass through (these should have been handled above)
+  if (req.path.startsWith('/api') || req.path.startsWith('/images')) {
+    return res.status(404).json({ error: 'Not Found' });
+  }
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-});
 
 // Start server
 app.listen(PORT, () => {
