@@ -1,56 +1,23 @@
-# E-Commerce Project
+# SmartShop — Full-Stack E-Commerce Platform
 
-Minimal full-stack e-commerce app with authentication, admin dashboard, and product management.
+Live demo: https://smartshop-lqyf.onrender.com
 
-## Stack
-- **Frontend:** React (Create React App)
-- **Admin:** React + Vite
+A complete e-commerce application with customer-facing storefront, 
+shopping cart, authentication, and a separate admin dashboard.
+
+## Features
+- User authentication (JWT)
+- Product browsing, search, and cart management  
+- Admin panel: add/remove products, image upload, order overview
+- Separate frontend, admin, and backend architecture
+
+## Tech Stack
+- **Frontend:** React
+- **Admin:** React + Vite  
 - **Backend:** Node.js, Express, MongoDB
+- **Auth:** JWT
 
-## Setup
-
-### Backend
-1. Go to `backend/`
-2. Create a `.env` file with:
-   ```
-   MONGODB_URI=your_mongodb_uri
-   ```
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Start the server:
-   ```
-   npm start
-   ```
-
-### Frontend (User)
-1. Go to `frontend/`
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Start the app:
-   ```
-   npm start
-   ```
-
-### Admin Panel
-1. Go to `admin/`
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Start the Vite dev server:
-   ```
-   npm run dev
-   ```
-
-## Auth & Processes
-- Users can sign up, log in, and manage their cart.
-- Admins can add/remove products and upload images.
-- Authentication is handled via JWT tokens.
-
----
-
-**Quick, modern, and minimal.**
+## Screenshots
+![The catalog](./screenshots/1.png)
+![The cart](./screenshots/2.png)
+![The dashboard](./screenshots/3.png)
