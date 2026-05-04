@@ -19,5 +19,9 @@ shopping cart, authentication, and a separate admin dashboard.
 
 ## Screenshots
 ![The catalog](./screenshots/1.png)
-![The cart](./screenshots/2.png)
-![The dashboard](./screenshots/3.png)
+![The product](./screenshots/2.png)
+![The cart](./screenshots/3.png)
+![The dashboard](./screenshots/4.png)
+![The products](./screenshots/5.png)
+![The orders](./screenshots/6.png)
+![The users](./screenshots/7.png)
