@@ -58,7 +58,7 @@ const Navbar = () => {
         <div className="flex items-center md:hidden z-50">
           <button
             onClick={dropdown_toggle}
-            className="inline-flex items-center justify-center p-3 rounded-full text-pink-400 bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition relative z-50"
+            className="inline-flex items-center justify-center p-3 rounded-full text-pink-400 bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300"
             aria-label="Open menu"
             type="button"
           >
@@ -153,7 +153,7 @@ const Navbar = () => {
                   localStorage.removeItem("user-name");
                   window.location.replace("/");
                 }}
-                className="px-7 py-2 rounded-full bg-white/30 border border-pink-400 text-pink-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-pink-100/60 hover:text-pink-700 hover:border-pink-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                className="px-7 py-2 rounded-full bg-white/30 border border-pink-400 text-pink-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-pink-100/60 hover:text-pink-700 hover:border-pink-400 transition-all duration-200"
                 style={{
                   background: "rgba(255,255,255,0.3)",
                   borderColor: "#f472b6",
@@ -177,7 +177,7 @@ const Navbar = () => {
           ) : (
             <Link to="/login" onClick={() => setMenu("login")}>
               <button
-                className="px-7 py-2 rounded-full bg-white/30 border border-blue-400 text-blue-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-blue-100/60 hover:text-blue-700 hover:border-blue-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="px-7 py-2 rounded-full bg-white/30 border border-blue-400 text-blue-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-blue-100/60 hover:text-blue-700 hover:border-blue-400 transition-all duration-200"
                 style={{
                   background: "rgba(255,255,255,0.3)",
                   borderColor: "white",
@@ -190,7 +190,7 @@ const Navbar = () => {
           )}
           <Link
             to="/cart"
-            className="relative group"
+            className="relative group flex-shrink-0"
             onClick={() => setMenu("cart")}
           >
             <div className="bg-white/30 backdrop-blur-md rounded-full p-3 shadow-xl hover:scale-110 transition-transform">
@@ -220,7 +220,7 @@ const Navbar = () => {
             {/* Close Icon */}
             <button
               onClick={dropdown_toggle}
-              className="absolute top-6 right-6 z-50 p-2 rounded-full text-pink-400 bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+              className="absolute top-6 right-6 z-50 p-2 rounded-full text-pink-400 bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300"
               aria-label="Close menu"
               type="button"
             >
@@ -321,14 +321,14 @@ const Navbar = () => {
                         window.location.replace("/");
                         setMobileOpen(false);
                       }}
-                      className="block w-full px-4 py-4 rounded-lg bg-pink-600 text-white font-bold text-lg shadow hover:bg-pink-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                      className="block w-full px-4 py-4 rounded-lg bg-pink-600 text-white font-bold text-lg shadow hover:bg-pink-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <Link to="/login" className="block w-full">
-                    <button className="block w-full px-4 py-4 rounded-lg bg-blue-600 text-white font-bold text-lg shadow hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <button className="block w-full px-4 py-4 rounded-lg bg-blue-600 text-white font-bold text-lg shadow hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
                       Login
                     </button>
                   </Link>
