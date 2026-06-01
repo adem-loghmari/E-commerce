@@ -27,14 +27,13 @@ app.use("/api", orderRouter);
 // ─── Admin panel ───────────────────────────────────────────────────────────────
 const adminPath = path.join(__dirname, "../admin/dist");
 
-// 1. /admin (no trailing slash) → redirect to /admin/ so the app boots cleanly
-app.get("/admin", (req, res) => res.redirect(301, "/admin/"));
-
-// 2. Static assets (JS, CSS, images, etc.) built by Vite under /admin/
+// Serve Vite-built static assets (JS, CSS, images…).
+// express.static already handles /admin → /admin/ redirect internally,
+// so no explicit redirect needed (adding one causes a redirect loop).
 app.use("/admin", express.static(adminPath));
 
-// 3. SPA fallback: any /admin/* path that isn't a static file gets index.html
-//    so React Router can handle client-side navigation and page refreshes.
+// SPA fallback: any /admin/* path that is not a real file (e.g. /admin/orders
+// on a hard refresh) gets index.html so React Router handles it client-side.
 app.use("/admin", (req, res) => {
   res.sendFile(path.join(adminPath, "index.html"));
 });
