@@ -4,12 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ShopContextProvider from './Context/ShopContext';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from './theme';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ShopContextProvider>
-      <App/>
-    </ShopContextProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <ShopContextProvider>
+        <App />
+      </ShopContextProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

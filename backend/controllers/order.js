@@ -1,28 +1,23 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/ProductModel");
 const Users = require("../models/UsersModel");
-const mongoose = require("mongoose");
 
 const createOrder = async (req, res) => {
   try {
-    const { user, cartSnapshot, total, shippingAddress, paymentMethod } =
-      req.body;
+    const { cartSnapshot, total, shippingAddress, paymentMethod } = req.body;
 
-    // Generate a simple ID (you might want to use a more robust solution)
     let orders = await Order.find({});
-    let id;
-    if (orders.length > 0) {
-      let last_user_array = orders.slice(-1);
-      let last_user = last_user_array[0];
-      id = last_user.id + 1;
-    } else {
-      id = 1;
+    let id =
+      orders.length > 0 ? orders[orders.length - 1].id + 1 : 1;
+
+    const userData = await Users.findOne({ id: req.user.id });
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    let userData = await Users.findOne({ id: req.user.id });
     const newOrder = new Order({
       id,
-      user: userData._id, // Use the newly created ObjectId
+      user: userData._id,
       user_name: userData.name,
       user_phone: userData.phone,
       user_id: userData.id,
@@ -32,122 +27,147 @@ const createOrder = async (req, res) => {
       paymentMethod,
       status: "pending",
     });
+
     const savedOrder = await newOrder.save();
 
-    await Users.updateOne(
-      { id: req.user.id },
-      { $set: { cartData: {} } },
-      { new: true }
-    );
-    num_products = await Product.countDocuments();
+    // Reset user's cart
+    const numProducts = await Product.countDocuments();
     await Users.findOneAndUpdate(
       { id: req.user.id },
       {
         $set: {
           cartData: Object.fromEntries(
-            Array.from({ length: num_products }, (_, i) => [i + 1, 0])
+            Array.from({ length: numProducts }, (_, i) => [i + 1, 0])
           ),
         },
-      },
-      { new: true }
+      }
     );
-    res.status(201).json({
-      success: true,
-      order: savedOrder,
-    });
+
+    res.status(201).json({ success: true, order: savedOrder });
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to create order",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Failed to create order", error: error.message });
   }
 };
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().sort({ id: -1 });
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching orders" });
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ success: false, message: "Error fetching orders" });
   }
 };
 
 const removeOrder = async (req, res) => {
-  await Order.findOneAndDelete({ id: req.body.id });
-  console.log("Order Removed");
-  res.json({
-    success: true,
-    id: req.body.id,
-  });
+  try {
+    const { id } = req.body;
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Order id is required" });
+    }
+    const deleted = await Order.findOneAndDelete({ id: Number(id) });
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    res.status(200).json({ success: true, message: "Order removed successfully", id });
+  } catch (error) {
+    console.error("Error removing order:", error);
+    res.status(500).json({ success: false, message: "Failed to remove order" });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled", "completed"];
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Order id is required" });
+    }
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+    }
+    const updated = await Order.findOneAndUpdate(
+      { id: Number(id) },
+      { $set: { status } },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    res.status(200).json({ success: true, order: updated });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ success: false, message: "Failed to update status" });
+  }
 };
 
 const modifyOrder = async (req, res) => {
-  const { id, ...fields } = req.body;
-  if (!id)
-    return res.status(400).json({ success: false, error: "Order id required" });
-
-  Object.keys(fields).forEach((key) => {
-    if (fields[key] === undefined || fields[key] === "") delete fields[key];
-  });
-
   try {
+    const { id, user_name, shippingAddress, status, paymentMethod, cartSnapshot, total } = req.body;
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Order id is required" });
+    }
+
+    const order = await Order.findOne({ id: Number(id) });
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    const updateFields = {};
+    if (user_name !== undefined) updateFields.user_name = user_name;
+    if (shippingAddress) updateFields.shippingAddress = shippingAddress;
+    if (status) updateFields.status = status;
+    if (paymentMethod) updateFields.paymentMethod = paymentMethod;
+    if (cartSnapshot) updateFields.cartSnapshot = cartSnapshot;
+    if (total !== undefined) updateFields.total = total;
+
     const updated = await Order.findOneAndUpdate(
       { id: Number(id) },
-      { $set: fields },
+      { $set: updateFields },
       { new: true }
     );
-    if (!updated)
-      return res.status(404).json({ success: false, error: "Order not found" });
-    res.json({ success: true, order: updated });
-  } catch (err) {
-    res.status(500).json({ success: false, error: "Update failed" });
+
+    res.status(200).json({ success: true, message: "Order updated successfully", order: updated });
+  } catch (error) {
+    console.error("Error modifying order:", error);
+    res.status(500).json({ success: false, message: "Failed to update order" });
   }
 };
 
 const getSingleOrder = async (req, res) => {
-  const id = Number(req.params.id);
-  if (!id) return res.status(400).json({ error: "Invalid order id" });
-  const order = await Order.findOne({ id });
-  if (!order) return res.status(404).json({ error: "order not found" });
-  res.json(order);
+  try {
+    const id = Number(req.params.id);
+    if (!id) return res.status(400).json({ success: false, message: "Invalid order id" });
+    const order = await Order.findOne({ id });
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching order" });
+  }
 };
 
 const getMyOrders = async (req, res) => {
   try {
-    // Find orders for the logged-in user
     const orders = await Order.find({ user_id: req.user.id })
       .sort({ createdAt: -1 })
-      .lean(); // Convert Mongoose documents to plain JS objects
+      .lean();
 
     if (!orders || orders.length === 0) {
       return res.status(200).json([]);
     }
 
-    // Format the response
     const formattedOrders = orders.map((order) => {
-      // Convert cartSnapshot (Map or Object) to array of items
       let items = [];
       if (order.cartSnapshot instanceof Map) {
-        items = Array.from(order.cartSnapshot.entries()).map(
-          ([productId, quantity]) => ({
-            productId,
-            quantity,
-          })
-        );
+        items = Array.from(order.cartSnapshot.entries()).map(([productId, quantity]) => ({ productId, quantity }));
       } else if (order.cartSnapshot && typeof order.cartSnapshot === "object") {
-        items = Object.entries(order.cartSnapshot).map(
-          ([productId, quantity]) => ({
-            productId,
-            quantity,
-          })
-        );
+        items = Object.entries(order.cartSnapshot).map(([productId, quantity]) => ({ productId, quantity }));
       }
 
       return {
         id: order._id,
-        orderNumber: order.id || order._id.toString(), // Use your existing ID field
+        orderNumber: order.id || order._id.toString(),
         status: order.status,
         createdAt: order.createdAt,
         items,
@@ -169,10 +189,7 @@ const getMyOrders = async (req, res) => {
     res.status(200).json(formattedOrders);
   } catch (error) {
     console.error("Error fetching orders:", error);
-    res.status(500).json({
-      message: "Server error while fetching orders",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Server error while fetching orders", error: error.message });
   }
 };
 
@@ -180,6 +197,7 @@ module.exports = {
   createOrder,
   getAllOrders,
   removeOrder,
+  updateOrderStatus,
   modifyOrder,
   getSingleOrder,
   getMyOrders,

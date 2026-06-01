@@ -1,95 +1,310 @@
-import React, { useContext } from 'react'
-import { ShopContext } from '../../Context/ShopContext'
-import remove_icon from '../Assets/cart_cross_icon.png'
+import React, { useContext } from 'react';
+import { ShopContext } from '../../Context/ShopContext';
 import { Link } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const CartItems = () => {
-  const { all_products, cartItems, removeFromCart, getTotalCartAmount } = useContext(ShopContext);
+  const { all_products, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(ShopContext);
+  const cartProducts = all_products.filter((p) => cartItems[p.id] > 0);
 
-  // Filter products in cart
-  const cartProducts = all_products.filter(e => cartItems[e.id] > 0);
+  const handleDelete = (id) => {
+    const qty = cartItems[id];
+    for (let i = 0; i < qty; i++) removeFromCart(id);
+  };
 
   return (
-    <section className="w-full min-h-screen py-16 bg-gray-100 flex flex-col items-center mt-24">
-      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-4 sm:p-8">
-        <div className="hidden md:grid grid-cols-6 gap-4 font-bold text-gray-700 text-lg border-b pb-4 mb-4">
-          <span className="col-span-2">Product</span>
-          <span>Price</span>
-          <span>Quantity</span>
-          <span>Total</span>
-          <span className="text-center">Remove</span>
-        </div>
-        <div className="flex flex-col gap-4">
-          {cartProducts.length === 0 && (
-            <div className="text-center text-gray-500 py-12 text-lg font-semibold">Your cart is empty.</div>
+    <Box component="section" sx={{ width: '100%', py: { xs: 4, md: 6 }, bgcolor: '#f8fafc', minHeight: '60vh' }}>
+      <Container maxWidth="lg">
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, color: 'text.primary' }}>
+          Shopping Cart
+          {cartProducts.length > 0 && (
+            <Chip
+              label={`${cartProducts.length} item${cartProducts.length > 1 ? 's' : ''}`}
+              size="small"
+              sx={{
+                ml: 2, bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main',
+                fontWeight: 700, borderRadius: '8px', verticalAlign: 'middle',
+              }}
+            />
           )}
-          {cartProducts.map((e) => (
-            <div
-              key={e.id}
-              className="flex flex-col md:grid md:grid-cols-6 gap-2 md:gap-4 items-center border-b py-4 last:border-b-0 bg-white/70 rounded-xl"
-            >
-              {/* Product image and name */}
-              <div className="flex items-center gap-3 col-span-2 w-full">
-                <img src={e.image} alt={e.name} className="h-16 w-16 object-contain rounded-xl bg-gray-50 border" />
-                <span className="text-gray-900 font-semibold text-base sm:text-lg">{e.name}</span>
-              </div>
-              {/* Price */}
-              <span className="text-blue-600 font-bold w-full text-center">${e.new_price}</span>
-              {/* Quantity */}
-              <span className="w-full flex justify-center">
-                <button className="px-4 py-1 bg-blue-100 text-blue-700 rounded-full font-bold cursor-default">{cartItems[e.id]}</button>
-              </span>
-              {/* Total */}
-              <span className="text-gray-900 font-bold w-full text-center">${e.new_price * cartItems[e.id]}</span>
-              {/* Remove */}
-              <span className="w-full flex justify-center items-center gap-2">
-                <button
-                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 hover:bg-red-200 transition"
-                  onClick={() => removeFromCart(e.id)}
-                  title="Remove"
-                  type="button"
+        </Typography>
+
+        {cartProducts.length === 0 ? (
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 6, md: 10 },
+              textAlign: 'center',
+              border: '1px solid rgba(15,23,42,0.07)',
+              borderRadius: 3,
+            }}
+          >
+            <ShoppingCartOutlinedIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 1.5, color: 'text.primary' }}>
+              Your cart is empty
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
+              Looks like you haven't added anything yet.
+            </Typography>
+            <Button component={Link} to="/" variant="contained" size="large" sx={{ borderRadius: 2.5, px: 4 }}>
+              Continue Shopping
+            </Button>
+          </Paper>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3 }}>
+            {/* Cart items */}
+            <Box sx={{ flex: 1 }}>
+              <Paper
+                elevation={0}
+                sx={{ border: '1px solid rgba(15,23,42,0.07)', borderRadius: 3, overflow: 'hidden' }}
+              >
+                {/* Header */}
+                <Box
+                  sx={{
+                    display: { xs: 'none', sm: 'grid' },
+                    gridTemplateColumns: '2fr 1fr 1.5fr 1fr 40px',
+                    px: 2.5, py: 1.75,
+                    bgcolor: '#f8fafc',
+                    borderBottom: '1px solid rgba(15,23,42,0.07)',
+                  }}
                 >
-                  <img className="h-5 w-5" src={remove_icon} alt="remove" />
-                  <span className="hidden sm:inline text-red-600 font-semibold">Remove</span>
-                </button>
-              </span>
-            </div>
-          ))}
-        </div>
-        {/* Cart totals and promo code */}
-        <div className="flex flex-col md:flex-row justify-between gap-8 mt-10">
-          <div className="flex-1 bg-gray-50 rounded-2xl p-6 shadow mb-6 md:mb-0">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Cart Totals</h2>
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between text-lg">
-                <span>Subtotal</span>
-                <span className="font-bold text-blue-600">${getTotalCartAmount()}</span>
-              </div>
-              <div className="flex justify-between text-lg">
-                <span>Shipping Fee</span>
-                <span className="font-bold text-green-600">Free</span>
-              </div>
-              <div className="flex justify-between text-xl border-t pt-3 mt-3 font-bold">
-                <span>Total</span>
-                <span className="text-pink-500">${getTotalCartAmount()}</span>
-              </div>
-            </div>
-            <Link to="/checkout" className="w-full mt-6">
-            
-            <button className="w-full mt-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-lg font-bold rounded-full shadow hover:scale-105 transition-transform">PROCEED TO CHECKOUT</button>
-            </Link>
-          </div>
-          <div className="flex-1 bg-gray-50 rounded-2xl p-6 shadow flex flex-col items-center justify-center">
-            <p className="mb-4 text-gray-700">If you have a promocode, enter it here</p>
-            <form className="flex gap-2 w-full max-w-xs">
-              <input type="text" placeholder='Promo code' className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-              <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition">Submit</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
+                  {['Product', 'Price', 'Quantity', 'Total', ''].map((h) => (
+                    <Typography key={h} variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      {h}
+                    </Typography>
+                  ))}
+                </Box>
+
+                {cartProducts.map((p, idx) => (
+                  <Box key={p.id}>
+                    <Box
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr 1.5fr 1fr 40px' },
+                        alignItems: 'center',
+                        gap: { xs: 1.5, sm: 0 },
+                        px: 2.5,
+                        py: 2.5,
+                      }}
+                    >
+                      {/* Product info */}
+                      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                        <Box
+                          component={Link}
+                          to={`/product/${p.id}`}
+                          sx={{ textDecoration: 'none', flexShrink: 0 }}
+                        >
+                          <Box
+                            component="img"
+                            src={p.image}
+                            alt={p.name}
+                            sx={{
+                              width: 72, height: 72,
+                              objectFit: 'contain',
+                              bgcolor: '#f8fafc',
+                              borderRadius: 2,
+                              border: '1px solid rgba(15,23,42,0.07)',
+                              p: 0.75,
+                            }}
+                          />
+                        </Box>
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary', mb: 0.5, lineHeight: 1.4 }}>
+                            {p.name}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                            {p.category}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {/* Price */}
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        ${p.new_price}
+                      </Typography>
+
+                      {/* Qty controls */}
+                      <Box
+                        sx={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          border: '1.5px solid rgba(15,23,42,0.12)',
+                          borderRadius: '10px',
+                          overflow: 'hidden',
+                          width: 'fit-content',
+                        }}
+                      >
+                        <IconButton
+                          size="small"
+                          onClick={() => removeFromCart(p.id)}
+                          sx={{
+                            borderRadius: 0, px: 1, py: 0.5,
+                            color: 'text.secondary',
+                            '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
+                          }}
+                        >
+                          <RemoveIcon sx={{ fontSize: 14 }} />
+                        </IconButton>
+                        <Typography
+                          sx={{
+                            px: 2, py: 0.5, minWidth: 32,
+                            textAlign: 'center', fontWeight: 700,
+                            fontSize: '0.875rem', lineHeight: '28px',
+                            borderLeft: '1px solid rgba(15,23,42,0.1)',
+                            borderRight: '1px solid rgba(15,23,42,0.1)',
+                          }}
+                        >
+                          {cartItems[p.id]}
+                        </Typography>
+                        <IconButton
+                          size="small"
+                          onClick={() => addToCart(p.id, 1)}
+                          sx={{
+                            borderRadius: 0, px: 1, py: 0.5,
+                            color: 'text.secondary',
+                            '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
+                          }}
+                        >
+                          <AddIcon sx={{ fontSize: 14 }} />
+                        </IconButton>
+                      </Box>
+
+                      {/* Total */}
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                        ${(p.new_price * cartItems[p.id]).toFixed(2)}
+                      </Typography>
+
+                      {/* Delete */}
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(p.id)}
+                        sx={{
+                          color: 'text.disabled',
+                          '&:hover': { color: 'error.main', bgcolor: 'rgba(239,68,68,0.08)' },
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    </Box>
+                    {idx < cartProducts.length - 1 && <Divider />}
+                  </Box>
+                ))}
+              </Paper>
+            </Box>
+
+            {/* Summary panel */}
+            <Box sx={{ width: { xs: '100%', lg: 340 }, flexShrink: 0 }}>
+              <Stack spacing={2}>
+                {/* Order summary */}
+                <Paper
+                  elevation={0}
+                  sx={{ border: '1px solid rgba(15,23,42,0.07)', borderRadius: 3, p: 3 }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5 }}>
+                    Order Summary
+                  </Typography>
+                  <Stack spacing={1.5}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        Subtotal ({cartProducts.length} item{cartProducts.length > 1 ? 's' : ''})
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        ${getTotalCartAmount().toFixed(2)}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <LocalShippingOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>Shipping</Typography>
+                      </Box>
+                      <Chip
+                        label="Free"
+                        size="small"
+                        sx={{
+                          bgcolor: 'rgba(16,185,129,0.1)',
+                          color: '#10b981',
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          height: 22,
+                          borderRadius: '6px',
+                        }}
+                      />
+                    </Box>
+                    <Divider />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Typography variant="body1" sx={{ fontWeight: 700 }}>Total</Typography>
+                      <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main' }}>
+                        ${getTotalCartAmount().toFixed(2)}
+                      </Typography>
+                    </Box>
+                  </Stack>
+
+                  <Button
+                    component={Link}
+                    to="/checkout"
+                    variant="contained"
+                    fullWidth
+                    size="large"
+                    sx={{ mt: 3, borderRadius: 2.5, py: 1.5 }}
+                  >
+                    Proceed to Checkout
+                  </Button>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.75, mt: 2 }}>
+                    <LockOutlinedIcon sx={{ fontSize: 14, color: 'text.disabled' }} />
+                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                      Secure checkout
+                    </Typography>
+                  </Box>
+                </Paper>
+
+                {/* Promo code */}
+                <Paper
+                  elevation={0}
+                  sx={{ border: '1px solid rgba(15,23,42,0.07)', borderRadius: 3, p: 3 }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.primary' }}>
+                    Have a promo code?
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <TextField
+                      placeholder="Enter code"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      sx={{ bgcolor: '#f8fafc' }}
+                    />
+                    <Button
+                      variant="outlined"
+                      sx={{ flexShrink: 0, borderRadius: 2, px: 2 }}
+                    >
+                      Apply
+                    </Button>
+                  </Box>
+                </Paper>
+              </Stack>
+            </Box>
+          </Box>
+        )}
+      </Container>
+    </Box>
+  );
+};
 
 export default CartItems;

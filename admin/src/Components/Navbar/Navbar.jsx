@@ -1,48 +1,108 @@
-import React from "react";
-import navlogo from "../../assets/nav-logo.svg";
+import React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-const Navbar = () => {
+export const NAVBAR_HEIGHT = 64;
+export const SIDEBAR_WIDTH = 260;
+
+const Navbar = ({ onMobileToggle }) => {
   const handleLogout = () => {
-    localStorage.removeItem("admin_logged_in");
-    window.location.href = "/login";
+    localStorage.removeItem('admin_logged_in');
+    window.location.href = '/admin/login';
   };
 
   return (
-    <nav className="w-full bg-gradient-to-r from-gray-900 via-blue-900 to-gray-800 shadow-2xl fixed top-0 left-0 z-50 font-sans">
-      <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 gap-2 sm:gap-0">
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start min-w-0">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center border-2 border-pink-400 shadow min-w-0">
-            <img src={navlogo} alt="logo" className="h-7 w-7 object-contain" />
-          </div>
-          <span className="text-base xs:text-lg sm:text-2xl md:text-3xl font-extrabold tracking-widest text-white drop-shadow truncate max-w-[50vw]">
-            ADMIN PANEL
-          </span>
-        </div>
-        <div className="flex items-center gap-4 w-full sm:w-auto justify-center sm:justify-end mt-2 sm:mt-0">
-          <button
-            onClick={handleLogout}
-            className="ml-2 px-4 py-2 rounded-xl bg-red-700/80 hover:bg-pink-600 text-white font-bold text-sm sm:text-base shadow transition flex items-center gap-2"
-            type="button"
+    <AppBar
+      position="fixed"
+      elevation={0}
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
+      <Toolbar sx={{ minHeight: `${NAVBAR_HEIGHT}px !important`, px: { xs: 2, md: 3 } }}>
+        {/* Logo + brand */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mr: 3 }}>
+          <Box
+            sx={{
+              width: 36, height: 36, borderRadius: 2,
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(99,102,241,0.35)',
+            }}
           >
-            <svg
-              className="h-5 w-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"
-              />
-            </svg>
+            <AdminPanelSettingsIcon sx={{ fontSize: 20, color: '#fff' }} />
+          </Box>
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1, color: 'text.primary', letterSpacing: '-0.01em' }}>
+              SmartShop
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
+              Admin Panel
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Accent bar */}
+        <Box sx={{ flex: 1 }} />
+
+        <Chip
+          label="Live"
+          size="small"
+          sx={{
+            mr: 2,
+            bgcolor: 'rgba(16,185,129,0.15)',
+            color: '#34d399',
+            border: '1px solid rgba(16,185,129,0.25)',
+            fontWeight: 700,
+            fontSize: '0.7rem',
+            height: 22,
+            '& .MuiChip-label': { px: 1 },
+          }}
+        />
+
+        {/* User area */}
+        <Tooltip title="Logout">
+          <Button
+            onClick={handleLogout}
+            startIcon={<LogoutIcon sx={{ fontSize: '18px !important' }} />}
+            size="small"
+            sx={{
+              color: 'text.secondary',
+              background: 'transparent',
+              boxShadow: 'none',
+              fontWeight: 500,
+              fontSize: '0.8125rem',
+              px: 1.5,
+              '&:hover': {
+                color: 'error.light',
+                background: 'rgba(239,68,68,0.1)',
+                transform: 'none',
+                boxShadow: 'none',
+              },
+            }}
+          >
             Logout
-          </button>
-        </div>
-      </div>
-    </nav>
+          </Button>
+        </Tooltip>
+
+        <Avatar
+          sx={{
+            ml: 1, width: 34, height: 34,
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            fontSize: '0.875rem', fontWeight: 800,
+          }}
+        >
+          A
+        </Avatar>
+      </Toolbar>
+    </AppBar>
   );
 };
 

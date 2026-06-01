@@ -14,44 +14,59 @@ const getAllUsers = async (req, res) => {
 
 // signup user with /signup
 const signupUser = async (req, res) => {
-  let check = await Users.findOne({ email: req.body.email });
-  if (check) {
-    return res.status(400).json({
+  try {
+    let check = await Users.findOne({ email: req.body.email });
+    if (check) {
+      return res.status(400).json({
+        success: false,
+        errors: "existing user found with same email address",
+      });
+    }
+    let num_products = await Product.countDocuments();
+    let cart = {};
+    for (let i = 0; i < num_products; i++) {
+      cart[i] = 0;
+    }
+    
+    // Find max ID to ensure unique ID
+    let users = await Users.find({}).sort({ id: -1 }).limit(1);
+    let id;
+    if (users.length > 0) {
+      id = users[0].id + 1;
+    } else {
+      id = 1;
+    }
+    
+    const user = new Users({
+      id: id,
+      name: req.body.username || req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      phone: req.body.phone || "",
+      cartData: cart,
+    });
+    await user.save();
+
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+    const token = jwt.sign(data, "secret_ecom");
+    res.json({ success: true, token, name: user.name });
+  } catch (error) {
+    console.error("Signup error:", error.message);
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        errors: "User already exists",
+      });
+    }
+    res.status(500).json({
       success: false,
-      errors: "existing user found with same email address",
+      errors: "Error during signup. Please try again.",
     });
   }
-  let num_products = await Product.countDocuments();
-  let cart = {};
-  for (let i = 0; i < num_products; i++) {
-    cart[i] = 0;
-  }
-  let users = await Users.find({});
-  let id;
-  if (users.length > 0) {
-    let last_user_array = users.slice(-1);
-    let last_user = last_user_array[0];
-    id = last_user.id + 1;
-  } else {
-    id = 1;
-  }
-  const user = new Users({
-    id: id,
-    name: req.body.username || req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    phone: req.body.phone,
-    cartData: cart,
-  });
-  await user.save();
-
-  const data = {
-    user: {
-      id: user.id,
-    },
-  };
-  const token = jwt.sign(data, "secret_ecom");
-  res.json({ success: true, token, name: user.name });
 };
 
 // login user with /login

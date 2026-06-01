@@ -1,111 +1,331 @@
-import React, { useContext, useState } from "react";
-import "./ProductDisplay.css";
-import star_icon from "../Assets/star_icon.png";
-import star_dull_icon from "../Assets/star_dull_icon.png";
-import { ShopContext } from "../../Context/ShopContext";
-import Breadcrums from "../Breadcrums/Breadcrums";
-const ProductDisplay = (props) => {
-  const { product } = props;
-  const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useContext(ShopContext);
-  const handleIncrement = () => {
-    setQuantity((prev) => prev + 1);
-  };
+import React, { useContext, useState } from 'react';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
+import Rating from '@mui/material/Rating';
+import Tooltip from '@mui/material/Tooltip';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+import { ShopContext } from '../../Context/ShopContext';
+import Breadcrums from '../Breadcrums/Breadcrums';
 
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity((prev) => prev - 1);
-    }
-  };
+const ProductDisplay = ({ product }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState('M');
+  const [selectedImg, setSelectedImg] = useState(0);
+  const [wishlisted, setWishlisted] = useState(false);
+  const { addToCart } = useContext(ShopContext);
+
+  const discount = product?.old_price && product?.new_price
+    ? Math.round((1 - product.new_price / product.old_price) * 100)
+    : 0;
+
+  const thumbnails = [product?.image, product?.image, product?.image, product?.image];
+
   return (
-    <section className="w-full flex items-center justify-center py-16 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 min-h-[80vh]">
-      <div>
+    <Box component="section" sx={{ width: '100%', bgcolor: '#f8fafc', py: { xs: 2, md: 4 } }}>
+      <Container maxWidth="lg">
         <Breadcrums product={product} />
-        <div className="max-w-5xl w-full flex flex-col md:flex-row gap-12 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12">
-          <div className="flex-1 flex flex-col items-center">
-            <div className="flex gap-3 mb-6">
-              {[1, 2, 3, 4].map((_, i) => (
-                <img
-                  key={i}
-                  src={product?.image}
-                  alt="thumb"
-                  className="h-16 w-16 object-cover rounded-xl border-2 border-white/30 shadow-md hover:scale-105 transition-transform"
-                />
-              ))}
-            </div>
-            <div className="overflow-hidden rounded-2xl shadow-xl bg-white/20">
-              <img
-                src={product?.image}
-                className="w-72 h-80 object-contain hover:scale-105 transition-transform duration-300"
-                alt={product?.name}
-              />
-            </div>
-          </div>
-          <div className="flex-1 flex flex-col gap-6 justify-center">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white drop-shadow mb-2">
-              {product?.name}
-            </h1>
-            <div className="flex items-center gap-2 mb-2">
-              {[...Array(5)].map((_, i) => (
-                <img key={i} src={star_icon} alt="star" className="h-6 w-6" />
-              ))}
-              <img src={star_dull_icon} alt="star dull" className="h-6 w-6" />
-              <p className="text-pink-400 font-semibold ml-2">(122)</p>
-            </div>
-            <div className="flex items-end gap-4 mb-2">
-              <div className="text-lg line-through text-gray-400">
-                ${product?.old_price}
-              </div>
-              <div className="text-2xl font-bold text-pink-400 drop-shadow">
-                ${product?.new_price}
-              </div>
-            </div>
-            <div className="text-white/80 mb-2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-              blandit, magna eget aliquam pulvinar. Proin sapien magna,
-              tincidunt at libero id, fringilla consectetur diam.
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-white mb-2">Select size</h2>
-              <div className="flex gap-3">
-                {["S", "M", "L", "XL", "XXL"].map((size) => (
-                  <div
-                    key={size}
-                    className="px-4 py-2 bg-white/20 text-white rounded-full font-semibold shadow hover:bg-pink-400/40 hover:text-pink-100 cursor-pointer transition-all border border-white/30"
-                  >
-                    {size}
-                  </div>
+
+        <Box sx={{ bgcolor: '#fff', borderRadius: 3, border: '1px solid rgba(15,23,42,0.07)', overflow: 'hidden', mt: 2 }}>
+          <Grid container>
+            {/* Left: Images */}
+            <Grid item xs={12} md={5} sx={{ p: { xs: 2.5, md: 4 }, bgcolor: '#fafafa', borderRight: { md: '1px solid rgba(15,23,42,0.06)' } }}>
+              {/* Thumbnail strip */}
+              <Box sx={{ display: 'flex', gap: 1.25, mb: 2.5, flexWrap: 'wrap' }}>
+                {thumbnails.map((thumb, i) => (
+                  <Box
+                    key={i}
+                    component="img"
+                    src={thumb}
+                    alt={`thumb-${i}`}
+                    onClick={() => setSelectedImg(i)}
+                    sx={{
+                      width: 60, height: 60,
+                      objectFit: 'contain',
+                      borderRadius: 2,
+                      border: selectedImg === i
+                        ? '2px solid #6366f1'
+                        : '1.5px solid rgba(15,23,42,0.1)',
+                      cursor: 'pointer',
+                      bgcolor: '#fff',
+                      p: 0.75,
+                      transition: 'all 0.15s',
+                      '&:hover': { borderColor: '#8b5cf6' },
+                    }}
+                  />
                 ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-4 mt-6">
-  <input
-    type="number"
-    min="1"
-    value={quantity}
-    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-    className="w-20 px-3 py-2 text-center border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
-  />
-  
-  <button
-    onClick={() => addToCart(product.id, quantity)}
-    className="flex-1 px-8 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-lg font-bold rounded-full shadow-xl hover:scale-105 hover:shadow-2xl transition-transform backdrop-blur-lg"
-  >
-    ADD TO CART
-  </button>
-</div>
-            <p className="mt-4 text-white/70">
-              <span className="font-bold text-white">Category :</span> Women,
-              T-shirt, Crop Top
-            </p>
-            <p className="text-white/70">
-              <span className="font-bold text-white">Tags :</span> Modern,
-              Latest
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+              </Box>
+
+              {/* Main image */}
+              <Box
+                sx={{
+                  bgcolor: '#fff',
+                  borderRadius: 2.5,
+                  border: '1px solid rgba(15,23,42,0.07)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: 3,
+                  aspectRatio: '1',
+                  overflow: 'hidden',
+                }}
+              >
+                <Box
+                  component="img"
+                  src={product?.image}
+                  alt={product?.name}
+                  sx={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    transition: 'transform 0.3s ease',
+                    '&:hover': { transform: 'scale(1.04)' },
+                  }}
+                />
+              </Box>
+            </Grid>
+
+            {/* Right: Product info */}
+            <Grid item xs={12} md={7} sx={{ p: { xs: 2.5, md: 5 } }}>
+              {/* Category chip */}
+              <Chip
+                label={product?.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : 'Fashion'}
+                size="small"
+                sx={{
+                  mb: 2, bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main',
+                  fontWeight: 600, borderRadius: '8px', fontSize: '0.8rem',
+                  border: '1px solid rgba(99,102,241,0.2)',
+                }}
+              />
+
+              <Typography variant="h4" sx={{ fontWeight: 800, mb: 1.5, color: 'text.primary', lineHeight: 1.25 }}>
+                {product?.name}
+              </Typography>
+
+              {/* Rating */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5 }}>
+                <Rating value={4.5} precision={0.5} readOnly size="small" sx={{ color: '#f59e0b' }} />
+                <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>4.5</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>(122 reviews)</Typography>
+              </Box>
+
+              {/* Price */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  mb: 3,
+                  p: 2.5,
+                  bgcolor: '#f8fafc',
+                  borderRadius: 2.5,
+                  border: '1px solid rgba(15,23,42,0.07)',
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 900,
+                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  ${product?.new_price}
+                </Typography>
+                {product?.old_price && (
+                  <Typography variant="body1" sx={{ textDecoration: 'line-through', color: 'text.disabled', fontWeight: 500 }}>
+                    ${product?.old_price}
+                  </Typography>
+                )}
+                {discount > 0 && (
+                  <Chip
+                    label={`${discount}% OFF`}
+                    size="small"
+                    sx={{
+                      bgcolor: 'rgba(16,185,129,0.1)',
+                      color: '#10b981',
+                      fontWeight: 700,
+                      fontSize: '0.8rem',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(16,185,129,0.2)',
+                    }}
+                  />
+                )}
+              </Box>
+
+              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.75 }}>
+                Crafted with premium materials for everyday comfort and style. A versatile piece that effortlessly elevates any outfit — from casual outings to special occasions.
+              </Typography>
+
+              <Divider sx={{ mb: 3 }} />
+
+              {/* Size selector */}
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                    Select Size
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, cursor: 'pointer' }}>
+                    Size guide
+                  </Typography>
+                </Box>
+                <ToggleButtonGroup
+                  value={size}
+                  exclusive
+                  onChange={(e, val) => val && setSize(val)}
+                  aria-label="size"
+                  sx={{ gap: 1, flexWrap: 'wrap' }}
+                >
+                  {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((s) => (
+                    <ToggleButton
+                      key={s}
+                      value={s}
+                      sx={{ minWidth: 48, height: 40, px: 1.5, fontSize: '0.8125rem', fontWeight: 600 }}
+                    >
+                      {s}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Box>
+
+              {/* Quantity + CTA */}
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 3, flexWrap: 'wrap' }}>
+                <Box
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    border: '1.5px solid rgba(15,23,42,0.12)',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <IconButton
+                    size="small"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    sx={{
+                      borderRadius: 0, px: 1.25, py: 0.875,
+                      '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
+                    }}
+                  >
+                    <RemoveIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                  <Typography
+                    sx={{
+                      px: 2.5, minWidth: 40, textAlign: 'center',
+                      fontWeight: 700, fontSize: '0.9375rem',
+                      borderLeft: '1px solid rgba(15,23,42,0.1)',
+                      borderRight: '1px solid rgba(15,23,42,0.1)',
+                      lineHeight: '36px',
+                    }}
+                  >
+                    {quantity}
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    sx={{
+                      borderRadius: 0, px: 1.25, py: 0.875,
+                      '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
+                    }}
+                  >
+                    <AddIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </Box>
+
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<ShoppingCartIcon />}
+                  onClick={() => addToCart(product.id, quantity)}
+                  sx={{ flex: 1, minWidth: 180, borderRadius: 2.5, py: 1.375 }}
+                >
+                  Add to Cart
+                </Button>
+
+                <Tooltip title={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}>
+                  <IconButton
+                    onClick={() => setWishlisted(!wishlisted)}
+                    sx={{
+                      border: '1.5px solid rgba(15,23,42,0.12)',
+                      borderRadius: '12px',
+                      width: 46, height: 46,
+                      '&:hover': { borderColor: '#ef4444', bgcolor: 'rgba(239,68,68,0.06)' },
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {wishlisted
+                      ? <FavoriteIcon sx={{ color: '#ef4444', fontSize: 20 }} />
+                      : <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+                    }
+                  </IconButton>
+                </Tooltip>
+              </Box>
+
+              {/* Perks */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: 2,
+                  p: 2.5,
+                  bgcolor: '#f8fafc',
+                  borderRadius: 2.5,
+                  border: '1px solid rgba(15,23,42,0.07)',
+                  mb: 3,
+                }}
+              >
+                {[
+                  { icon: LocalShippingOutlinedIcon, text: 'Free Shipping' },
+                  { icon: VerifiedOutlinedIcon, text: '100% Authentic' },
+                  { icon: CachedOutlinedIcon, text: '30-Day Returns' },
+                ].map(({ icon: Icon, text }) => (
+                  <Box key={text} sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+                    <Icon sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>{text}</Typography>
+                  </Box>
+                ))}
+              </Box>
+
+              {/* Tags */}
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                {['Fashion', product?.category, 'New Arrival'].filter(Boolean).map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={tag}
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      borderRadius: '8px',
+                      fontSize: '0.75rem',
+                      height: 26,
+                      textTransform: 'capitalize',
+                      borderColor: 'rgba(15,23,42,0.1)',
+                      color: 'text.secondary',
+                    }}
+                  />
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      </Container>
+    </Box>
   );
 };
+
 export default ProductDisplay;

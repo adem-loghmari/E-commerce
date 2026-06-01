@@ -1,6 +1,36 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
+import {
+  Container,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Button,
+  Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  CircularProgress,
+  Alert,
+  Grid,
+  Divider,
+  Stack,
+} from "@mui/material";
+import {
+  ShoppingCart,
+  ExpandMore,
+  ExpandLess,
+  PaymentOutlined,
+  LocalShippingOutlined,
+  StarOutlineOutlined,
+} from "@mui/icons-material";
 
 const Orders = () => {
   const [loading, setLoading] = useState(true);
@@ -60,343 +90,262 @@ const Orders = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-4 text-lg text-gray-600">Loading your orders...</p>
-          </div>
-        </div>
-      </div>
+      <Container maxWidth="lg">
+        <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Box sx={{ textAlign: "center" }}>
+            <CircularProgress sx={{ mb: 2 }} />
+            <Typography variant="h6" color="textSecondary">
+              Loading your orders...
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-red-50 border-l-4 border-red-400 p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-red-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Container maxWidth="lg" sx={{ py: 4, mt: 3 }}>
+        <Alert severity="error">{error}</Alert>
+      </Container>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Your Orders</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            View and manage your order history
-          </p>
-        </div>
+    <Container maxWidth="lg" sx={{ py: 4, mt: 3 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
+          Your Orders
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          View and manage your order history
+        </Typography>
+      </Box>
 
-        {orders.length === 0 ? (
-          <div className="bg-white shadow rounded-lg p-8 text-center">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900">
-              No orders yet
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              You haven't placed any orders yet.
-            </p>
-            <div className="mt-6">
-              <button
-                onClick={() => navigate("/")}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Continue Shopping
-              </button>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setFilterStatus("all")}
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    filterStatus === "all"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  All Orders
-                </button>
-                <button
-                  onClick={() => setFilterStatus("processing")}
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    filterStatus === "processing"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Processing
-                </button>
-                <button
-                  onClick={() => setFilterStatus("shipped")}
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    filterStatus === "shipped"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Shipped
-                </button>
-                <button
-                  onClick={() => setFilterStatus("delivered")}
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    filterStatus === "delivered"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Delivered
-                </button>
-              </div>
-              <p className="text-sm text-gray-600">
-                {filteredOrders.length}{" "}
-                {filteredOrders.length === 1 ? "order" : "orders"} found
-              </p>
-            </div>
+      {orders.length === 0 ? (
+        <Card sx={{ textAlign: "center", p: 4 }}>
+          <ShoppingCart sx={{ fontSize: 48, color: "action.disabled", mx: "auto", mb: 2 }} />
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            No orders yet
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+            You haven't placed any orders yet.
+          </Typography>
+          <Button variant="contained" onClick={() => navigate("/")} sx={{ textTransform: "none" }}>
+            Continue Shopping
+          </Button>
+        </Card>
+      ) : (
+        <>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 3, alignItems: "center", justifyContent: "space-between" }}>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
+              {["all", "processing", "shipped", "delivered"].map((status) => (
+                <Chip
+                  key={status}
+                  label={status.charAt(0).toUpperCase() + status.slice(1)}
+                  onClick={() => setFilterStatus(status)}
+                  variant={filterStatus === status ? "filled" : "outlined"}
+                  color={filterStatus === status ? "primary" : "default"}
+                />
+              ))}
+            </Stack>
+            <Typography variant="body2" color="textSecondary">
+              {filteredOrders.length} {filteredOrders.length === 1 ? "order" : "orders"} found
+            </Typography>
+          </Stack>
 
-            <div className="space-y-4">
-              {filteredOrders.map((order) => (
-                <div key={order._id} className="bg-white shadow overflow-hidden rounded-lg">
-                  <div className="px-4 py-5 sm:px-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div className="flex items-center">
-                        <p className="text-sm font-medium text-blue-600 truncate">
-                          Order #{order.orderNumber || order.id}
-                        </p>
-                        <span
-                          className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                            order.status
-                          )}`}
-                        >
-                          {order.status.charAt(0).toUpperCase() +
-                            order.status.slice(1)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <p className="text-sm font-medium text-gray-900">
-                          ${order.total.toFixed(2)}
-                        </p>
-                        <button
-                          onClick={() => toggleOrderDetails(order._id)}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                        >
-                          {expandedOrder === order._id
-                            ? "Hide details"
-                            : "View details"}
-                        </button>
-                      </div>
-                    </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <svg
-                          className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        {formatDate(order.createdAt)}
-                      </div>
-                      <div className="flex items-center">
-                        <svg
-                          className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        {order.items?.length || 0}{" "}
-                        {order.items?.length === 1 ? "item" : "items"}
-                      </div>
-                    </div>
-                  </div>
+          <Stack spacing={2}>
+            {filteredOrders.map((order) => (
+              <Card key={order._id}>
+                <CardHeader
+                  title={
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ xs: "flex-start", sm: "center" }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "primary.main" }}>
+                        Order #{order.orderNumber || order.id}
+                      </Typography>
+                      <Chip
+                        label={order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        size="small"
+                        color={
+                          order.status === "delivered"
+                            ? "success"
+                            : order.status === "shipped"
+                            ? "warning"
+                            : order.status === "cancelled"
+                            ? "error"
+                            : "info"
+                        }
+                        variant="outlined"
+                      />
+                    </Stack>
+                  }
+                  action={
+                    <Button
+                      size="small"
+                      onClick={() => toggleOrderDetails(order._id)}
+                      endIcon={expandedOrder === order._id ? <ExpandLess /> : <ExpandMore />}
+                      sx={{ textTransform: "none" }}
+                    >
+                      {expandedOrder === order._id ? "Hide" : "View"}
+                    </Button>
+                  }
+                  sx={{ pb: 2 }}
+                />
+                <Divider />
+                <CardContent>
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="space-between">
+                    <Stack spacing={1}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                          <Typography variant="caption" color="textSecondary">
+                            📅
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            {formatDate(order.createdAt)}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Typography variant="caption" color="textSecondary">
+                          📦
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          {order.items?.length || 0} {order.items?.length === 1 ? "item" : "items"}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                      ${order.total.toFixed(2)}
+                    </Typography>
+                  </Stack>
 
                   {expandedOrder === order._id && (
-                    <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900 mb-2">Shipping Information</h3>
-                          <div className="space-y-1">
-                            <p className="text-sm text-gray-600">
-                              <span className="font-medium">Name:</span> {order.user.name}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              <span className="font-medium">Address:</span> {order.shippingAddress?.street}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              <span className="font-medium">City:</span> {order.shippingAddress?.city}, {order.shippingAddress?.zipCode}
-                            </p>
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900 mb-2">Payment Method</h3>
-                          <div className="flex items-center">
-                            <div className={`p-2 rounded-md ${
-                              order.paymentMethod === "paypal"
-                                ? "bg-blue-50"
-                                : "bg-gray-50"
-                            }`}>
-                              {order.paymentMethod === "paypal" ? (
-                                <svg
-                                  className="h-6 w-6 text-blue-500"
-                                  fill="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path d="M7.5 14.25c0-1.03.62-1.91 1.5-2.28V4.25c0-.69.56-1.25 1.25-1.25h5.5c.69 0 1.25.56 1.25 1.25v7.72c.88.37 1.5 1.25 1.5 2.28V18H7.5v-3.75z" />
-                                  <path d="M18 9.75c0-.69-.56-1.25-1.25-1.25h-1.5v1.25h1.5v1.5h-1.5v1.5h1.5v1.5h-1.5v1.5h1.5c.69 0 1.25-.56 1.25-1.25v-4.5z" />
-                                </svg>
-                              ) : (
-                                <svg
-                                  className="h-6 w-6 text-gray-500"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                                  />
-                                </svg>
-                              )}
-                            </div>
-                            <div className="ml-3">
-                              <p className="text-sm font-medium text-gray-900">
-                                {order.paymentMethod === "paypal"
-                                  ? "PayPal"
-                                  : "Credit/Debit Card"}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                {order.paymentMethod === "paypal"
-                                  ? order.paymentResult?.email || ""
-                                  : `Card ending in ${order.paymentInfo?.last4 || "••••"}`}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    <>
+                      <Divider sx={{ my: 2 }} />
+                      <Grid container spacing={3} sx={{ mt: 0 }}>
+                        <Grid item xs={12} sm={6}>
+                          <Box sx={{ mb: 2 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+                              <LocalShippingOutlined sx={{ mr: 1, fontSize: 18, verticalAlign: "middle" }} />
+                              Shipping Information
+                            </Typography>
+                            <Stack spacing={0.5}>
+                              <Typography variant="caption">
+                                <strong>Name:</strong> {order.user.name}
+                              </Typography>
+                              <Typography variant="caption">
+                                <strong>Address:</strong> {order.shippingAddress?.street}
+                              </Typography>
+                              <Typography variant="caption">
+                                <strong>City:</strong> {order.shippingAddress?.city}, {order.shippingAddress?.zipCode}
+                              </Typography>
+                            </Stack>
+                          </Box>
+                        </Grid>
 
-                      <div className="mt-6">
-                        <h3 className="text-sm font-medium text-gray-900 mb-2">Order Items</h3>
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                              <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
-                              </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                        <Grid item xs={12} sm={6}>
+                          <Box sx={{ mb: 2 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+                              <PaymentOutlined sx={{ mr: 1, fontSize: 18, verticalAlign: "middle" }} />
+                              Payment Method
+                            </Typography>
+                            <Stack direction="row" spacing={1}>
+                              <Paper sx={{ p: 1, bgcolor: order.paymentMethod === "paypal" ? "info.light" : "action.hover" }}>
+                                {order.paymentMethod === "paypal" ? "🅿️" : "💳"}
+                              </Paper>
+                              <Stack>
+                                <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                                  {order.paymentMethod === "paypal" ? "PayPal" : "Credit/Debit Card"}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                  {order.paymentMethod === "paypal"
+                                    ? order.paymentResult?.email || ""
+                                    : `Card ending in ${order.paymentInfo?.last4 || "••••"}`}
+                                </Typography>
+                              </Stack>
+                            </Stack>
+                          </Box>
+                        </Grid>
+                      </Grid>
+
+                      <Box sx={{ mt: 3 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 2 }}>
+                          Order Items
+                        </Typography>
+                        <TableContainer>
+                          <Table size="small">
+                            <TableHead sx={{ bgcolor: "action.hover" }}>
+                              <TableRow>
+                                <TableCell>Product</TableCell>
+                                <TableCell align="right">Price</TableCell>
+                                <TableCell align="center">Qty</TableCell>
+                                <TableCell align="right">Subtotal</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
                               {order.items?.map((item) => {
                                 const product = allProducts[item.productId];
                                 return (
-                                  <tr key={`${item.productId}-${order._id}`}>
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                      <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10">
-                                          <img
-                                            className="h-10 w-10 rounded object-cover"
-                                            src={product.image || "/placeholder-product.png"}
-                                            alt={product.name || "Product"}
-                                          />
-                                        </div>
-                                        <div className="ml-4">
-                                          <div className="text-sm font-medium text-gray-900">
+                                  <TableRow key={`${item.productId}-${order._id}`}>
+                                    <TableCell>
+                                      <Stack direction="row" spacing={1} alignItems="center">
+                                        <Box
+                                          component="img"
+                                          src={product.image || "/placeholder-product.png"}
+                                          alt={product.name || "Product"}
+                                          sx={{ width: 40, height: 40, borderRadius: 1, objectFit: "cover" }}
+                                        />
+                                        <Box>
+                                          <Typography variant="caption" sx={{ fontWeight: "bold", display: "block" }}>
                                             {product.name || "Unknown Product"}
-                                          </div>
-                                          <div className="text-sm text-gray-500">
+                                          </Typography>
+                                          <Typography variant="caption" color="textSecondary">
                                             {product.category || ""}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      ${product.new_price ? product.new_price.toFixed(2) : "0.00"}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      {item.quantity}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      ${(product.price * item.quantity).toFixed(2)}
-                                    </td>
-                                  </tr>
+                                          </Typography>
+                                        </Box>
+                                      </Stack>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <Typography variant="caption">
+                                        ${product.new_price ? product.new_price.toFixed(2) : "0.00"}
+                                      </Typography>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      <Typography variant="caption">{item.quantity}</Typography>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <Typography variant="caption">
+                                        ${(product.new_price * item.quantity).toFixed(2)}
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
                                 );
                               })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Box>
 
                       {order.status === "delivered" && (
-                        <div className="mt-6 flex justify-end">
-                          <button
-                            type="button"
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        <Box sx={{ mt: 3, textAlign: "right" }}>
+                          <Button
+                            variant="contained"
+                            startIcon={<StarOutlineOutlined />}
+                            sx={{ textTransform: "none" }}
                           >
                             Leave a Review
-                          </button>
-                        </div>
+                          </Button>
+                        </Box>
                       )}
-                    </div>
+                    </>
                   )}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        </>
+      )}
+    </Container>
   );
 };
 

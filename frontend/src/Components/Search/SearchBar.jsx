@@ -1,143 +1,100 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchRef = useRef(null);
   const debounceTimeout = useRef(null);
+  const navigate = useNavigate();
 
-  // Debounce and fetch suggestions
   const fetchSuggestions = async (query) => {
     if (!query || query.trim().length < 2) {
       setSearchResults([]);
       return;
     }
-
     try {
-      const res = await fetch(
-        `/api/search/suggestions?q=${encodeURIComponent(query)}`
-      );
+      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`);
       const data = await res.json();
-
-      if (data.success) {
-        setSearchResults(data.suggestions);
-        setIsSearchOpen(true);
-      } else {
-        setSearchResults([]);
-      }
-    } catch (err) {
-      console.error("Search fetch error:", err);
+      if (data.success) setSearchResults(data.suggestions || []);
+      else setSearchResults([]);
+    } catch {
       setSearchResults([]);
     }
   };
 
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    clearTimeout(debounceTimeout.current);
-    debounceTimeout.current = setTimeout(() => {
-      fetchSuggestions(query);
-    }, 300);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      console.log("Search submitted:", searchQuery);
-      // Optionally redirect to search results page here
-    }
-  };
-
-  // Close dropdown on click outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setIsSearchOpen(false);
-      }
-    };
+    clearTimeout(debounceTimeout.current);
+    debounceTimeout.current = setTimeout(() => fetchSuggestions(searchQuery), 250);
+    return () => clearTimeout(debounceTimeout.current);
+  }, [searchQuery]);
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      clearTimeout(debounceTimeout.current);
-    };
-  }, []);
   return (
-    <div className="relative flex-1 max-w-xl mx-4" ref={searchRef}>
-      {/* Search Form */}
-      <form onSubmit={handleSubmit} className="relative">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
-          placeholder="Search products..."
-          className="w-full py-2 pl-5 pr-12 rounded-full border border-gray-300 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent shadow-sm transition-all duration-200 text-gray-800 placeholder-gray-500"
-        />
-        <button
-          type="submit"
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-pink-500 focus:outline-none"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    <Box sx={{ flex: 1, maxWidth: 480 }}>
+      <Autocomplete
+        freeSolo
+        options={searchResults}
+        getOptionLabel={(option) => (typeof option === 'string' ? option : option.name || '')}
+        inputValue={searchQuery}
+        onInputChange={(event, value) => setSearchQuery(value)}
+        onChange={(event, value) => {
+          if (value && value.id) {
+            navigate(`/product/${value.id}`);
+            setSearchQuery('');
+            setSearchResults([]);
+          }
+        }}
+        renderOption={(props, option) => (
+          <Box component="li" {...props} sx={{ display: 'flex', gap: 1.5, alignItems: 'center', py: 1 }}>
+            <Avatar
+              src={option.image}
+              alt={option.name}
+              variant="rounded"
+              sx={{ width: 44, height: 44, bgcolor: '#f1f5f9' }}
             />
-          </svg>
-        </button>
-      </form>
-
-      {/* Search Results Dropdown */}
-      {isSearchOpen && (
-        <div className="absolute z-50 mt-2 w-full bg-white rounded-lg shadow-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
-          {searchResults.length > 0 ? (
-            searchResults.map((product) => (
-              <Link
-                key={product.id}
-                to={`/product/${product.id}`}
-                className="flex items-center p-3 hover:bg-gray-50 transition-colors duration-150"
-                onClick={() => {
-                  setIsSearchOpen(false);
-                  setSearchQuery("");
-                }}
-              >
-                <div className="flex-shrink-0 h-12 w-12 rounded-md overflow-hidden bg-gray-100">
-                  <img
-                    src={product.image || `${product.name}`}
-                    alt={product.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-gray-500">${product.new_price}</p>
-                  <p className="text-sm text-black">{product.category}</p>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="p-4 text-center text-gray-500">
-              {searchQuery.length > 0
-                ? "No products found"
-                : "Type to search products"}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            <Box>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                {option.name}
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                ${option.new_price} &bull; {option.category}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder="Search products..."
+            size="small"
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                bgcolor: 'rgba(15,23,42,0.04)',
+                borderRadius: '50px',
+                '& fieldset': { borderColor: 'rgba(15,23,42,0.1)' },
+                '&:hover fieldset': { borderColor: 'primary.main' },
+                '&.Mui-focused': { bgcolor: '#fff' },
+                '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: 2 },
+              },
+            }}
+          />
+        )}
+      />
+    </Box>
   );
 };
 

@@ -40,7 +40,7 @@ const Order = mongoose.model("Order", {
   },
   status: {
     type: String,
-    enum: ["pending", "completed", "shipped", "delivered", "cancelled"],
+    enum: ["pending", "processing", "shipped", "delivered", "cancelled", "completed"],
     default: "pending",
   },
   paymentMethod: {

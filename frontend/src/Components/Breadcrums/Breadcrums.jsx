@@ -1,17 +1,62 @@
-import React from 'react'
-import arrow_icon from '../Assets/breadcrum_arrow.png'
-const Breadcrums = (props) => {
-    const {product} = props;
-    return (
-      <nav className="w-full max-w-5xl mx-auto flex items-center gap-2  px-6 py-3 mt-8 mb-6 text-white text-sm font-semibold ">
-        <span className="hover:text-blue-600 cursor-pointer">HOME</span>
-        <img src={arrow_icon} alt="arrow" className="h-3 w-3 mx-1"/>
-        <span className="hover:text-blue-600 cursor-pointer">SHOP</span>
-        <img src={arrow_icon} alt="arrow" className="h-3 w-3 mx-1"/>
-        <span className="capitalize hover:text-blue-600 cursor-pointer">{product.category}</span>
-        <img src={arrow_icon} alt="arrow" className="h-3 w-3 mx-1"/>
-        <span className="text-pink-600 font-bold truncate">{product.name}</span>
-      </nav>
-    )
-}
+import React from 'react';
+import { Box, Typography, Breadcrumbs, Container } from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import HomeIcon from '@mui/icons-material/Home';
+
+const Breadcrums = ({ product }) => {
+  if (!product) return null;
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 2 }}>
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" sx={{ color: 'text.disabled', fontSize: 16 }} />}
+        aria-label="breadcrumb"
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
+            cursor: 'pointer',
+            color: 'text.secondary',
+            transition: 'color 0.15s',
+            '&:hover': { color: 'primary.main' },
+          }}
+        >
+          <HomeIcon sx={{ fontSize: 16 }} />
+          <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.8125rem' }}>Home</Typography>
+        </Box>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 600,
+            fontSize: '0.8125rem',
+            color: 'text.secondary',
+            cursor: 'pointer',
+            '&:hover': { color: 'primary.main' },
+            textTransform: 'capitalize',
+          }}
+        >
+          {product?.category || 'Shop'}
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 700,
+            fontSize: '0.8125rem',
+            color: 'primary.main',
+            maxWidth: 240,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            display: 'block',
+          }}
+        >
+          {product?.name}
+        </Typography>
+      </Breadcrumbs>
+    </Container>
+  );
+};
+
 export default Breadcrums;

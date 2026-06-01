@@ -1,436 +1,335 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 
 const ModifyOrder = () => {
   const { id: routeId } = useParams();
-  const [orderId, setOrderId] = useState(routeId || "");
+  const [orderId, setOrderId] = useState(routeId || '');
   const [order, setOrder] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [status, setStatus] = useState({ type: '', msg: '' });
   const [showProductSelector, setShowProductSelector] = useState(false);
-  const [newProductId, setNewProductId] = useState("");
+  const [newProductId, setNewProductId] = useState('');
 
   useEffect(() => {
-    const fetchAllProducts = async () => {
-      try {
-        const response = await fetch("/api/allproducts");
-        const data = await response.json();
-        setAllProducts(data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      }
-    };
-
-    fetchAllProducts();
-
-    if (routeId) {
-      handleFetch(routeId);
-    }
+    fetch('/api/allproducts').then((r) => r.json()).then(setAllProducts);
+    if (routeId) handleFetch(routeId);
   }, [routeId]);
 
   const handleFetch = async (fetchId) => {
     setLoading(true);
-    setError("");
-    setSuccess("");
+    setStatus({ type: '', msg: '' });
     setOrder(null);
     try {
       const resp = await fetch(`/api/order/${fetchId || orderId}`);
-      if (!resp.ok) throw new Error("Order not found");
+      if (!resp.ok) throw new Error('Order not found');
       const data = await resp.json();
-      // Initialize cartSnapshot as array of objects for easier manipulation
-      const cartItems = Object.entries(data.cartSnapshot).map(([id, quantity]) => ({
-        id: parseInt(id),
-        quantity
-      }));
+      const cartItems = Object.entries(data.cartSnapshot).map(([id, quantity]) => ({ id: parseInt(id), quantity }));
       setOrder({ ...data, cartItems });
     } catch (err) {
-      setError(err.message);
+      setStatus({ type: 'error', msg: err.message });
     }
     setLoading(false);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes("shippingAddress")) {
-      const field = name.split(".")[1];
-      setOrder({
-        ...order,
-        shippingAddress: {
-          ...order.shippingAddress,
-          [field]: value
-        }
-      });
+    if (name.includes('shippingAddress')) {
+      const field = name.split('.')[1];
+      setOrder({ ...order, shippingAddress: { ...order.shippingAddress, [field]: value } });
     } else {
       setOrder({ ...order, [name]: value });
     }
   };
 
-  const handleProductChange = (index, field, value) => {
-    const updatedCartItems = [...order.cartItems];
-    updatedCartItems[index] = {
-      ...updatedCartItems[index],
-      [field]: field === "id" ? parseInt(value) : parseInt(value)
-    };
-    setOrder({
-      ...order,
-      cartItems: updatedCartItems,
-      total: calculateTotal(updatedCartItems)
-    });
-  };
+  const calculateTotal = (items) =>
+    items.reduce((t, item) => t + (allProducts.find((p) => p.id === item.id)?.new_price || 0) * item.quantity, 0);
 
-  const calculateTotal = (items) => {
-    return items.reduce((total, item) => {
-      const product = allProducts.find(p => p.id === item.id);
-      return total + (product?.new_price || 0) * item.quantity;
-    }, 0);
+  const handleProductChange = (index, field, value) => {
+    const updated = [...order.cartItems];
+    updated[index] = { ...updated[index], [field]: parseInt(value) };
+    setOrder({ ...order, cartItems: updated, total: calculateTotal(updated) });
   };
 
   const addProduct = (productId) => {
     if (!productId) return;
-    const existingItemIndex = order.cartItems.findIndex(item => item.id === parseInt(productId));
-    
-    if (existingItemIndex >= 0) {
-      // Increase quantity if product already exists
-      const updatedItems = [...order.cartItems];
-      updatedItems[existingItemIndex].quantity += 1;
-      setOrder({
-        ...order,
-        cartItems: updatedItems,
-        total: calculateTotal(updatedItems)
-      });
+    const existing = order.cartItems.findIndex((i) => i.id === parseInt(productId));
+    let updated;
+    if (existing >= 0) {
+      updated = [...order.cartItems];
+      updated[existing].quantity += 1;
     } else {
-      // Add new product
-      const newItem = { id: parseInt(productId), quantity: 1 };
-      setOrder({
-        ...order,
-        cartItems: [...order.cartItems, newItem],
-        total: calculateTotal([...order.cartItems, newItem])
-      });
+      updated = [...order.cartItems, { id: parseInt(productId), quantity: 1 }];
     }
-    setNewProductId("");
+    setOrder({ ...order, cartItems: updated, total: calculateTotal(updated) });
+    setNewProductId('');
     setShowProductSelector(false);
   };
 
   const removeProduct = (index) => {
-    const updatedItems = order.cartItems.filter((_, i) => i !== index);
-    setOrder({
-      ...order,
-      cartItems: updatedItems,
-      total: calculateTotal(updatedItems)
-    });
+    const updated = order.cartItems.filter((_, i) => i !== index);
+    setOrder({ ...order, cartItems: updated, total: calculateTotal(updated) });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    setSuccess("");
-
+    setStatus({ type: '', msg: '' });
     try {
-      // Convert cartItems back to cartSnapshot format
-      const cartSnapshot = order.cartItems.reduce((acc, item) => {
-        acc[item.id] = item.quantity;
-        return acc;
-      }, {});
-
-      const orderToUpdate = {
-        ...order,
-        cartSnapshot
-      };
-
-      const response = await fetch("/api/modifyOrder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderToUpdate),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setSuccess("Order updated successfully");
-      } else {
-        setError(data.message || "Update failed");
-      }
-    } catch (err) {
-      setError("Network error. Please try again.");
+      const cartSnapshot = order.cartItems.reduce((acc, item) => { acc[item.id] = item.quantity; return acc; }, {});
+      const data = await fetch('/api/modifyOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...order, cartSnapshot }),
+      }).then((r) => r.json());
+      setStatus(data.success ? { type: 'success', msg: 'Order updated successfully!' } : { type: 'error', msg: data.message || 'Update failed.' });
+    } catch {
+      setStatus({ type: 'error', msg: 'Network error. Please try again.' });
     }
     setLoading(false);
   };
 
-  const getProductDetails = (productId) => {
-    return allProducts.find(p => p.id === productId) || {};
-  };
+  const getProduct = (id) => allProducts.find((p) => p.id === id) || {};
 
   return (
-    <div className="fixed inset-0 z-0 bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 flex flex-col items-center justify-center pt-24 overflow-auto">
-      <div className="w-full max-w-4xl bg-gradient-to-br from-gray-800 via-gray-900 to-blue-950 rounded-2xl shadow-2xl p-6 border border-blue-700 max-h-[calc(100vh-7rem)] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-6 text-white tracking-wide text-center">
-          Modify Order
-        </h2>
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>Modify Order</Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>Look up an order by ID and edit its details.</Typography>
+      </Box>
 
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="Enter Order ID"
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
-            className="flex-1 px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-          />
-          <button
-            onClick={() => {
-              if (orderId && orderId !== routeId) {
-                window.location.href = `/modifyorder/${orderId}`;
-              } else {
-                handleFetch();
-              }
-            }}
-            disabled={!orderId || loading}
-            className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 disabled:opacity-50"
-          >
-            Fetch
-          </button>
-        </div>
+      <Card>
+        <CardContent sx={{ p: 3 }}>
+          {/* ID search */}
+          <Box sx={{ display: 'flex', gap: 1.5, mb: 3 }}>
+            <TextField
+              value={orderId} onChange={(e) => setOrderId(e.target.value)}
+              placeholder="Enter Order ID" size="small" fullWidth
+              onKeyDown={(e) => e.key === 'Enter' && handleFetch()}
+              InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: 'text.disabled' }} /></InputAdornment> }}
+            />
+            <Button
+              variant="contained"
+              onClick={() => { if (orderId && orderId !== routeId) window.location.href = `/modifyorder/${orderId}`; else handleFetch(); }}
+              disabled={!orderId || loading}
+              sx={{ borderRadius: 2, px: 2.5, flexShrink: 0 }}
+            >
+              Fetch
+            </Button>
+          </Box>
 
-        {error && <div className="text-red-400 mb-4 text-center">{error}</div>}
-        {success && <div className="text-green-400 mb-4 text-center">{success}</div>}
-        {loading && <div className="text-blue-300 mb-4 text-center">Loading...</div>}
+          {loading && <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress size={28} /></Box>}
 
-        {order && (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Order Details Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-800/50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-blue-300 mb-3">Order Details</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-blue-200 mb-1">Order ID</label>
-                    <input
-                      value={order.id}
-                      readOnly
-                      className="w-full px-3 py-2 rounded bg-gray-700 text-gray-300 border border-gray-600"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-blue-200 mb-1">Customer</label>
-                    <input
-                      name="user_name"
-                      value={order.user_name}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-blue-200 mb-1">Order Date</label>
-                    <input
-                      value={new Date(order.createdAt).toLocaleString()}
-                      readOnly
-                      className="w-full px-3 py-2 rounded bg-gray-700 text-gray-300 border border-gray-600"
-                    />
-                  </div>
-                </div>
-              </div>
+          {status.msg && !loading && (
+            <Alert severity={status.type} sx={{ mb: 2.5, borderRadius: 2 }}>{status.msg}</Alert>
+          )}
 
-              {/* Shipping Information Section */}
-              <div className="bg-gray-800/50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-blue-300 mb-3">Shipping Information</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-blue-200 mb-1">Address</label>
-                    <input
-                      name="shippingAddress.street"
-                      value={order.shippingAddress.street}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-blue-200 mb-1">City</label>
-                      <input
-                        name="shippingAddress.city"
-                        value={order.shippingAddress.city}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-blue-200 mb-1">ZIP</label>
-                      <input
-                        name="shippingAddress.zipCode"
-                        value={order.shippingAddress.zipCode}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {order && !loading && (
+            <Box component="form" onSubmit={handleSubmit}>
+              <Grid container spacing={2.5}>
+                {/* Order details */}
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.light', fontSize: '0.9375rem' }}>
+                      Order Details
+                    </Typography>
+                    <Stack spacing={1.75}>
+                      <TextField label="Order ID" value={order.id} InputProps={{ readOnly: true }} size="small" fullWidth />
+                      <TextField label="Customer Name" name="user_name" value={order.user_name || ''} onChange={handleChange} size="small" fullWidth />
+                      <TextField label="Order Date" value={new Date(order.createdAt).toLocaleString()} InputProps={{ readOnly: true }} size="small" fullWidth />
+                    </Stack>
+                  </Box>
+                </Grid>
 
-            {/* Order Status Section */}
-            <div className="bg-gray-800/50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-blue-300 mb-3">Order Status</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-blue-200 mb-1">Status</label>
-                  <select
-                    value={order.status}
-                    onChange={handleChange}
-                    name="status"
-                    className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-blue-200 mb-1">Payment Method</label>
-                  <select
-                    name="paymentMethod"
-                    value={order.paymentMethod}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                  >
-                    <option value="credit_card">Credit Card</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="bank_transfer">Bank Transfer</option>
-                    <option value="cash_on_delivery">Cash on Delivery</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+                {/* Shipping */}
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.light', fontSize: '0.9375rem' }}>
+                      Shipping Information
+                    </Typography>
+                    <Stack spacing={1.75}>
+                      <TextField label="Street Address" name="shippingAddress.street" value={order.shippingAddress?.street || ''} onChange={handleChange} size="small" fullWidth />
+                      <Grid container spacing={1.5}>
+                        <Grid item xs={7}>
+                          <TextField label="City" name="shippingAddress.city" value={order.shippingAddress?.city || ''} onChange={handleChange} size="small" fullWidth />
+                        </Grid>
+                        <Grid item xs={5}>
+                          <TextField label="ZIP" name="shippingAddress.zipCode" value={order.shippingAddress?.zipCode || ''} onChange={handleChange} size="small" fullWidth />
+                        </Grid>
+                      </Grid>
+                    </Stack>
+                  </Box>
+                </Grid>
 
-            {/* Order Items Section */}
-            <div className="bg-gray-800/50 p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-semibold text-blue-300">Order Items</h3>
-                <button
-                  type="button"
-                  onClick={() => setShowProductSelector(!showProductSelector)}
-                  className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-sm text-white"
+                {/* Status & payment */}
+                <Grid item xs={12}>
+                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.light', fontSize: '0.9375rem' }}>
+                      Order Status
+                    </Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel>Status</InputLabel>
+                          <Select name="status" value={order.status || ''} label="Status" onChange={handleChange}>
+                            {['pending','processing','shipped','delivered','cancelled'].map((s) => (
+                              <MenuItem key={s} value={s} sx={{ textTransform: 'capitalize' }}>{s}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel>Payment Method</InputLabel>
+                          <Select name="paymentMethod" value={order.paymentMethod || ''} label="Payment Method" onChange={handleChange}>
+                            <MenuItem value="cash">Cash on Delivery</MenuItem>
+                            <MenuItem value="card">Credit / Debit Card</MenuItem>
+                            <MenuItem value="paypal">PayPal</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
+
+                {/* Order items */}
+                <Grid item xs={12}>
+                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.light', fontSize: '0.9375rem' }}>
+                        Order Items
+                      </Typography>
+                      <Button
+                        size="small"
+                        variant={showProductSelector ? 'outlined' : 'contained'}
+                        color={showProductSelector ? 'inherit' : 'primary'}
+                        startIcon={<AddIcon />}
+                        onClick={() => setShowProductSelector(!showProductSelector)}
+                        sx={{ borderRadius: 2 }}
+                      >
+                        {showProductSelector ? 'Cancel' : 'Add Item'}
+                      </Button>
+                    </Box>
+
+                    {showProductSelector && (
+                      <Box sx={{ mb: 2.5, p: 2, bgcolor: 'rgba(99,102,241,0.06)', borderRadius: 2, border: '1px solid rgba(99,102,241,0.15)' }}>
+                        <Box sx={{ display: 'flex', gap: 1.5 }}>
+                          <FormControl fullWidth size="small">
+                            <InputLabel>Select Product</InputLabel>
+                            <Select value={newProductId} label="Select Product" onChange={(e) => setNewProductId(e.target.value)}>
+                              <MenuItem value="">— Select —</MenuItem>
+                              {allProducts.map((p) => (
+                                <MenuItem key={p.id} value={p.id}>{p.name} (${p.new_price})</MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          <Button variant="contained" disabled={!newProductId} onClick={() => addProduct(newProductId)} sx={{ borderRadius: 2, flexShrink: 0 }}>
+                            Add
+                          </Button>
+                        </Box>
+                      </Box>
+                    )}
+
+                    <Stack spacing={1.5}>
+                      {order.cartItems.map((item, index) => {
+                        const product = getProduct(item.id);
+                        return (
+                          <Box
+                            key={`${item.id}-${index}`}
+                            sx={{
+                              display: 'grid',
+                              gridTemplateColumns: '44px 1fr 120px 80px 36px',
+                              gap: 1.5,
+                              alignItems: 'center',
+                              p: 1.5,
+                              bgcolor: 'rgba(15,23,42,0.4)',
+                              borderRadius: 2,
+                              border: '1px solid rgba(248,250,252,0.06)',
+                            }}
+                          >
+                            <Avatar
+                              src={product.image}
+                              variant="rounded"
+                              sx={{ width: 40, height: 40, bgcolor: 'rgba(15,23,42,0.5)' }}
+                            />
+                            <FormControl size="small" fullWidth>
+                              <Select value={item.id} onChange={(e) => handleProductChange(index, 'id', e.target.value)}>
+                                {allProducts.map((p) => (
+                                  <MenuItem key={p.id} value={p.id} sx={{ fontSize: '0.8125rem' }}>{p.name}</MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <TextField
+                              type="number" size="small"
+                              label="Qty" inputProps={{ min: 1 }}
+                              value={item.quantity}
+                              onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
+                            />
+                            <Typography variant="body2" sx={{ fontWeight: 700, color: 'warning.light', textAlign: 'right' }}>
+                              ${product.new_price ? (product.new_price * item.quantity).toFixed(2) : '0.00'}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              onClick={() => removeProduct(index)}
+                              sx={{ color: 'error.light', bgcolor: 'rgba(239,68,68,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(239,68,68,0.2)' } }}
+                            >
+                              <DeleteOutlineIcon sx={{ fontSize: 16 }} />
+                            </IconButton>
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+
+                    <Divider sx={{ mt: 2, mb: 1.5 }} />
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>Order Total:</Typography>
+                      <Typography variant="h6" sx={{ fontWeight: 800, color: 'success.light' }}>
+                        ${order.total.toFixed(2)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 3 }}>
+                <Button variant="outlined" onClick={() => window.location.reload()} sx={{ borderRadius: 2 }}>Cancel</Button>
+                <Button
+                  type="submit" variant="contained" color="success"
+                  disabled={loading}
+                  startIcon={loading ? <CircularProgress size={16} sx={{ color: 'rgba(255,255,255,0.8)' }} /> : <SaveOutlinedIcon />}
+                  sx={{ borderRadius: 2 }}
                 >
-                  {showProductSelector ? "Cancel" : "Add Product"}
-                </button>
-              </div>
-
-              {showProductSelector && (
-                <div className="mb-4 p-3 bg-gray-700 rounded-lg">
-                  <div className="flex gap-2">
-                    <select
-                      value={newProductId}
-                      onChange={(e) => setNewProductId(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded bg-gray-800 text-white border border-blue-700"
-                    >
-                      <option value="">Select a product</option>
-                      {allProducts.map(product => (
-                        <option key={product.id} value={product.id}>
-                          {product.name} (${product.new_price})
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => addProduct(newProductId)}
-                      disabled={!newProductId}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-white disabled:opacity-50"
-                    >
-                      Add
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-3">
-                {order.cartItems.map((item, index) => {
-                  const product = getProductDetails(item.id);
-                  return (
-                    <div key={`${item.id}-${index}`} className="grid grid-cols-12 gap-2 items-center p-2 bg-gray-700/50 rounded">
-                      <div className="col-span-1">
-                        <img
-                          src={product.image || ""}
-                          alt="Product"
-                          className="w-12 h-12 object-cover rounded"
-                        />
-                      </div>
-                      <div className="col-span-4">
-                        <select
-                          value={item.id}
-                          onChange={(e) => handleProductChange(index, "id", e.target.value)}
-                          className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-blue-700 text-sm"
-                        >
-                          {allProducts.map(p => (
-                            <option key={p.id} value={p.id}>
-                              {p.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="col-span-3">
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleProductChange(index, "quantity", e.target.value)}
-                          className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-blue-700"
-                        />
-                      </div>
-                      <div className="col-span-2 text-right text-yellow-300">
-                        ${product.new_price ? (product.new_price * item.quantity).toFixed(2) : "0.00"}
-                      </div>
-                      <div className="col-span-2 text-right">
-                        <button
-                          type="button"
-                          onClick={() => removeProduct(index)}
-                          className="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-white text-sm"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-4 flex justify-between items-center">
-                <button
-                  type="button"
-                  onClick={() => setShowProductSelector(!showProductSelector)}
-                  className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-sm text-white"
-                >
-                  {showProductSelector ? "Cancel" : "Add Product"}
-                </button>
-                <div className="text-xl font-semibold text-green-300">
-                  Total: ${order.total.toFixed(2)}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4">
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white disabled:opacity-50"
-              >
-                {loading ? "Saving..." : "Save Changes"}
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
+                  {loading ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

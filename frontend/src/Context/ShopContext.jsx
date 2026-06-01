@@ -2,21 +2,9 @@ import React, { createContext, useEffect, useState } from "react";
 export const ShopContext = createContext(null);
 
 const getDefaultCart = () => {
-  let num_products = 0; // Initialize num_products
-  fetch("/api/getTotalProducts")
-    .then((resp) => {
-      if (!resp.ok) throw new Error("Request failed");
-      return resp.json();
-    })
-    .then((data) => {
-      num_products = data.total; // Fix: Access .total property
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      num_products = 300; // Fallback
-    });
   let cartItems = {};
-  for (let i = 0; i < num_products + 1; i++) {
+  // Initialize with enough slots for products (safely initialize all)
+  for (let i = 0; i < 300; i++) {
     cartItems[i] = 0;
   }
   return cartItems;
@@ -56,8 +44,11 @@ const ShopContextProvider = (props) => {
         .then((data) => setOrders(data));
     }
   }, []);
-  const addToCart = (itemId , count = 1) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + count }));
+  const addToCart = (itemId, count = 1) => {
+    setCartItems((prev) => ({
+      ...prev,
+      [itemId]: (prev[itemId] || 0) + count, // Default to 0 if undefined
+    }));
     if (localStorage.getItem("auth-token")) {
       fetch("/api/addtocart", {
         method: "POST",
@@ -73,7 +64,10 @@ const ShopContextProvider = (props) => {
     }
   };
   const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+    setCartItems((prev) => ({
+      ...prev,
+      [itemId]: Math.max(0, (prev[itemId] || 0) - 1), // Ensure it doesn't go negative
+    }));
     if (localStorage.getItem("auth-token")) {
       fetch("/api/removefromcart", {
         method: "POST",

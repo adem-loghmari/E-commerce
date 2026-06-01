@@ -1,353 +1,370 @@
-import React, { useContext, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Badge from '@mui/material/Badge';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import MenuIcon from '@mui/icons-material/Menu';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CloseIcon from '@mui/icons-material/Close';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
-import logo from "../Assets/logo.png";
-import cart_icon from "../Assets/cart_icon.png";
-
-import { Link } from "react-router-dom";
-import { ShopContext } from "../../Context/ShopContext";
-import SearchBar from "../Search/SearchBar";
+import logo from '../Assets/logo.png';
+import { ShopContext } from '../../Context/ShopContext';
+import SearchBar from '../Search/SearchBar';
 
 const Navbar = () => {
   const location = useLocation();
-  const path = location.pathname;
-  const initialMenu =
-    path === "/"
-      ? "shop"
-      : path === "/mens"
-      ? "mens"
-      : path === "/womens"
-      ? "womens"
-      : path === "/kids"
-      ? "kids"
-      : path === "/login"
-      ? "login"
-      : path === "/cart"
-      ? "cart"
-      : path === "/profile"
-      ? "profile"
-      : "shop";
-  const [menu, setMenu] = useState(initialMenu);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { getTotalCartItems } = useContext(ShopContext);
-  const menuRef = useRef();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const dropdown_toggle = () => {
-    setMobileOpen((prev) => !prev);
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
   };
 
-  return (
-    <nav className="w-full bg-gradient-to-r from-gray-900 via-blue-900 to-gray-800 shadow-2xl fixed top-0 left-0 z-50 font-sans">
-      <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 py-4 relative">
-        <Link
-          onClick={() => setMenu("shop")}
-          className="flex items-center gap-3 text-white hover:text-pink-400 transition-colors duration-200"
-          to="/"
-        >
-          <img
-            src={logo}
-            alt="logo"
-            className="h-12 w-12 object-contain rounded-full shadow-lg border-2 border-pink-400"
-          />
-          <span className="text-3xl font-extrabold tracking-widest drop-shadow-lg">
-            SHOPPER
-          </span>
-        </Link>
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-        <div className="flex items-center md:hidden z-50">
-          <button
-            onClick={dropdown_toggle}
-            className="inline-flex items-center justify-center p-3 rounded-full text-pink-400 bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300"
-            aria-label="Open menu"
-            type="button"
-          >
-            {/* Animated Hamburger/Close Icon - Tailwind only, always centered */}
-            <span className="relative w-8 h-8 flex items-center justify-center">
-              <span
-                className={`absolute w-6 h-1 bg-pink-400 rounded transition-all duration-300 ${
-                  mobileOpen ? "rotate-45 top-4" : "top-2"
-                }`}
-              ></span>
-              <span
-                className={`absolute w-6 h-1 bg-pink-400 rounded transition-all duration-300 ${
-                  mobileOpen ? "opacity-0" : "top-4"
-                }`}
-              ></span>
-              <span
-                className={`absolute w-6 h-1 bg-pink-400 rounded transition-all duration-300 ${
-                  mobileOpen ? "-rotate-45 top-4" : "top-6"
-                }`}
-              ></span>
-            </span>
-          </button>
-        </div>
-        {/* Desktop Menu */}
-        <ul
-          ref={menuRef}
-          className={`hidden md:flex gap-6 items-center text-lg font-semibold nav-menu`}
+  const navLinks = [
+    { label: 'Shop', to: '/' },
+    { label: 'Men', to: '/mens' },
+    { label: 'Women', to: '/womens' },
+    { label: 'Kids', to: '/kids' },
+  ];
+
+  const username = localStorage.getItem('user-name');
+  const isLoggedIn = Boolean(localStorage.getItem('auth-token'));
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth-token');
+    localStorage.removeItem('user-name');
+    window.location.replace('/');
+  };
+
+  const drawer = (
+    <Box sx={{ width: 300, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 2.5, pb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+          <img src={logo} alt="logo" style={{ height: 34, borderRadius: 8 }} />
+          <Typography variant="h6" sx={{
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            SHOPPER
+          </Typography>
+        </Box>
+        <IconButton onClick={() => setMobileOpen(false)} size="small" sx={{ color: 'text.secondary' }}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
+      <Divider />
+
+      <Box sx={{ px: 2, py: 2 }}>
+        <SearchBar />
+      </Box>
+
+      <Divider />
+
+      <List sx={{ px: 1.5, py: 1.5, flex: 1 }}>
+        {navLinks.map((item) => (
+          <ListItem key={item.to} disablePadding sx={{ mb: 0.5 }}>
+            <ListItemButton
+              component={Link}
+              to={item.to}
+              onClick={() => setMobileOpen(false)}
+              sx={{
+                borderRadius: 2,
+                bgcolor: isActive(item.to) ? 'rgba(99,102,241,0.08)' : 'transparent',
+                color: isActive(item.to) ? 'primary.main' : 'text.primary',
+                '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
+              }}
+            >
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontWeight: isActive(item.to) ? 700 : 500, fontSize: '0.9375rem' }}
+              />
+              {isActive(item.to) && (
+                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'primary.main' }} />
+              )}
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+
+      <Divider />
+
+      <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+        <Button
+          component={Link}
+          to="/cart"
+          startIcon={<ShoppingCartIcon />}
+          variant="contained"
+          fullWidth
+          onClick={() => setMobileOpen(false)}
+          sx={{ borderRadius: 2.5 }}
         >
-          <li>
-            <SearchBar />
-          </li>
-          <li>
-            <Link
-              className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
-                menu === "shop"
-                  ? "bg-pink-400/30 text-pink-400 shadow-lg"
-                  : "text-white/90"
-              }`}
-              to="/"
-              onClick={() => setMenu("shop")}
+          Cart ({getTotalCartItems()})
+        </Button>
+
+        {isLoggedIn ? (
+          <>
+            <Button
+              component={Link}
+              to="/orders"
+              startIcon={<ReceiptLongIcon />}
+              variant="outlined"
+              fullWidth
+              onClick={() => setMobileOpen(false)}
+              sx={{ borderRadius: 2.5 }}
             >
-              Shop
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
-                menu === "mens"
-                  ? "bg-pink-400/30 text-pink-400 shadow-lg"
-                  : "text-white/90"
-              }`}
-              to="/mens"
-              onClick={() => setMenu("mens")}
+              My Orders
+            </Button>
+            <Button
+              component={Link}
+              to="/profile"
+              startIcon={<PersonIcon />}
+              variant="outlined"
+              fullWidth
+              onClick={() => setMobileOpen(false)}
+              sx={{ borderRadius: 2.5 }}
             >
-              Men
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
-                menu === "womens"
-                  ? "bg-pink-400/30 text-pink-400 shadow-lg"
-                  : "text-white/90"
-              }`}
-              to="/womens"
-              onClick={() => setMenu("womens")}
+              {username?.split(' ')[0] || 'Profile'}
+            </Button>
+            <Button
+              onClick={handleLogout}
+              startIcon={<LogoutIcon />}
+              variant="outlined"
+              color="error"
+              fullWidth
+              sx={{ borderRadius: 2.5 }}
             >
-              Women
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
-                menu === "kids"
-                  ? "bg-pink-400/30 text-pink-400 shadow-lg"
-                  : "text-white/90"
-              }`}
-              to="/kids"
-              onClick={() => setMenu("kids")}
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Button
+            component={Link}
+            to="/login"
+            variant="outlined"
+            fullWidth
+            onClick={() => setMobileOpen(false)}
+            sx={{ borderRadius: 2.5 }}
+          >
+            Sign In
+          </Button>
+        )}
+      </Box>
+    </Box>
+  );
+
+  return (
+    <AppBar
+      position="fixed"
+      elevation={0}
+      sx={{
+        bgcolor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.88)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        transition: 'all 0.3s ease',
+        borderBottom: `1px solid ${scrolled ? 'rgba(15,23,42,0.08)' : 'rgba(15,23,42,0.04)'}`,
+        boxShadow: scrolled ? '0 4px 24px rgba(15,23,42,0.06)' : 'none',
+      }}
+    >
+      <Toolbar sx={{ px: { xs: 2, md: 4 }, gap: 2, minHeight: '70px !important' }}>
+        {/* Logo */}
+        <Box
+          component={Link}
+          to="/"
+          sx={{ display: 'flex', alignItems: 'center', gap: 1.25, textDecoration: 'none', flexShrink: 0 }}
+        >
+          <img src={logo} alt="logo" style={{ height: 36, borderRadius: 8 }} />
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              display: { xs: 'none', sm: 'block' },
+            }}
+          >
+            SHOPPER
+          </Typography>
+        </Box>
+
+        {/* Desktop Nav Links */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5 }}>
+          {navLinks.map((link) => (
+            <Button
+              key={link.to}
+              component={Link}
+              to={link.to}
+              disableRipple={false}
+              sx={{
+                color: isActive(link.to) ? 'primary.main' : 'text.secondary',
+                fontWeight: isActive(link.to) ? 700 : 500,
+                px: 1.75,
+                py: 0.75,
+                fontSize: '0.9375rem',
+                position: 'relative',
+                bgcolor: 'transparent',
+                background: 'transparent',
+                boxShadow: 'none !important',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 2,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: isActive(link.to) ? '55%' : '0%',
+                  height: '2px',
+                  borderRadius: 1,
+                  background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+                  transition: 'width 0.25s ease',
+                },
+                '&:hover': {
+                  color: 'primary.main',
+                  bgcolor: 'transparent',
+                  background: 'transparent',
+                  '&::after': { width: '55%' },
+                },
+                '&:hover.MuiButton-root': { transform: 'none' },
+              }}
             >
-              Kids
-            </Link>
-          </li>
-        </ul>
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-6 nav-login-cart">
-          {localStorage.getItem("auth-token") ? (
+              {link.label}
+            </Button>
+          ))}
+        </Box>
+
+        {/* Search — grows to fill space */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, flex: 1, maxWidth: 420, mx: 'auto' }}>
+          <SearchBar />
+        </Box>
+
+        {/* Right actions */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto', flexShrink: 0 }}>
+          {isLoggedIn ? (
             <>
-              <button
-                onClick={() => {
-                  localStorage.removeItem("auth-token");
-                  localStorage.removeItem("user-name");
-                  window.location.replace("/");
-                }}
-                className="px-7 py-2 rounded-full bg-white/30 border border-pink-400 text-pink-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-pink-100/60 hover:text-pink-700 hover:border-pink-400 transition-all duration-200"
-                style={{
-                  background: "rgba(255,255,255,0.3)",
-                  borderColor: "#f472b6",
-                  color: "#db2777",
+              <Tooltip title={username || 'Profile'}>
+                <IconButton
+                  component={Link}
+                  to="/profile"
+                  sx={{ display: { xs: 'none', md: 'flex' }, p: 0.5 }}
+                >
+                  <Avatar
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                      fontSize: '0.875rem',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {(username?.[0] || 'U').toUpperCase()}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+              <Button
+                variant="text"
+                size="small"
+                onClick={handleLogout}
+                sx={{
+                  display: { xs: 'none', md: 'flex' },
+                  color: 'text.secondary',
+                  fontSize: '0.8125rem',
+                  fontWeight: 500,
+                  px: 1.5,
+                  background: 'transparent',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    color: 'error.main',
+                    background: 'rgba(239,68,68,0.06)',
+                    transform: 'none',
+                    boxShadow: 'none',
+                  },
                 }}
               >
                 Logout
-              </button>
-              <Link
-                className={`px-5 py-2 rounded-full hover:bg-pink-400/20 hover:text-pink-400 transition backdrop-blur-md ${
-                  menu === "profile"
-                    ? "bg-pink-400/30 text-pink-400 shadow-lg"
-                    : "text-white/90"
-                }`}
-                to="/profile"
-                onClick={() => setMenu("profile")}
-              >
-                {localStorage.getItem("user-name").split(" ")[0] || "User"}
-              </Link>
+              </Button>
             </>
           ) : (
-            <Link to="/login" onClick={() => setMenu("login")}>
-              <button
-                className="px-7 py-2 rounded-full bg-white/30 border border-blue-400 text-blue-600 font-medium text-lg shadow-md backdrop-blur-md hover:bg-blue-100/60 hover:text-blue-700 hover:border-blue-400 transition-all duration-200"
-                style={{
-                  background: "rgba(255,255,255,0.3)",
-                  borderColor: "white",
-                  color: "white",
-                }}
-              >
-                Login
-              </button>
-            </Link>
-          )}
-          <Link
-            to="/cart"
-            className="relative group flex-shrink-0"
-            onClick={() => setMenu("cart")}
-          >
-            <div className="bg-white/30 backdrop-blur-md rounded-full p-3 shadow-xl hover:scale-110 transition-transform">
-              <img src={cart_icon} alt="cart icon" className="h-8 w-8" />
-              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow group-hover:scale-110 transition-transform">
-                {getTotalCartItems()}
-              </span>
-            </div>
-          </Link>
-        </div>
-        {/* Mobile Menu Overlay */}
-        <div
-          className={`fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity duration-300 ${
-            mobileOpen
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
-          onClick={() => setMobileOpen(false)}
-        ></div>
-        {/* Mobile Menu - Full Page Sidebar */}
-        <div
-          className={`fixed top-0 left-0 h-full w-full md:hidden z-50 transition-transform duration-300 ${
-            mobileOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          <div className="relative h-full w-full bg-gradient-to-br from-gray-950 via-blue-950 to-gray-900 flex flex-col">
-            {/* Close Icon */}
-            <button
-              onClick={dropdown_toggle}
-              className="absolute top-6 right-6 z-50 p-2 rounded-full text-pink-400 bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300"
-              aria-label="Close menu"
-              type="button"
+            <Button
+              component={Link}
+              to="/login"
+              variant="contained"
+              size="small"
+              sx={{ display: { xs: 'none', md: 'flex' }, px: 2.5, py: 0.875, borderRadius: 2.5 }}
             >
-              <span className="block w-8 h-8 relative">
-                <span className="absolute w-8 h-1 bg-pink-400 rounded rotate-45 top-4 left-0 transition-all duration-300"></span>
-                <span className="absolute w-8 h-1 bg-pink-400 rounded -rotate-45 top-4 left-0 transition-all duration-300"></span>
-              </span>
-            </button>
-            <nav className="flex flex-col h-full pt-24 pb-10 px-8 gap-2">
-              <ul className="flex flex-col gap-2 w-full text-lg font-bold">
-                <li>
-                  <Link
-                    className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
-                      menu === "shop"
-                        ? "bg-pink-500/20 text-pink-300 shadow"
-                        : "text-white"
-                    }`}
-                    to="/"
-                    onClick={() => {
-                      setMenu("shop");
-                      setMobileOpen(false);
-                    }}
-                  >
-                    Shop
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
-                      menu === "mens"
-                        ? "bg-pink-500/20 text-pink-300 shadow"
-                        : "text-white"
-                    }`}
-                    to="/mens"
-                    onClick={() => {
-                      setMenu("mens");
-                      setMobileOpen(false);
-                    }}
-                  >
-                    Men
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
-                      menu === "womens"
-                        ? "bg-pink-500/20 text-pink-300 shadow"
-                        : "text-white"
-                    }`}
-                    to="/womens"
-                    onClick={() => {
-                      setMenu("womens");
-                      setMobileOpen(false);
-                    }}
-                  >
-                    Women
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
-                      menu === "kids"
-                        ? "bg-pink-500/20 text-pink-300 shadow"
-                        : "text-white"
-                    }`}
-                    to="/kids"
-                    onClick={() => {
-                      setMenu("kids");
-                      setMobileOpen(false);
-                    }}
-                  >
-                    Kids
-                  </Link>
-                </li>
-                <li>
-                  <SearchBar />
-                </li>
-              </ul>
-              <div className="flex flex-col gap-2 w-full mt-8">
-                {localStorage.getItem("auth-token") ? (
-                  <>
-                    <Link
-                      to="/profile"
-                      onClick={() => setMenu("profile")}
-                      className={`block px-4 py-4 rounded-lg transition-all duration-200 hover:bg-pink-500/10 hover:text-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-300/40 ${
-                        menu === "profile"
-                          ? "bg-pink-500/20 text-pink-300 shadow"
-                          : "text-white"
-                      }`}
-                    >
-                      {localStorage.getItem("user-name").split(" ")[0] ||
-                        "User"}
-                    </Link>
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem("auth-token");
-                        localStorage.removeItem("user-name");
-                        window.location.replace("/");
-                        setMobileOpen(false);
-                      }}
-                      className="block w-full px-4 py-4 rounded-lg bg-pink-600 text-white font-bold text-lg shadow hover:bg-pink-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link to="/login" className="block w-full">
-                    <button className="block w-full px-4 py-4 rounded-lg bg-blue-600 text-white font-bold text-lg shadow hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                      Login
-                    </button>
-                  </Link>
-                )}
-                <Link to="/cart" className="block w-full">
-                  <div className="relative bg-gray-800 rounded-lg p-4 shadow border border-pink-700 flex items-center gap-4 hover:bg-pink-900/20 transition">
-                    <img src={cart_icon} alt="cart icon" className="h-8 w-8" />
-                    <span className="bg-pink-500 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow">
-                      {getTotalCartItems()}
-                    </span>
-                    <span className="text-white font-semibold">Cart</span>
-                  </div>
-                </Link>
-              </div>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </nav>
+              Sign In
+            </Button>
+          )}
+
+          <IconButton
+            component={Link}
+            to="/cart"
+            sx={{
+              color: 'text.primary',
+              bgcolor: 'rgba(15,23,42,0.04)',
+              borderRadius: '12px',
+              width: 40,
+              height: 40,
+              '&:hover': { bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main' },
+              transition: 'all 0.2s',
+            }}
+          >
+            <Badge badgeContent={getTotalCartItems()} color="primary" max={99}>
+              <ShoppingCartIcon sx={{ fontSize: 20 }} />
+            </Badge>
+          </IconButton>
+
+          <IconButton
+            edge="end"
+            sx={{
+              display: { md: 'none' },
+              color: 'text.primary',
+              bgcolor: 'rgba(15,23,42,0.04)',
+              borderRadius: '12px',
+              width: 40,
+              height: 40,
+              '&:hover': { bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main' },
+            }}
+            onClick={() => setMobileOpen(true)}
+          >
+            <MenuIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+        </Box>
+      </Toolbar>
+
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        PaperProps={{ sx: { borderRadius: '16px 0 0 16px' } }}
+      >
+        {drawer}
+      </Drawer>
+    </AppBar>
   );
 };
 

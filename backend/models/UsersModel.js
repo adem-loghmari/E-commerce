@@ -24,7 +24,8 @@ const Users = mongoose.model("Users", {
   },
   phone: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
   spent: {
     type: Number,

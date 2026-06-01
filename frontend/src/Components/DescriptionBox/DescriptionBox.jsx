@@ -1,89 +1,196 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Rating from '@mui/material/Rating';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+
+const reviews = [
+  { name: 'Sarah M.', rating: 5, text: 'Absolutely love this piece! The quality is outstanding and it fits perfectly. I get compliments every time I wear it. Will definitely order again!', date: '2 days ago', verified: true },
+  { name: 'James T.', rating: 4, text: 'Great quality and fast shipping. The material feels premium and the sizing is accurate. Would recommend to anyone looking for stylish basics.', date: '1 week ago', verified: true },
+  { name: 'Emma L.', rating: 5, text: 'Perfect in every way. The colors are vibrant and it holds up well after multiple washes. This is my new favorite item in my wardrobe.', date: '2 weeks ago', verified: false },
+];
 
 const DescriptionBox = () => {
-  const [activeTab, setActiveTab] = useState('description');
+  const [tab, setTab] = useState(0);
 
   return (
-    <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 my-8">
-      <div className=" flex gap-2 mb-6">
-        <div 
-          className={`descriptionbox-nav-box px-6 py-2 rounded-full font-bold cursor-pointer transition-colors ${
-            activeTab === 'description' 
-              ? 'text-white bg-blue-600 shadow' 
-              : 'text-blue-600 bg-blue-100 hover:bg-blue-200'
-          }`}
-          onClick={() => setActiveTab('description')}
+    <Box sx={{ bgcolor: '#f8fafc', py: { xs: 3, md: 5 } }}>
+      <Container maxWidth="lg">
+        <Box
+          sx={{
+            bgcolor: '#fff',
+            borderRadius: 3,
+            border: '1px solid rgba(15,23,42,0.07)',
+            overflow: 'hidden',
+          }}
         >
-          Description
-        </div>
-        <div 
-          className={`descriptionbox-nav-box px-6 py-2 rounded-full font-bold cursor-pointer transition-colors ${
-            activeTab === 'reviews' 
-              ? 'text-white bg-blue-600 shadow' 
-              : 'text-blue-600 bg-blue-100 hover:bg-blue-200'
-          }`}
-          onClick={() => setActiveTab('reviews')}
-        >
-          Reviews (122)
-        </div>
-      </div>
+          <Tabs
+            value={tab}
+            onChange={(e, v) => setTab(v)}
+            sx={{
+              borderBottom: '1px solid rgba(15,23,42,0.07)',
+              px: 3,
+              '& .MuiTab-root': { py: 2.5 },
+            }}
+          >
+            <Tab label="Description" />
+            <Tab label="Reviews (122)" />
+          </Tabs>
 
-      <div className="min-h-[200px]">
-        {activeTab === 'description' ? (
-          <div className="text-gray-700 text-base leading-relaxed">
-            <p>
-              E-commerce, short for electronic commerce, is the buying and selling of goods and services online. Imagine a virtual marketplace where you can browse products, compare prices from different sellers, and make purchases with just a few clicks. E-commerce websites offer vast selection, convenience, and often competitive pricing.
-              <br/><br/>
-              With secure payment gateways and reliable delivery services, you can shop from the comfort of your home and receive your items at your doorstep. From fashion apparel and electronics to groceries and furniture, e-commerce caters to almost every need. It's revolutionized retail, giving both businesses and consumers a global platform to connect.
-            </p>
-          </div>
-        ) : (
-          <div>
-            <div className="mb-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Customer Reviews</h3>
-              <div className="flex items-center mb-4">
-                <div className="flex mr-2">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+          <Box sx={{ p: { xs: 2.5, md: 4 } }}>
+            {tab === 0 && (
+              <Box>
+                <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.85, mb: 3 }}>
+                  Experience the perfect blend of style and comfort with this premium piece. Crafted from high-quality materials sourced responsibly, every detail has been thoughtfully designed to ensure both longevity and everyday wearability.
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.85, mb: 3 }}>
+                  Whether you're dressing for a casual day out or a special occasion, this versatile piece adapts effortlessly. The timeless design ensures it pairs beautifully with everything in your wardrobe.
+                </Typography>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                    gap: 2,
+                    mt: 3,
+                  }}
+                >
+                  {[
+                    ['Material', '95% Cotton, 5% Elastane'],
+                    ['Fit', 'Regular fit'],
+                    ['Care', 'Machine wash cold'],
+                    ['Origin', 'Ethically made'],
+                  ].map(([label, value]) => (
+                    <Box
+                      key={label}
+                      sx={{
+                        p: 2,
+                        bgcolor: '#f8fafc',
+                        borderRadius: 2,
+                        border: '1px solid rgba(15,23,42,0.06)',
+                      }}
+                    >
+                      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.25, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
+                        {label}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{value}</Typography>
+                    </Box>
                   ))}
-                </div>
-                <span className="text-gray-600">4.8 out of 5 (122 reviews)</span>
-              </div>
-            </div>
+                </Box>
+              </Box>
+            )}
 
-            <div className="space-y-6">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="review-item border-b border-gray-200 pb-4">
-                  <div className="flex items-center mb-2">
-                    <div className="w-10 h-10 rounded-full bg-gray-300 mr-3"></div>
-                    <div>
-                      <h4 className="font-medium">Customer {i+1}</h4>
-                      <div className="flex">
-                        {[...Array(5)].map((_, j) => (
-                          <svg key={j} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.
-                  </p>
-                  <p className="text-gray-500 text-xs mt-2">2 days ago</p>
-                </div>
-              ))}
-            </div>
+            {tab === 1 && (
+              <Box>
+                {/* Rating summary */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: { xs: 2, md: 4 },
+                    alignItems: 'center',
+                    mb: 4,
+                    p: 3,
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2.5,
+                    border: '1px solid rgba(15,23,42,0.07)',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="h2" sx={{ fontWeight: 900, color: 'text.primary', lineHeight: 1 }}>
+                      4.8
+                    </Typography>
+                    <Rating value={4.8} precision={0.1} readOnly size="small" sx={{ color: '#f59e0b', mt: 0.75 }} />
+                    <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
+                      122 reviews
+                    </Typography>
+                  </Box>
+                  <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+                  <Box sx={{ flex: 1, minWidth: 180 }}>
+                    {[5, 4, 3, 2, 1].map((star) => (
+                      <Box key={star} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.75 }}>
+                        <Typography variant="caption" sx={{ width: 8, fontWeight: 600, color: 'text.secondary' }}>{star}</Typography>
+                        <Box sx={{
+                          flex: 1, height: 6, bgcolor: 'rgba(15,23,42,0.07)', borderRadius: 3, overflow: 'hidden',
+                        }}>
+                          <Box sx={{
+                            height: '100%',
+                            width: `${star === 5 ? 72 : star === 4 ? 18 : star === 3 ? 6 : 3}%`,
+                            background: 'linear-gradient(90deg, #f59e0b, #fbbf24)',
+                            borderRadius: 3,
+                          }} />
+                        </Box>
+                        <Typography variant="caption" sx={{ width: 28, color: 'text.disabled', textAlign: 'right' }}>
+                          {star === 5 ? '88' : star === 4 ? '22' : star === 3 ? '7' : star === 2 ? '3' : '2'}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
 
-            <button className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-              Load More Reviews
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+                {/* Individual reviews */}
+                <Stack spacing={3}>
+                  {reviews.map((review, i) => (
+                    <Box key={i}>
+                      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                        <Avatar
+                          sx={{
+                            width: 42, height: 42,
+                            background: `linear-gradient(135deg, hsl(${i * 80 + 220}, 70%, 55%) 0%, hsl(${i * 80 + 260}, 70%, 55%) 100%)`,
+                            fontWeight: 700,
+                            fontSize: '0.9375rem',
+                          }}
+                        >
+                          {review.name[0]}
+                        </Avatar>
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 0.5, flexWrap: 'wrap' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 700 }}>{review.name}</Typography>
+                            {review.verified && (
+                              <Chip
+                                label="Verified Purchase"
+                                size="small"
+                                sx={{
+                                  height: 20, fontSize: '0.7rem', fontWeight: 600,
+                                  bgcolor: 'rgba(16,185,129,0.1)', color: '#10b981',
+                                  borderRadius: '6px',
+                                  '& .MuiChip-label': { px: 0.875 },
+                                }}
+                              />
+                            )}
+                            <Typography variant="caption" sx={{ color: 'text.disabled', ml: 'auto' }}>
+                              {review.date}
+                            </Typography>
+                          </Box>
+                          <Rating value={review.rating} size="small" readOnly sx={{ color: '#f59e0b', mb: 1 }} />
+                          <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.7 }}>
+                            {review.text}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      {i < reviews.length - 1 && <Divider sx={{ mt: 3 }} />}
+                    </Box>
+                  ))}
+                </Stack>
+
+                <Button
+                  variant="outlined"
+                  sx={{ mt: 4, borderRadius: 2.5, px: 4 }}
+                >
+                  Load More Reviews
+                </Button>
+              </Box>
+            )}
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

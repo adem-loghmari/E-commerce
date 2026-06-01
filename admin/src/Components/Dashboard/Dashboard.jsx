@@ -1,200 +1,287 @@
-import React, { useEffect, useState, useRef } from "react";
-import Chart from "chart.js/auto";
+  import React, { useEffect, useState, useRef } from 'react';
+  import Chart from 'chart.js/auto';
+  import Box from '@mui/material/Box';
+  import Card from '@mui/material/Card';
+  import CardContent from '@mui/material/CardContent';
+  import Typography from '@mui/material/Typography';
+  import CircularProgress from '@mui/material/CircularProgress';
+  import Table from '@mui/material/Table';
+  import TableBody from '@mui/material/TableBody';
+  import TableCell from '@mui/material/TableCell';
+  import TableContainer from '@mui/material/TableContainer';
+  import TableHead from '@mui/material/TableHead';
+  import TableRow from '@mui/material/TableRow';
+  import Chip from '@mui/material/Chip';
+  import Paper from '@mui/material/Paper';
+  import Avatar from '@mui/material/Avatar';
+  import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+  import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+  import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
+  import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 
-const Dashboard = () => {
-  const [allproducts, setAllProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const chartRef = useRef(null);
-  const chartInstanceRef = useRef(null);
+  const statCards = (totalProducts, totalSold, totalRevenue, bestSeller) => [
+    {
+      label: 'Total Products',
+      value: totalProducts,
+      icon: Inventory2OutlinedIcon,
+      color: '#6366f1',
+      bgColor: 'rgba(99,102,241,0.12)',
+    },
+    {
+      label: 'Total Sold',
+      value: totalSold,
+      icon: ShoppingBagOutlinedIcon,
+      color: '#10b981',
+      bgColor: 'rgba(16,185,129,0.12)',
+    },
+    {
+      label: 'Total Revenue',
+      value: `$${totalRevenue.toLocaleString()}`,
+      icon: AttachMoneyOutlinedIcon,
+      color: '#f59e0b',
+      bgColor: 'rgba(245,158,11,0.12)',
+    },
+    {
+      label: 'Best Seller',
+      value: bestSeller?.name || '—',
+      sub: bestSeller ? `${bestSeller.sold || 0} sold` : '',
+      icon: EmojiEventsOutlinedIcon,
+      color: '#8b5cf6',
+      bgColor: 'rgba(139,92,246,0.12)',
+    },
+  ];
 
-  const fetchInfo = async () => {
-    setLoading(true);
-    await fetch("/api/allproducts")
-      .then((resp) => resp.json())
-      .then((data) => setAllProducts(data))
-      .finally(() => setLoading(false));
-  };
+  const Dashboard = () => {
+    const [allproducts, setAllProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const chartRef = useRef(null);
+    const chartInstanceRef = useRef(null);
 
-  useEffect(() => {
-    fetchInfo();
-  }, []);
+    useEffect(() => {
+      const load = async () => {
+        try {
+          const resp = await fetch('/api/allproducts');
+          const data = await resp.json();
+          setAllProducts(Array.isArray(data) ? data : []);
+        } catch (err) {
+          console.error('Failed to fetch products:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      load();
+    }, []);
 
-  // Dashboard stats
-  const totalProducts = allproducts.length;
-  const totalSold = allproducts.reduce((sum, p) => sum + (p.sold || 0), 0);
-  const totalRevenue = allproducts.reduce(
-    (sum, p) => sum + (p.sold || 0) * (p.new_price || 0),
-    0
-  );
-  const bestSeller = allproducts.reduce(
-    (max, p) => (p.sold > (max?.sold || 0) ? p : max),
-    null
-  );
-  const categories = {};
-  allproducts.forEach((p) => {
-    if (!categories[p.category]) categories[p.category] = { count: 0, sold: 0 };
-    categories[p.category].count++;
-    categories[p.category].sold += p.sold || 0;
-  });
+    const totalProducts = allproducts.length;
+    const totalSold = allproducts.reduce((s, p) => s + (p.sold || 0), 0);
+    const totalRevenue = allproducts.reduce((s, p) => s + (p.sold || 0) * (p.new_price || 0), 0);
+    const bestSeller = allproducts.reduce((max, p) => (p.sold > (max?.sold || 0) ? p : max), null);
 
-  // Prepare data for chart
-  const categoryLabels = Object.keys(categories);
-  const soldData = Object.values(categories).map((val) => val.sold);
+    const categories = {};
+    allproducts.forEach((p) => {
+      if (!categories[p.category]) categories[p.category] = { count: 0, sold: 0 };
+      categories[p.category].count++;
+      categories[p.category].sold += p.sold || 0;
+    });
+    const categoryLabels = Object.keys(categories);
+    const soldData = Object.values(categories).map((v) => v.sold);
 
-  useEffect(() => {
-    if (chartRef.current && categoryLabels.length > 0) {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.destroy();
-      }
-      chartInstanceRef.current = new Chart(chartRef.current, {
-        type: "bar",
-        data: {
-          labels: categoryLabels,
-          datasets: [
-            {
-              label: "Products Sold",
+    useEffect(() => {
+      if (chartRef.current && categoryLabels.length > 0) {
+        if (chartInstanceRef.current) chartInstanceRef.current.destroy();
+        chartInstanceRef.current = new Chart(chartRef.current, {
+          type: 'bar',
+          data: {
+            labels: categoryLabels.map((l) => l.charAt(0).toUpperCase() + l.slice(1)),
+            datasets: [{
+              label: 'Products Sold',
               data: soldData,
-              backgroundColor: "rgba(236, 72, 153, 0.7)",
-              borderColor: "rgba(236, 72, 153, 1)",
+              backgroundColor: ['rgba(99,102,241,0.7)', 'rgba(139,92,246,0.7)', 'rgba(236,72,153,0.7)'],
+              borderColor: ['rgba(99,102,241,1)', 'rgba(139,92,246,1)', 'rgba(236,72,153,1)'],
               borderWidth: 2,
               borderRadius: 8,
+              borderSkipped: false,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#1e293b',
+                borderColor: 'rgba(99,102,241,0.3)',
+                borderWidth: 1,
+                titleColor: '#f1f5f9',
+                bodyColor: '#94a3b8',
+                padding: 12,
+                cornerRadius: 8,
+              },
             },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: "Sales by Category",
-              color: "#fff",
-              font: { size: 18 },
+            scales: {
+              x: {
+                ticks: { color: '#64748b', font: { family: 'Inter', size: 12 } },
+                grid: { color: 'rgba(248,250,252,0.05)' },
+                border: { color: 'rgba(248,250,252,0.08)' },
+              },
+              y: {
+                ticks: { color: '#64748b', font: { family: 'Inter', size: 12 } },
+                grid: { color: 'rgba(248,250,252,0.05)' },
+                border: { color: 'rgba(248,250,252,0.08)' },
+                beginAtZero: true,
+              },
             },
           },
-          scales: {
-            x: { ticks: { color: "#fff" }, grid: { color: "#334155" } },
-            y: {
-              ticks: { color: "#fff" },
-              grid: { color: "#334155" },
-              beginAtZero: true,
-            },
-          },
-        },
-      });
-    }
-    // Cleanup
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.destroy();
-        chartInstanceRef.current = null;
+        });
       }
-    };
-  }, [categoryLabels.join(","), soldData.join(",")]);
+      return () => { if (chartInstanceRef.current) { chartInstanceRef.current.destroy(); chartInstanceRef.current = null; } };
+    }, [categoryLabels.join(','), soldData.join(',')]);
 
-  return (
-    <div className="fixed inset-0 z-0 bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 flex flex-col items-center justify-center pt-24 overflow-auto">
-      <div className="w-full max-w-5xl bg-gradient-to-br from-gray-800 via-gray-900 to-blue-950 rounded-2xl shadow-2xl p-4 sm:p-8 md:p-12 border border-blue-700 max-h-[calc(100vh-7rem)] overflow-y-auto">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-white tracking-wide drop-shadow text-center">
-          Dashboard Overview
-        </h1>
-        {loading ? (
-          <div className="text-center text-blue-200 py-12 text-lg font-semibold">
-            Loading...
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-              <div className="bg-blue-900/80 rounded-xl p-6 flex flex-col items-center shadow">
-                <span className="text-3xl font-bold text-pink-400">
-                  {totalProducts}
-                </span>
-                <span className="text-blue-100 mt-2 font-semibold">
-                  Total Products
-                </span>
-              </div>
-              <div className="bg-blue-900/80 rounded-xl p-6 flex flex-col items-center shadow">
-                <span className="text-3xl font-bold text-green-400">
-                  {totalSold}
-                </span>
-                <span className="text-blue-100 mt-2 font-semibold">
-                  Total Sold
-                </span>
-              </div>
-              <div className="bg-blue-900/80 rounded-xl p-6 flex flex-col items-center shadow">
-                <span className="text-3xl font-bold text-yellow-300">
-                  ${totalRevenue.toLocaleString()}
-                </span>
-                <span className="text-blue-100 mt-2 font-semibold">
-                  Total Revenue
-                </span>
-              </div>
-              <div className="bg-blue-900/80 rounded-xl p-6 flex flex-col items-center shadow">
-                <span className="text-2xl font-bold text-purple-300 text-center">
-                  {bestSeller ? bestSeller.name : "-"}
-                </span>
-                <span className="text-blue-100 mt-2 font-semibold text-center">
-                  Best Seller
-                </span>
-                <span className="text-xs text-blue-300 mt-1">
-                  Sold: {bestSeller?.sold || 0}
-                </span>
-              </div>
-            </div>
-            {/* Chart.js Bar Chart */}
-            <div className="bg-gray-900/80 rounded-xl p-6 shadow mb-8">
-              <h2 className="text-xl font-bold text-white mb-4">
-                Sales by Category (Chart)
-              </h2>
-              <div className="w-full flex justify-center">
-                <canvas
-                  ref={chartRef}
-                  className="w-full max-w-xl h-64 bg-gray-800 rounded-xl"
-                ></canvas>
-              </div>
-            </div>
-            <div className="bg-gray-900/80 rounded-xl p-6 shadow">
-              <h2 className="text-xl font-bold text-white mb-4">
-                Recent Products
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-blue-100 text-sm">
-                  <thead>
-                    <tr className="bg-blue-950/80">
-                      <th className="px-3 py-2 text-left">Product</th>
-                      <th className="px-3 py-2 text-left">Category</th>
-                      <th className="px-3 py-2 text-left">Price</th>
-                      <th className="px-3 py-2 text-left">Sold</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...allproducts]
-                      .slice(-5)
-                      .reverse()
-                      .map((p) => (
-                        <tr key={p.id} className="border-b border-blue-900/40">
-                          <td className="px-3 py-2 flex items-center gap-2">
-                            <img
+    if (loading) {
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <CircularProgress sx={{ mb: 2 }} />
+            <Typography color="text.secondary">Loading dashboard...</Typography>
+          </Box>
+        </Box>
+      );
+    }
+
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        {/* Centered column, max readable width */}
+        <Box sx={{ maxWidth: 960, mx: 'auto', display: 'flex', flexDirection: 'column', gap: 3 }}>
+
+          {/* Header */}
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>Dashboard</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Welcome back — here's what's happening with your store today.
+            </Typography>
+          </Box>
+
+          {/* Stat cards — CSS grid so all columns are equal-width and flush with siblings */}
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' }, gap: 2 }}>
+            {statCards(totalProducts, totalSold, totalRevenue, bestSeller).map(({ label, value, sub, icon: Icon, color, bgColor }) => (
+              <Card key={label}>
+                <CardContent sx={{ p: 2.5 }}>
+                  <Box
+                    sx={{
+                      width: 40, height: 40, borderRadius: 2,
+                      bgcolor: bgColor,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      mb: 1.75,
+                    }}
+                  >
+                    <Icon sx={{ fontSize: 20, color }} />
+                  </Box>
+                  <Typography
+                    sx={{
+                      fontWeight: 800,
+                      lineHeight: 1.1,
+                      mb: 0.25,
+                      fontSize: typeof value === 'string' && value.length > 10 ? '0.95rem' : '1.4rem',
+                      color: 'text.primary',
+                    }}
+                  >
+                    {value}
+                  </Typography>
+                  {sub && (
+                    <Typography variant="caption" sx={{ color, fontWeight: 600, display: 'block', mb: 0.25 }}>
+                      {sub}
+                    </Typography>
+                  )}
+                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                    {label}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+
+          {/* Chart */}
+          <Card>
+            <CardContent sx={{ p: 2.5 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5 }}>
+                Sales by Category
+              </Typography>
+              <Box sx={{ height: 280 }}>
+                <canvas ref={chartRef} />
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* Recent products table */}
+          <Card>
+            <CardContent sx={{ p: 0 }}>
+              <Box sx={{ px: 2.5, pt: 2.5, pb: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>Recent Products</Typography>
+                <Chip
+                  label={`${totalProducts} total`}
+                  size="small"
+                  sx={{ bgcolor: 'rgba(99,102,241,0.12)', color: 'primary.light', fontWeight: 600, borderRadius: '6px' }}
+                />
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Product</TableCell>
+                      <TableCell>Category</TableCell>
+                      <TableCell align="right">Price</TableCell>
+                      <TableCell align="right">Sold</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[...allproducts].slice(-6).reverse().map((p) => (
+                      <TableRow key={p.id}>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+                            <Avatar
                               src={p.image}
                               alt={p.name}
-                              className="h-8 w-8 object-contain rounded bg-gray-800 border border-blue-900"
+                              variant="rounded"
+                              sx={{ width: 36, height: 36, bgcolor: 'rgba(15,23,42,0.5)', border: '1px solid rgba(248,250,252,0.08)' }}
                             />
-                            <span>{p.name}</span>
-                          </td>
-                          <td className="px-3 py-2">{p.category}</td>
-                          <td className="px-3 py-2">${p.new_price}</td>
-                          <td className="px-3 py-2">{p.sold ?? 0}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
+                            <Typography variant="body2" sx={{ fontWeight: 600, maxWidth: 200 }} noWrap>
+                              {p.name}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={p.category}
+                            size="small"
+                            sx={{
+                              bgcolor: 'rgba(99,102,241,0.1)',
+                              color: 'primary.light',
+                              fontSize: '0.7rem',
+                              height: 20,
+                              textTransform: 'capitalize',
+                              borderRadius: '5px',
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>${p.new_price}</Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'success.light' }}>
+                            {p.sold ?? 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
 
-export default Dashboard;
+        </Box>
+      </Box>
+    );
+  };
+
+  export default Dashboard;

@@ -1,5 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  TextField,
+  Button,
+  Alert,
+  CircularProgress,
+  Typography,
+  Stack,
+  Divider,
+  Paper,
+} from "@mui/material";
+import { Person, Lock, ArrowBack } from "@mui/icons-material";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -163,314 +179,253 @@ const Profile = () => {
   }, [navigate]);
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white shadow rounded-lg overflow-hidden p-6 text-center">
-            <p>Loading your profile...</p>
-          </div>
-        </div>
-      </div>
+      <Container maxWidth="sm" sx={{ py: 4, mt: 3 }}>
+        <Card>
+          <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "300px" }}>
+            <CircularProgress sx={{ mb: 2 }} />
+            <Typography color="textSecondary">Loading your profile...</Typography>
+          </CardContent>
+        </Card>
+      </Container>
     );
   }
+
   if (!editMode) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
-              <h1 className="text-2xl font-bold">Your Profile</h1>
-              <p className="text-blue-100">
-                Review your information before editing
-              </p>
-            </div>
-
-            {/* Profile Information Display */}
-            <div className="p-6 space-y-4">
-              <div className="space-y-4 border-b border-gray-200 pb-4">
-                <h3 className="text-lg font-medium text-gray-900">
+      <Container maxWidth="sm" sx={{ py: 4, mt: 3 }}>
+        <Card>
+          <CardHeader
+            title="Your Profile"
+            subheader="Review your information before editing"
+            sx={{
+              background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)",
+              color: "white",
+              "& .MuiCardHeader-subheader": { color: "rgba(255,255,255,0.7)" },
+            }}
+          />
+          <CardContent sx={{ pt: 3 }}>
+            <Stack spacing={3}>
+              <Box sx={{ pb: 2, borderBottom: "1px solid #e0e0e0" }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
+                  <Person sx={{ mr: 1, fontSize: 20, verticalAlign: "middle" }} />
                   Personal Information
-                </h3>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Full Name</p>
-                  <p className="text-sm text-gray-900 mt-1">
-                    {userData?.name || "Not provided"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Email Address
-                  </p>
-                  <p className="text-sm text-gray-900 mt-1">
-                    {userData?.email || "Not provided"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Phone Number
-                  </p>
-                  <p className="text-sm text-gray-900 mt-1">
-                    {userData?.phone || "Not provided"}
-                  </p>
-                </div>
-              </div>
+                </Typography>
+                <Stack spacing={1.5}>
+                  <Box>
+                    <Typography variant="caption" color="textSecondary">
+                      Full Name
+                    </Typography>
+                    <Typography variant="body2">
+                      {userData?.name || "Not provided"}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="caption" color="textSecondary">
+                      Email Address
+                    </Typography>
+                    <Typography variant="body2">
+                      {userData?.email || "Not provided"}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="caption" color="textSecondary">
+                      Phone Number
+                    </Typography>
+                    <Typography variant="body2">
+                      {userData?.phone || "Not provided"}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Box>
 
-              <div className="pt-4">
-                <h3 className="text-lg font-medium text-gray-900">
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
                   Account Actions
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">
+                </Typography>
+                <Typography variant="caption" color="textSecondary" sx={{ display: "block", mb: 2 }}>
                   What would you like to update?
-                </p>
-
-                <button
-                  onClick={() => handleEditSelection("personal")}
-                  className="w-full px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Edit Personal Information
-                </button>
-
-                <button
-                  onClick={() => handleEditSelection("password")}
-                  className="w-full px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mt-3"
-                >
-                  Change Password
-                </button>
-
-                <button
-                  onClick={() => navigate("/profile")}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-3"
-                >
-                  Back to Profile
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                </Typography>
+                <Stack spacing={2}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    startIcon={<Person />}
+                    onClick={() => handleEditSelection("personal")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Edit Personal Information
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="success"
+                    startIcon={<Lock />}
+                    onClick={() => handleEditSelection("password")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Change Password
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    onClick={() => navigate("/profile")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Back to Profile
+                  </Button>
+                </Stack>
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Container>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
-      <div className="max-w-md mx-auto">
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
-            <h1 className="text-2xl font-bold">Edit Profile</h1>
-            <p className="text-blue-100">
-              {editMode === "personal" && "Update your personal information"}
-              {editMode === "password" && "Change your password"}
-              {editMode === "all" && "Update your profile information"}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+    <Container maxWidth="sm" sx={{ py: 4, mt: 3 }}>
+      <Card>
+        <CardHeader
+          title="Edit Profile"
+          subheader={
+            editMode === "personal"
+              ? "Update your personal information"
+              : editMode === "password"
+              ? "Change your password"
+              : "Update your profile information"
+          }
+          sx={{
+            background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)",
+            color: "white",
+            "& .MuiCardHeader-subheader": { color: "rgba(255,255,255,0.7)" },
+          }}
+        />
+        <CardContent sx={{ pt: 3 }}>
+          <Stack component="form" onSubmit={handleSubmit} spacing={2.5}>
             {(editMode === "personal" || editMode === "all") && (
-              <>
-                {/* Name Field */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border ${
-                      errors.name ? "border-red-500" : ""
-                    }`}
-                    placeholder="Enter your full name"
-                  />
-                  {errors.name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-                  )}
-                </div>
-
-                {/* Email Field */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border ${
-                      errors.email ? "border-red-500" : ""
-                    }`}
-                    placeholder="Enter your email address"
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                  )}
-                </div>
-
-                {/* Phone Field */}
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border ${
-                      errors.phone ? "border-red-500" : ""
-                    }`}
-                    placeholder="Enter your phone number"
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                  )}
-                </div>
-              </>
+              <Stack spacing={2}>
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  error={!!errors.name}
+                  helperText={errors.name}
+                  variant="outlined"
+                  size="small"
+                />
+                <TextField
+                  fullWidth
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                  variant="outlined"
+                  size="small"
+                />
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  error={!!errors.phone}
+                  helperText={errors.phone}
+                  variant="outlined"
+                  size="small"
+                />
+              </Stack>
             )}
 
             {(editMode === "password" || editMode === "all") && (
-              <div className="pt-4 border-t border-gray-200">
+              <>
+                {editMode === "all" && <Divider sx={{ my: 1 }} />}
                 {editMode === "all" && (
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <Typography variant="subtitle2" sx={{ fontWeight: "bold", mt: 2 }}>
+                    <Lock sx={{ mr: 1, fontSize: 18, verticalAlign: "middle" }} />
                     Change Password
-                  </h3>
+                  </Typography>
                 )}
-
-                {/* Current Password */}
-                <div className={editMode === "all" ? "mt-4" : ""}>
-                  <label
-                    htmlFor="currentPassword"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    id="currentPassword"
+                <Stack spacing={2}>
+                  <TextField
+                    fullWidth
+                    label="Current Password"
                     name="currentPassword"
+                    type="password"
                     value={formData.currentPassword}
                     onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border ${
-                      errors.currentPassword ? "border-red-500" : ""
-                    }`}
-                    placeholder="Enter your current password"
+                    error={!!errors.currentPassword}
+                    helperText={errors.currentPassword}
+                    variant="outlined"
+                    size="small"
                   />
-                  {errors.currentPassword && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.currentPassword}
-                    </p>
-                  )}
-                </div>
-
-                {/* New Password */}
-                <div className="mt-4">
-                  <label
-                    htmlFor="newPassword"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    id="newPassword"
+                  <TextField
+                    fullWidth
+                    label="New Password"
                     name="newPassword"
+                    type="password"
                     value={formData.newPassword}
                     onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border ${
-                      errors.newPassword ? "border-red-500" : ""
-                    }`}
-                    placeholder="Enter your new password"
+                    error={!!errors.newPassword}
+                    helperText={errors.newPassword}
+                    variant="outlined"
+                    size="small"
                   />
-                  {errors.newPassword && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.newPassword}
-                    </p>
-                  )}
-                </div>
-
-                {/* Confirm Password */}
-                <div className="mt-4">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
+                  <TextField
+                    fullWidth
+                    label="Confirm New Password"
                     name="confirmPassword"
+                    type="password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border ${
-                      errors.confirmPassword ? "border-red-500" : ""
-                    }`}
-                    placeholder="Confirm your new password"
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword}
+                    variant="outlined"
+                    size="small"
                   />
-                  {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.confirmPassword}
-                    </p>
-                  )}
-                </div>
-              </div>
+                </Stack>
+              </>
             )}
 
-            {errors.submit && (
-              <div className="rounded-md bg-red-50 p-4">
-                <p className="text-sm text-red-700">{errors.submit}</p>
-              </div>
-            )}
+            {errors.submit && <Alert severity="error">{errors.submit}</Alert>}
+            {successMessage && <Alert severity="success">{successMessage}</Alert>}
 
-            {successMessage && (
-              <div className="rounded-md bg-green-50 p-4">
-                <p className="text-sm text-green-700">{successMessage}</p>
-              </div>
-            )}
-
-            {/* Form Actions */}
-            <div className="flex justify-between pt-6">
-              <button
-                type="button"
+            <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", pt: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBack />}
                 onClick={() => setEditMode(null)}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                sx={{ textTransform: "none" }}
               >
                 Back
-              </button>
-
-              <div className="flex space-x-3">
-                <button
-                  type="button"
+              </Button>
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
                   onClick={() => navigate("/profile")}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  sx={{ textTransform: "none" }}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="contained"
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  sx={{ textTransform: "none" }}
                 >
                   {isSubmitting ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+                </Button>
+              </Stack>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 

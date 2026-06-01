@@ -1,242 +1,225 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import upload_area from "../../assets/upload_area.svg";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+import Stack from '@mui/material/Stack';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import upload_area from '../../assets/upload_area.svg';
 
 const ModifyProduct = () => {
   const { id: routeId } = useParams();
-  const [productId, setProductId] = useState(routeId || "");
+  const [productId, setProductId] = useState(routeId || '');
   const [product, setProduct] = useState(null);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [status, setStatus] = useState({ type: '', msg: '' });
 
   useEffect(() => {
-    if (routeId) {
-      setProductId(routeId);
-      handleFetch(routeId);
-    }
-    // eslint-disable-next-line
+    if (routeId) { setProductId(routeId); handleFetch(routeId); }
   }, [routeId]);
 
   const handleFetch = async (fetchId) => {
     setLoading(true);
-    setError("");
-    setSuccess("");
+    setStatus({ type: '', msg: '' });
     setProduct(null);
     setImage(null);
     try {
       const resp = await fetch(`/api/product/${fetchId || productId}`);
-      if (!resp.ok) throw new Error("Product not found");
-      const data = await resp.json();
-      setProduct(data);
+      if (!resp.ok) throw new Error('Product not found');
+      setProduct(await resp.json());
     } catch (err) {
-      setError(err.message);
+      setStatus({ type: 'error', msg: err.message });
     }
     setLoading(false);
   };
 
-  const handleChange = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
-  };
-
-  const imageHandler = (e) => {
-    setImage(e.target.files[0]);
-  };
+  const handleChange = (e) => setProduct({ ...product, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    setSuccess("");
+    setStatus({ type: '', msg: '' });
     let updatedProduct = { ...product };
-    // If a new image is uploaded, upload it first
     if (image) {
-      let responseData;
-      let formData = new FormData();
-      formData.append("product", image);
-      await fetch("/api/upload", {
-        method: "POST",
-        headers: {
-          Accept: "aplication/json",
-        },
+      const formData = new FormData();
+      formData.append('product', image);
+      const uploadData = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
         body: formData,
-      })
-        .then((resp) => resp.json())
-        .then((data) => (responseData = data));
-      if (responseData.success) {
-        updatedProduct.image = responseData.image_url;
-      } else {
-        setError("Image upload failed");
-        setLoading(false);
-        return;
-      }
+      }).then((r) => r.json());
+      if (uploadData.success) updatedProduct.image = uploadData.image_url;
+      else { setStatus({ type: 'error', msg: 'Image upload failed' }); setLoading(false); return; }
     }
-    await fetch("/api/modifyProduct", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+    const data = await fetch('/api/modifyProduct', {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedProduct),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (data.success) {
-          setSuccess("Product updated successfully.");
-        } else {
-          setError("Update failed.");
-        }
-      })
-      .catch(() => setError("Update failed."));
+    }).then((r) => r.json()).catch(() => ({ success: false }));
+    setStatus(data.success
+      ? { type: 'success', msg: 'Product updated successfully!' }
+      : { type: 'error', msg: 'Update failed. Please try again.' }
+    );
     setLoading(false);
   };
 
   return (
-    <div className="fixed inset-0 z-0 bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 flex flex-col items-center justify-center pt-24 overflow-auto">
-      <div className="w-full max-w-md bg-gradient-to-br from-gray-800 via-gray-900 to-blue-950 rounded-2xl shadow-2xl p-2 sm:p-6 md:p-10 border border-blue-700 max-h-[calc(100vh-7rem)] overflow-y-auto">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-8 text-white tracking-wide drop-shadow text-center">
-          Modify Product
-        </h2>
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="Enter Product ID"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-            className="flex-1 px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-          />
-          <button
-            onClick={() => {
-              if (productId && productId !== routeId) {
-                window.location.href = `/modifyproduct/${productId}`;
-              } else {
-                handleFetch();
-              }
-            }}
-            disabled={!productId || loading}
-            className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 disabled:opacity-50"
-          >
-            Fetch
-          </button>
-        </div>
-        {error && <div className="text-red-400 mb-2 text-center">{error}</div>}
-        {success && <div className="text-green-400 mb-2 text-center">{success}</div>}
-        {loading && <div className="text-blue-300 mb-2 text-center">Loading...</div>}
-        {product && (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 mt-2">
-            <div className="mb-2">
-              <label className="block text-blue-200 font-medium mb-1">Product Name</label>
-              <input
-                name="name"
-                value={product.name || ""}
-                onChange={handleChange}
-                placeholder="Product Name"
-                className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-              />
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-blue-200 font-medium mb-1">Old Price</label>
-                <input
-                  name="old_price"
-                  value={product.old_price || ""}
-                  onChange={handleChange}
-                  placeholder="Old Price"
-                  type="number"
-                  inputMode="numeric"
-                  className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-blue-200 font-medium mb-1">New Price</label>
-                <input
-                  name="new_price"
-                  value={product.new_price || ""}
-                  onChange={handleChange}
-                  placeholder="New Price"
-                  type="number"
-                  inputMode="numeric"
-                  className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-                />
-              </div>
-            </div>
-            <div className="mb-2">
-              <label className="block text-blue-200 font-medium mb-1">Category</label>
-              <select
-                name="category"
-                value={product.category || ""}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-              >
-                <option value="women">Women</option>
-                <option value="men">Men</option>
-                <option value="kid">Kid</option>
-              </select>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-blue-200 font-medium mb-1">Sold</label>
-                <input
-                  name="sold"
-                  value={product.sold || ""}
-                  onChange={handleChange}
-                  placeholder="Sold"
-                  type="Number"
-                  inputMode="numeric"
-                  className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-blue-200 font-medium mb-1">Stock</label>
-                <input
-                  name="stock"
-                  value={product.stock || ""}
-                  onChange={handleChange}
-                  placeholder="Stock"
-                  type="Number"
-                  inputMode="numeric"
-                  className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-blue-700 focus:outline-none"
-                />
-              </div>
-            </div>
-            <div className="mb-2">
-              <label className="block text-blue-200 font-medium mb-1">Product Image</label>
-              <div className="flex items-center gap-4">
-                <label
-                  htmlFor="file-input"
-                  className="cursor-pointer w-24 h-24 flex items-center justify-center bg-gray-900 border-2 border-dashed border-blue-700 rounded-xl hover:bg-blue-950 transition"
-                >
-                  <img
-                    src={image ? URL.createObjectURL(image) : product.image || upload_area}
-                    className="object-contain w-16 h-16 opacity-80"
-                    alt="Upload Preview"
-                  />
-                </label>
-                <input
-                  onChange={imageHandler}
-                  type="file"
-                  name="image"
-                  id="file-input"
-                  hidden
-                />
-                {product.image && !image && (
-                  <span className="text-blue-300 text-xs break-all">Current image</span>
-                )}
-              </div>
-            </div>
-            
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-green-700 via-green-800 to-green-900 hover:from-green-800 hover:to-green-950 text-white font-semibold rounded-lg shadow-lg transition text-lg tracking-wide border border-green-700 mt-2"
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>Modify Product</Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          Search for a product by ID and edit its details.
+        </Typography>
+      </Box>
+
+      <Box sx={{ maxWidth: { xs: '100%', lg: 720 }, mx: 'auto' }}>
+      <Card>
+        <CardContent sx={{ p: 3 }}>
+          {/* ID search */}
+          <Box sx={{ display: 'flex', gap: 1.5, mb: 3 }}>
+            <TextField
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              placeholder="Enter Product ID"
+              size="small"
+              fullWidth
+              onKeyDown={(e) => e.key === 'Enter' && handleFetch()}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              variant="contained"
+              onClick={() => {
+                if (productId && productId !== routeId) window.location.href = `/modifyproduct/${productId}`;
+                else handleFetch();
+              }}
+              disabled={!productId || loading}
+              sx={{ borderRadius: 2, px: 2.5, flexShrink: 0 }}
             >
-              Save Changes
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
+              Fetch
+            </Button>
+          </Box>
+
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress size={28} />
+            </Box>
+          )}
+
+          {status.msg && !loading && (
+            <Alert severity={status.type} sx={{ mb: 2.5, borderRadius: 2 }}>
+              {status.msg}
+            </Alert>
+          )}
+
+          {product && !loading && (
+            <Box component="form" onSubmit={handleSubmit}>
+              <Stack spacing={2.5}>
+                <TextField fullWidth label="Product Name" name="name" value={product.name || ''} onChange={handleChange} />
+
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth label="Original Price" name="old_price" type="number"
+                      value={product.old_price || ''} onChange={handleChange}
+                      InputProps={{ startAdornment: <Typography sx={{ mr: 0.5, color: 'text.secondary', fontSize: '0.9rem' }}>$</Typography> }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth label="Sale Price" name="new_price" type="number"
+                      value={product.new_price || ''} onChange={handleChange}
+                      InputProps={{ startAdornment: <Typography sx={{ mr: 0.5, color: 'text.secondary', fontSize: '0.9rem' }}>$</Typography> }}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    <TextField fullWidth select label="Category" name="category" value={product.category || ''} onChange={handleChange}>
+                      <MenuItem value="women">Women</MenuItem>
+                      <MenuItem value="men">Men</MenuItem>
+                      <MenuItem value="kid">Kids</MenuItem>
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField fullWidth label="Sold" name="sold" type="number" value={product.sold || ''} onChange={handleChange} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField fullWidth label="Stock" name="stock" type="number" value={product.stock || ''} onChange={handleChange} />
+                  </Grid>
+                </Grid>
+
+                {/* Image */}
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.25, color: 'text.secondary' }}>
+                    Product Image
+                  </Typography>
+                  <Box
+                    component="label"
+                    htmlFor="file-input"
+                    sx={{
+                      display: 'flex', alignItems: 'center', gap: 2.5, p: 2,
+                      border: '2px dashed',
+                      borderColor: image ? 'primary.main' : 'rgba(248,250,252,0.15)',
+                      borderRadius: 2, cursor: 'pointer',
+                      bgcolor: 'rgba(15,23,42,0.4)',
+                      '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(99,102,241,0.06)' },
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={image ? URL.createObjectURL(image) : product.image || upload_area}
+                      sx={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 1.5, flexShrink: 0 }}
+                    />
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.light', mb: 0.25 }}>
+                        {image ? image.name : 'Click to replace image'}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                        PNG, JPG or WEBP
+                      </Typography>
+                    </Box>
+                    <input id="file-input" type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} hidden />
+                  </Box>
+                </Box>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="success"
+                  size="large"
+                  disabled={loading}
+                  startIcon={loading ? <CircularProgress size={18} sx={{ color: 'rgba(255,255,255,0.8)' }} /> : <SaveOutlinedIcon />}
+                  sx={{ borderRadius: 2.5, py: 1.5 }}
+                  fullWidth
+                >
+                  {loading ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </Stack>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+      </Box>
+    </Box>
   );
 };
 
