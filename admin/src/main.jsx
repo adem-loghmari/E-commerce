@@ -7,11 +7,13 @@ import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import adminTheme from './theme.js'
 
+const BASENAME = import.meta.env.PROD ? '/admin' : '/'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider theme={adminTheme}>
       <CssBaseline />
-      <BrowserRouter>
+      <BrowserRouter basename={BASENAME}>
         <App />
       </BrowserRouter>
     </ThemeProvider>

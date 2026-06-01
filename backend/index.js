@@ -4,7 +4,6 @@ const cors = require("cors");
 const path = require("path");
 const connectDB = require("./config/db");
 
-// Import routes
 const productRouter = require("./routes/product");
 const userRouter = require("./routes/user");
 const orderRouter = require("./routes/order");
@@ -12,46 +11,45 @@ const orderRouter = require("./routes/order");
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Connect to database
 connectDB();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Static files
-app.use("/images", express.static("upload/images"));
+// Static uploads
+app.use("/images", express.static(path.join(__dirname, "upload/images")));
 
-// Routes
+// API routes
 app.use("/api", productRouter);
 app.use("/api", userRouter);
 app.use("/api", orderRouter);
 
+// ─── Admin panel ───────────────────────────────────────────────────────────────
+const adminPath = path.join(__dirname, "../admin/dist");
 
+// 1. /admin (no trailing slash) → redirect to /admin/ so the app boots cleanly
+app.get("/admin", (req, res) => res.redirect(301, "/admin/"));
+
+// 2. Static assets (JS, CSS, images, etc.) built by Vite under /admin/
+app.use("/admin", express.static(adminPath));
+
+// 3. SPA fallback: any /admin/* path that isn't a static file gets index.html
+//    so React Router can handle client-side navigation and page refreshes.
+app.use("/admin", (req, res) => {
+  res.sendFile(path.join(adminPath, "index.html"));
+});
+
+// ─── Customer frontend (CRA) ───────────────────────────────────────────────────
 const frontendPath = path.join(__dirname, "../frontend/build");
-const adminPath = path.join(__dirname, "../admin/dist"); // or ../admin/build depending on your tool
 
-// Serve static assets
-app.use('/admin', express.static(adminPath));
 app.use(express.static(frontendPath));
 
-// Admin client-side routing: always return admin index for /admin/*
-app.get('/admin/*', (req, res) => {
-  res.sendFile(path.join(adminPath, 'index.html'));
+// SPA fallback for the customer app — must come last.
+// API and image routes are already handled above so they won't reach here.
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-// SPA support: for any non-API request, serve the frontend index.html so client-side routing works on refresh.
-// Leave API and static routes alone so they can return their proper responses or errors.
-app.get('*', (req, res) => {
-  // If the request is for the API or images, pass through (these should have been handled above)
-  if (req.path.startsWith('/api') || req.path.startsWith('/images')) {
-    return res.status(404).json({ error: 'Not Found' });
-  }
-  res.sendFile(path.join(frontendPath, 'index.html'));
-});
-
-
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

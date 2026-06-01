@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import AddProduct from '../../Components/AddProduct/AddProduct';
 import ListProduct from '../../Components/ListProduct/ListProduct';
 import Dashboard from '../../Components/Dashboard/Dashboard';
@@ -21,15 +21,13 @@ const Admin = () => {
   return (
     <Routes>
       <Route path="/login" element={<AdminLogin />} />
-      {/* Redirect /admin (production, no trailing slash) → root */}
-      <Route path="/admin" element={<Navigate to="/" replace />} />
+
       <Route path="/*" element={
         <ProtectedRoute>
           <Box sx={{ display: 'flex', bgcolor: 'background.default', minHeight: '100vh' }}>
             <Navbar />
             <Sidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
 
-            {/* Mobile menu toggle */}
             <IconButton
               onClick={() => setMobileOpen(true)}
               sx={{
@@ -48,7 +46,6 @@ const Admin = () => {
               <MenuIcon sx={{ fontSize: 18 }} />
             </IconButton>
 
-            {/* Main content — flex:1 fills the space to the right of the sidebar */}
             <Box
               component="main"
               sx={{
@@ -61,8 +58,8 @@ const Admin = () => {
               }}
             >
               <Routes>
+                {/* index route = the dashboard, matched when path is exactly "/" */}
                 <Route index element={<Dashboard />} />
-                <Route path="/" element={<Dashboard />} />
                 <Route path="/addproduct" element={<AddProduct />} />
                 <Route path="/listproduct" element={<ListProduct />} />
                 <Route path="/modifyproduct" element={<ModifyProduct />} />
