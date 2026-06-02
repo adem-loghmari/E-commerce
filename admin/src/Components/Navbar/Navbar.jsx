@@ -41,7 +41,7 @@ const Navbar = ({ onMobileToggle }) => {
           </Box>
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1, color: 'text.primary', letterSpacing: '-0.01em' }}>
-              SmartShop
+              Shopper
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
               Admin Panel

@@ -89,7 +89,7 @@ export const AdminLogin = () => {
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}
           >
-            SmartShop
+            Shopper
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
             Admin Dashboard — Sign in to continue
