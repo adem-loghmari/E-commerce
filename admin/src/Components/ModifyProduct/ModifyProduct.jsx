@@ -16,6 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import upload_area from '../../assets/upload_area.svg';
+import adminFetch from '../../utils/adminFetch';
 
 const ModifyProduct = () => {
   const { id: routeId } = useParams();
@@ -54,7 +55,7 @@ const ModifyProduct = () => {
     if (image) {
       const formData = new FormData();
       formData.append('product', image);
-      const uploadData = await fetch('/api/upload', {
+      const uploadData = await adminFetch('/api/upload', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: formData,
@@ -62,7 +63,7 @@ const ModifyProduct = () => {
       if (uploadData.success) updatedProduct.image = uploadData.image_url;
       else { setStatus({ type: 'error', msg: 'Image upload failed' }); setLoading(false); return; }
     }
-    const data = await fetch('/api/modifyProduct', {
+    const data = await adminFetch('/api/modifyProduct', {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedProduct),

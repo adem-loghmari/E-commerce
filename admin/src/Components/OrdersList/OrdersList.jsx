@@ -14,22 +14,16 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
 import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
-import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import adminFetch from '../../utils/adminFetch';
+import DeleteConfirmDialog from '../DeleteConfirmDialog/DeleteConfirmDialog';
 
 const statusConfig = {
   pending: { color: '#fbbf24', bgcolor: 'rgba(251,191,36,0.12)' },
@@ -52,7 +46,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const resp = await fetch('/api/allorders');
+      const resp = await adminFetch('/api/allorders');
       const data = await resp.json();
       setAllOrders(Array.isArray(data) ? data.sort((a, b) => b.id - a.id) : []);
     } catch (err) {
@@ -66,7 +60,7 @@ const AdminOrders = () => {
   useEffect(() => { fetchOrders(); }, []);
 
   const updateOrderStatus = async (orderId, newStatus) => {
-    await fetch('/api/updateOrderStatus', {
+    await adminFetch('/api/updateOrderStatus', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: orderId, status: newStatus }),
@@ -80,7 +74,7 @@ const AdminOrders = () => {
       return;
     }
     setDeleting(true);
-    const data = await fetch('/api/removeOrder', {
+    const data = await adminFetch('/api/removeOrder', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: modalOrder.id }),
@@ -232,43 +226,18 @@ const AdminOrders = () => {
         </CardContent>
       </Card>
 
-      {/* Delete dialog */}
-      <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ pb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box sx={{ width: 36, height: 36, borderRadius: 2, bgcolor: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <WarningAmberIcon sx={{ color: 'error.light', fontSize: 20 }} />
-            </Box>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1 }}>Delete Order</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Order #{modalOrder?.id}</Typography>
-            </Box>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-            Enter the order ID to confirm deletion:
-          </Typography>
-          <TextField
-            fullWidth label="Order ID" size="small"
-            placeholder={String(modalOrder?.id)}
-            value={confirmId}
-            onChange={(e) => { setConfirmId(e.target.value); setDeleteError(''); }}
-          />
-          {deleteError && <Alert severity="error" sx={{ mt: 1.5, borderRadius: 2 }}>{deleteError}</Alert>}
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
-          <Button onClick={() => setShowModal(false)} variant="outlined" sx={{ borderRadius: 2 }}>Cancel</Button>
-          <Button
-            onClick={handleDeleteConfirm} variant="contained" color="error"
-            disabled={deleting}
-            startIcon={deleting ? <CircularProgress size={16} sx={{ color: 'rgba(255,255,255,0.8)' }} /> : null}
-            sx={{ borderRadius: 2 }}
-          >
-            {deleting ? 'Deleting...' : 'Confirm Delete'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteConfirmDialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Order"
+        subtitle={`Order #${modalOrder?.id}`}
+        deleting={deleting}
+        error={deleteError}
+        fields={[
+          { label: 'Order ID', placeholder: String(modalOrder?.id ?? ''), value: confirmId, onChange: (v) => { setConfirmId(v); setDeleteError(''); } },
+        ]}
+      />
     </Box>
   );
 };

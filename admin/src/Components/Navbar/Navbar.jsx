@@ -16,7 +16,7 @@ export const SIDEBAR_WIDTH = 260;
 
 const Navbar = ({ onMobileToggle }) => {
   const handleLogout = () => {
-    localStorage.removeItem('admin_logged_in');
+    localStorage.removeItem('admin-token');
     window.location.href = '/admin/login';
   };
 

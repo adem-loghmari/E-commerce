@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Item from '../Item/Item';
+import useFetchProducts from '../../hooks/useFetchProducts';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -8,16 +9,10 @@ import Chip from '@mui/material/Chip';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 
 const Popular = () => {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/popularinwomen')
-      .then((resp) => resp.json())
-      .then((data) => setProducts(data));
-  }, []);
+  const products = useFetchProducts('/api/popularinwomen');
 
   return (
-    <Box component="section" sx={{ width: '100%', py: { xs: 7, md: 11 }, bgcolor: '#f8fafc' }}>
+    <Box component="section" sx={{ width: '100%', py: { xs: 7, md: 11 }, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 } }}>
           <Chip

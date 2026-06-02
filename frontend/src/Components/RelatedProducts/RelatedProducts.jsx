@@ -10,7 +10,7 @@ import GridViewIcon from '@mui/icons-material/GridView';
 
 const RelatedProducts = () => {
   return (
-    <Box component="section" sx={{ width: '100%', py: { xs: 6, md: 9 }, bgcolor: '#f8fafc' }}>
+    <Box component="section" sx={{ width: '100%', py: { xs: 6, md: 9 }, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
           <Chip

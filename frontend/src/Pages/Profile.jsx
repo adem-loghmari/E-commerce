@@ -40,14 +40,15 @@ const Profile = () => {
   const initial = userName[0]?.toUpperCase() || 'U';
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc', py: 5 }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 5 }}>
       <Container maxWidth="sm">
         {/* Profile header card */}
         <Card
           elevation={0}
           sx={{
             mb: 3,
-            border: '1px solid rgba(15,23,42,0.07)',
+            border: '1px solid',
+            borderColor: 'divider',
             borderRadius: 3,
             overflow: 'hidden',
           }}
@@ -104,7 +105,8 @@ const Profile = () => {
                   sx={{
                     px: 3,
                     py: 2,
-                    borderBottom: i < menuItems.length - 1 ? '1px solid rgba(15,23,42,0.06)' : 'none',
+                    borderBottom: i < menuItems.length - 1 ? '1px solid' : 'none',
+                    borderBottomColor: 'divider',
                     textDecoration: 'none',
                     color: 'inherit',
                     transition: 'all 0.15s',

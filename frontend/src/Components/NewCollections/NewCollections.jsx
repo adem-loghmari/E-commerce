@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Item from '../Item/Item';
+import useFetchProducts from '../../hooks/useFetchProducts';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -8,19 +9,13 @@ import Chip from '@mui/material/Chip';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 const NewCollections = () => {
-  const [new_collections, setNew_Collections] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/newcollections')
-      .then((resp) => resp.json())
-      .then((data) => setNew_Collections(data));
-  }, []);
+  const new_collections = useFetchProducts('/api/newcollections');
 
   return (
     <Box
       id="new-collection"
       component="section"
-      sx={{ width: '100%', py: { xs: 7, md: 11 }, bgcolor: '#ffffff' }}
+      sx={{ width: '100%', py: { xs: 7, md: 11 }, bgcolor: 'background.paper' }}
     >
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 } }}>

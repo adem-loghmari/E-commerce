@@ -1,25 +1,29 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const compression = require("compression");
 const path = require("path");
 const connectDB = require("./config/db");
 
 const productRouter = require("./routes/product");
 const userRouter = require("./routes/user");
 const orderRouter = require("./routes/order");
+const adminRouter = require("./routes/admin");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 connectDB();
 
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
+app.use(compression());
 app.use(express.json());
 
 // Static uploads
 app.use("/images", express.static(path.join(__dirname, "upload/images")));
 
 // API routes
+app.use("/api", adminRouter);
 app.use("/api", productRouter);
 app.use("/api", userRouter);
 app.use("/api", orderRouter);

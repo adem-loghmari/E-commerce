@@ -13,6 +13,7 @@ import Stack from '@mui/material/Stack';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import upload_area from '../../assets/upload_area.svg';
+import adminFetch from '../../utils/adminFetch';
 
 const AddProduct = () => {
   const [image, setImage] = useState(null);
@@ -44,7 +45,7 @@ const AddProduct = () => {
       if (image) {
         const formData = new FormData();
         formData.append('product', image);
-        const uploadResp = await fetch('/api/upload', {
+        const uploadResp = await adminFetch('/api/upload', {
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: formData,
@@ -53,7 +54,7 @@ const AddProduct = () => {
         if (!uploadData.success) throw new Error('Image upload failed');
         product.image = uploadData.image_url;
       }
-      const resp = await fetch('/api/addproduct', {
+      const resp = await adminFetch('/api/addproduct', {
         method: 'POST',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify(product),

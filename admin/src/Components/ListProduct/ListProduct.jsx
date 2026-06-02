@@ -12,19 +12,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
 import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import adminFetch from '../../utils/adminFetch';
+import DeleteConfirmDialog from '../DeleteConfirmDialog/DeleteConfirmDialog';
 
 const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
@@ -66,7 +61,7 @@ const ListProduct = () => {
       return;
     }
     setDeleting(true);
-    const data = await fetch('/api/removeProduct', {
+    const data = await adminFetch('/api/removeProduct', {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: modalProduct.id }),
@@ -205,43 +200,19 @@ const ListProduct = () => {
         </CardContent>
       </Card>
 
-      {/* Delete confirmation dialog */}
-      <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ pb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box sx={{ width: 36, height: 36, borderRadius: 2, bgcolor: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <WarningAmberIcon sx={{ color: 'error.light', fontSize: 20 }} />
-            </Box>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1 }}>Delete Product</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>This action is irreversible</Typography>
-            </Box>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
-            To confirm deletion of <strong style={{ color: '#f1f5f9' }}>{modalProduct?.name}</strong>, enter the product name and ID below:
-          </Typography>
-          <Stack spacing={1.5}>
-            <TextField fullWidth label="Product Name" placeholder={modalProduct?.name} value={confirmName} onChange={(e) => { setConfirmName(e.target.value); setDeleteError(''); }} size="small" />
-            <TextField fullWidth label="Product ID" placeholder={String(modalProduct?.id)} value={confirmId} onChange={(e) => { setConfirmId(e.target.value); setDeleteError(''); }} size="small" />
-          </Stack>
-          {deleteError && <Alert severity="error" sx={{ mt: 1.5, borderRadius: 2 }}>{deleteError}</Alert>}
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
-          <Button onClick={() => setShowModal(false)} variant="outlined" sx={{ borderRadius: 2 }}>Cancel</Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            variant="contained"
-            color="error"
-            disabled={deleting}
-            startIcon={deleting ? <CircularProgress size={16} sx={{ color: 'rgba(255,255,255,0.8)' }} /> : null}
-            sx={{ borderRadius: 2 }}
-          >
-            {deleting ? 'Deleting...' : 'Confirm Delete'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteConfirmDialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Product"
+        subtitle="This action is irreversible"
+        deleting={deleting}
+        error={deleteError}
+        fields={[
+          { label: 'Product Name', placeholder: modalProduct?.name, value: confirmName, onChange: (v) => { setConfirmName(v); setDeleteError(''); } },
+          { label: 'Product ID', placeholder: String(modalProduct?.id ?? ''), value: confirmId, onChange: (v) => { setConfirmId(v); setDeleteError(''); } },
+        ]}
+      />
     </Box>
   );
 };

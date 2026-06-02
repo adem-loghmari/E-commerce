@@ -1,8 +1,5 @@
 import "./App.css";
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import theme from './theme';
 import Navbar from "./Components/Navbar/Navbar";
 import Shop from "./Pages/Shop";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -21,9 +18,7 @@ import Account from "./Components/Account/Account";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
+    <BrowserRouter>
         <Navbar />
         <Box
           sx={{
@@ -61,7 +56,6 @@ function App() {
           <Footer />
         </Box>
       </BrowserRouter>
-    </ThemeProvider>
   );
 }
 

@@ -15,7 +15,7 @@ const perks = ['Free shipping on all orders', 'Exclusive member prices', '30-day
 
 const Offers = () => {
   return (
-    <Box component="section" sx={{ width: '100%', py: { xs: 6, md: 10 }, bgcolor: '#f8fafc' }}>
+    <Box component="section" sx={{ width: '100%', py: { xs: 6, md: 10 }, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <Box
           sx={{

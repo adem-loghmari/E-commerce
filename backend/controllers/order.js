@@ -6,9 +6,8 @@ const createOrder = async (req, res) => {
   try {
     const { cartSnapshot, total, shippingAddress, paymentMethod } = req.body;
 
-    let orders = await Order.find({});
-    let id =
-      orders.length > 0 ? orders[orders.length - 1].id + 1 : 1;
+    const lastOrder = await Order.findOne().sort({ id: -1 });
+    const id = lastOrder ? lastOrder.id + 1 : 1;
 
     const userData = await Users.findOne({ id: req.user.id });
     if (!userData) {

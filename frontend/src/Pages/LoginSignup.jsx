@@ -160,11 +160,12 @@ const LoginSignUp = () => {
             <Box
               sx={{
                 display: 'flex',
-                bgcolor: '#f8fafc',
+                bgcolor: 'background.default',
                 borderRadius: 2.5,
                 p: 0.5,
                 mb: 3.5,
-                border: '1px solid rgba(15,23,42,0.07)',
+                border: '1px solid',
+                borderColor: 'divider',
               }}
             >
               {['Login', 'Sign Up'].map((tab) => (

@@ -56,7 +56,7 @@ const SearchBar = () => {
               src={option.image}
               alt={option.name}
               variant="rounded"
-              sx={{ width: 44, height: 44, bgcolor: '#f1f5f9' }}
+              sx={{ width: 44, height: 44, bgcolor: 'background.default' }}
             />
             <Box>
               <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -83,11 +83,11 @@ const SearchBar = () => {
             }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                bgcolor: 'rgba(15,23,42,0.04)',
+                bgcolor: 'action.hover',
                 borderRadius: '50px',
-                '& fieldset': { borderColor: 'rgba(15,23,42,0.1)' },
+                '& fieldset': { borderColor: 'divider' },
                 '&:hover fieldset': { borderColor: 'primary.main' },
-                '&.Mui-focused': { bgcolor: '#fff' },
+                '&.Mui-focused': { bgcolor: 'background.paper' },
                 '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: 2 },
               },
             }}

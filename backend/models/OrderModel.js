@@ -20,7 +20,7 @@ const Order = mongoose.model("Order", {
   },
   user_phone: {
     type: String,
-    required: true,
+    default: "",
   },
   cartSnapshot: {
     type: Map,

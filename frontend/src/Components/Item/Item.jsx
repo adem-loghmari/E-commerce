@@ -37,7 +37,8 @@ const Item = (props) => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        border: '1px solid rgba(15,23,42,0.07)',
+        border: '1px solid',
+        borderColor: 'divider',
         boxShadow: '0 1px 4px rgba(15,23,42,0.05)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
@@ -54,7 +55,7 @@ const Item = (props) => {
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          bgcolor: '#f8fafc',
+          bgcolor: 'background.default',
           aspectRatio: '4/3',
         }}
       >
@@ -117,11 +118,11 @@ const Item = (props) => {
               size="small"
               onClick={(e) => { e.preventDefault(); setWishlisted(!wishlisted); }}
               sx={{
-                bgcolor: '#fff',
+                bgcolor: 'background.paper',
                 boxShadow: '0 2px 10px rgba(15,23,42,0.12)',
                 width: 32,
                 height: 32,
-                '&:hover': { bgcolor: '#fff', transform: 'scale(1.1)' },
+                '&:hover': { bgcolor: 'background.paper', transform: 'scale(1.1)' },
                 transition: 'transform 0.15s',
               }}
             >
@@ -138,11 +139,11 @@ const Item = (props) => {
               to={`/product/${props.id}`}
               onClick={() => window.scrollTo(0, 0)}
               sx={{
-                bgcolor: '#fff',
+                bgcolor: 'background.paper',
                 boxShadow: '0 2px 10px rgba(15,23,42,0.12)',
                 width: 32,
                 height: 32,
-                '&:hover': { bgcolor: '#fff', transform: 'scale(1.1)' },
+                '&:hover': { bgcolor: 'background.paper', transform: 'scale(1.1)' },
                 transition: 'transform 0.15s',
               }}
             >

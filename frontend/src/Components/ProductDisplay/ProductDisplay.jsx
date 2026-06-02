@@ -36,134 +36,59 @@ const ProductDisplay = ({ product }) => {
   const thumbnails = [product?.image, product?.image, product?.image, product?.image];
 
   return (
-    <Box component="section" sx={{ width: '100%', bgcolor: '#f8fafc', py: { xs: 2, md: 4 } }}>
+    <Box component="section" sx={{ width: '100%', bgcolor: 'background.default', py: { xs: 2, md: 4 } }}>
       <Container maxWidth="lg">
         <Breadcrums product={product} />
 
-        <Box sx={{ bgcolor: '#fff', borderRadius: 3, border: '1px solid rgba(15,23,42,0.07)', overflow: 'hidden', mt: 2 }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden', mt: 2 }}>
           <Grid container>
             {/* Left: Images */}
-            <Grid item xs={12} md={5} sx={{ p: { xs: 2.5, md: 4 }, bgcolor: '#fafafa', borderRight: { md: '1px solid rgba(15,23,42,0.06)' } }}>
-              {/* Thumbnail strip */}
+            <Grid item xs={12} md={5} sx={{ p: { xs: 2.5, md: 4 }, bgcolor: 'background.default', borderRight: { md: '1px solid' }, borderRightColor: { md: 'divider' } }}>
               <Box sx={{ display: 'flex', gap: 1.25, mb: 2.5, flexWrap: 'wrap' }}>
                 {thumbnails.map((thumb, i) => (
-                  <Box
-                    key={i}
-                    component="img"
-                    src={thumb}
-                    alt={`thumb-${i}`}
-                    onClick={() => setSelectedImg(i)}
+                  <Box key={i} component="img" src={thumb} alt={`thumb-${i}`} onClick={() => setSelectedImg(i)}
                     sx={{
-                      width: 60, height: 60,
-                      objectFit: 'contain',
-                      borderRadius: 2,
-                      border: selectedImg === i
-                        ? '2px solid #6366f1'
-                        : '1.5px solid rgba(15,23,42,0.1)',
-                      cursor: 'pointer',
-                      bgcolor: '#fff',
-                      p: 0.75,
-                      transition: 'all 0.15s',
-                      '&:hover': { borderColor: '#8b5cf6' },
+                      width: 60, height: 60, objectFit: 'contain', borderRadius: 2,
+                      border: selectedImg === i ? '2px solid #6366f1' : '1.5px solid',
+                      borderColor: selectedImg === i ? '#6366f1' : 'divider',
+                      cursor: 'pointer', bgcolor: 'background.paper', p: 0.75,
+                      transition: 'all 0.15s', '&:hover': { borderColor: '#8b5cf6' },
                     }}
                   />
                 ))}
               </Box>
 
-              {/* Main image */}
-              <Box
-                sx={{
-                  bgcolor: '#fff',
-                  borderRadius: 2.5,
-                  border: '1px solid rgba(15,23,42,0.07)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  p: 3,
-                  aspectRatio: '1',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box
-                  component="img"
-                  src={product?.image}
-                  alt={product?.name}
-                  sx={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'contain',
-                    transition: 'transform 0.3s ease',
-                    '&:hover': { transform: 'scale(1.04)' },
-                  }}
+              <Box sx={{ bgcolor: 'background.paper', borderRadius: 2.5, border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, aspectRatio: '1', overflow: 'hidden' }}>
+                <Box component="img" src={product?.image} alt={product?.name}
+                  sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.04)' } }}
                 />
               </Box>
             </Grid>
 
             {/* Right: Product info */}
             <Grid item xs={12} md={7} sx={{ p: { xs: 2.5, md: 5 } }}>
-              {/* Category chip */}
-              <Chip
-                label={product?.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : 'Fashion'}
-                size="small"
-                sx={{
-                  mb: 2, bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main',
-                  fontWeight: 600, borderRadius: '8px', fontSize: '0.8rem',
-                  border: '1px solid rgba(99,102,241,0.2)',
-                }}
+              <Chip label={product?.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : 'Fashion'} size="small"
+                sx={{ mb: 2, bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main', fontWeight: 600, borderRadius: '8px', fontSize: '0.8rem', border: '1px solid rgba(99,102,241,0.2)' }}
               />
 
-              <Typography variant="h4" sx={{ fontWeight: 800, mb: 1.5, color: 'text.primary', lineHeight: 1.25 }}>
-                {product?.name}
-              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, mb: 1.5, lineHeight: 1.25 }}>{product?.name}</Typography>
 
-              {/* Rating */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5 }}>
                 <Rating value={4.5} precision={0.5} readOnly size="small" sx={{ color: '#f59e0b' }} />
-                <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>4.5</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>4.5</Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>(122 reviews)</Typography>
               </Box>
 
-              {/* Price */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  mb: 3,
-                  p: 2.5,
-                  bgcolor: '#f8fafc',
-                  borderRadius: 2.5,
-                  border: '1px solid rgba(15,23,42,0.07)',
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontWeight: 900,
-                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, p: 2.5, bgcolor: 'background.default', borderRadius: 2.5, border: '1px solid', borderColor: 'divider' }}>
+                <Typography variant="h4" sx={{ fontWeight: 900, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   ${product?.new_price}
                 </Typography>
                 {product?.old_price && (
-                  <Typography variant="body1" sx={{ textDecoration: 'line-through', color: 'text.disabled', fontWeight: 500 }}>
-                    ${product?.old_price}
-                  </Typography>
+                  <Typography variant="body1" sx={{ textDecoration: 'line-through', color: 'text.disabled', fontWeight: 500 }}>${product?.old_price}</Typography>
                 )}
                 {discount > 0 && (
-                  <Chip
-                    label={`${discount}% OFF`}
-                    size="small"
-                    sx={{
-                      bgcolor: 'rgba(16,185,129,0.1)',
-                      color: '#10b981',
-                      fontWeight: 700,
-                      fontSize: '0.8rem',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(16,185,129,0.2)',
-                    }}
+                  <Chip label={`${discount}% OFF`} size="small"
+                    sx={{ bgcolor: 'rgba(16,185,129,0.1)', color: '#10b981', fontWeight: 700, fontSize: '0.8rem', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.2)' }}
                   />
                 )}
               </Box>
@@ -174,125 +99,50 @@ const ProductDisplay = ({ product }) => {
 
               <Divider sx={{ mb: 3 }} />
 
-              {/* Size selector */}
               <Box sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                    Select Size
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, cursor: 'pointer' }}>
-                    Size guide
-                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700 }}>Select Size</Typography>
+                  <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, cursor: 'pointer' }}>Size guide</Typography>
                 </Box>
-                <ToggleButtonGroup
-                  value={size}
-                  exclusive
-                  onChange={(e, val) => val && setSize(val)}
-                  aria-label="size"
-                  sx={{ gap: 1, flexWrap: 'wrap' }}
-                >
+                <ToggleButtonGroup value={size} exclusive onChange={(e, val) => val && setSize(val)} aria-label="size" sx={{ gap: 1, flexWrap: 'wrap' }}>
                   {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((s) => (
-                    <ToggleButton
-                      key={s}
-                      value={s}
-                      sx={{ minWidth: 48, height: 40, px: 1.5, fontSize: '0.8125rem', fontWeight: 600 }}
-                    >
-                      {s}
-                    </ToggleButton>
+                    <ToggleButton key={s} value={s} sx={{ minWidth: 48, height: 40, px: 1.5, fontSize: '0.8125rem', fontWeight: 600 }}>{s}</ToggleButton>
                   ))}
                 </ToggleButtonGroup>
               </Box>
 
-              {/* Quantity + CTA */}
               <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 3, flexWrap: 'wrap' }}>
-                <Box
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    border: '1.5px solid rgba(15,23,42,0.12)',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <IconButton
-                    size="small"
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    sx={{
-                      borderRadius: 0, px: 1.25, py: 0.875,
-                      '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
-                    }}
-                  >
+                <Box sx={{ display: 'inline-flex', alignItems: 'center', border: '1.5px solid', borderColor: 'divider', borderRadius: '12px', overflow: 'hidden' }}>
+                  <IconButton size="small" onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    sx={{ borderRadius: 0, px: 1.25, py: 0.875, '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' } }}>
                     <RemoveIcon sx={{ fontSize: 16 }} />
                   </IconButton>
-                  <Typography
-                    sx={{
-                      px: 2.5, minWidth: 40, textAlign: 'center',
-                      fontWeight: 700, fontSize: '0.9375rem',
-                      borderLeft: '1px solid rgba(15,23,42,0.1)',
-                      borderRight: '1px solid rgba(15,23,42,0.1)',
-                      lineHeight: '36px',
-                    }}
-                  >
+                  <Typography sx={{ px: 2.5, minWidth: 40, textAlign: 'center', fontWeight: 700, fontSize: '0.9375rem', borderLeft: '1px solid', borderRight: '1px solid', borderColor: 'divider', lineHeight: '36px' }}>
                     {quantity}
                   </Typography>
-                  <IconButton
-                    size="small"
-                    onClick={() => setQuantity((q) => q + 1)}
-                    sx={{
-                      borderRadius: 0, px: 1.25, py: 0.875,
-                      '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
-                    }}
-                  >
+                  <IconButton size="small" onClick={() => setQuantity((q) => q + 1)}
+                    sx={{ borderRadius: 0, px: 1.25, py: 0.875, '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' } }}>
                     <AddIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Box>
 
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<ShoppingCartIcon />}
-                  onClick={() => addToCart(product.id, quantity)}
-                  sx={{ flex: 1, minWidth: 180, borderRadius: 2.5, py: 1.375 }}
-                >
+                <Button variant="contained" size="large" startIcon={<ShoppingCartIcon />} onClick={() => addToCart(product.id, quantity)} sx={{ flex: 1, minWidth: 180, borderRadius: 2.5, py: 1.375 }}>
                   Add to Cart
                 </Button>
 
                 <Tooltip title={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}>
-                  <IconButton
-                    onClick={() => setWishlisted(!wishlisted)}
-                    sx={{
-                      border: '1.5px solid rgba(15,23,42,0.12)',
-                      borderRadius: '12px',
-                      width: 46, height: 46,
-                      '&:hover': { borderColor: '#ef4444', bgcolor: 'rgba(239,68,68,0.06)' },
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {wishlisted
-                      ? <FavoriteIcon sx={{ color: '#ef4444', fontSize: 20 }} />
-                      : <FavoriteBorderIcon sx={{ fontSize: 20 }} />
-                    }
+                  <IconButton onClick={() => setWishlisted(!wishlisted)}
+                    sx={{ border: '1.5px solid', borderColor: 'divider', borderRadius: '12px', width: 46, height: 46, '&:hover': { borderColor: '#ef4444', bgcolor: 'rgba(239,68,68,0.06)' }, transition: 'all 0.2s' }}>
+                    {wishlisted ? <FavoriteIcon sx={{ color: '#ef4444', fontSize: 20 }} /> : <FavoriteBorderIcon sx={{ fontSize: 20 }} />}
                   </IconButton>
                 </Tooltip>
               </Box>
 
-              {/* Perks */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 2,
-                  p: 2.5,
-                  bgcolor: '#f8fafc',
-                  borderRadius: 2.5,
-                  border: '1px solid rgba(15,23,42,0.07)',
-                  mb: 3,
-                }}
-              >
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, p: 2.5, bgcolor: 'background.default', borderRadius: 2.5, border: '1px solid', borderColor: 'divider', mb: 3 }}>
                 {[
                   { icon: LocalShippingOutlinedIcon, text: 'Free Shipping' },
-                  { icon: VerifiedOutlinedIcon, text: '100% Authentic' },
-                  { icon: CachedOutlinedIcon, text: '30-Day Returns' },
+                  { icon: VerifiedOutlinedIcon,      text: '100% Authentic' },
+                  { icon: CachedOutlinedIcon,        text: '30-Day Returns' },
                 ].map(({ icon: Icon, text }) => (
                   <Box key={text} sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
                     <Icon sx={{ fontSize: 18, color: 'primary.main' }} />
@@ -301,22 +151,10 @@ const ProductDisplay = ({ product }) => {
                 ))}
               </Box>
 
-              {/* Tags */}
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 {['Fashion', product?.category, 'New Arrival'].filter(Boolean).map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    size="small"
-                    variant="outlined"
-                    sx={{
-                      borderRadius: '8px',
-                      fontSize: '0.75rem',
-                      height: 26,
-                      textTransform: 'capitalize',
-                      borderColor: 'rgba(15,23,42,0.1)',
-                      color: 'text.secondary',
-                    }}
+                  <Chip key={tag} label={tag} size="small" variant="outlined"
+                    sx={{ borderRadius: '8px', fontSize: '0.75rem', height: 26, textTransform: 'capitalize', borderColor: 'divider', color: 'text.secondary' }}
                   />
                 ))}
               </Box>

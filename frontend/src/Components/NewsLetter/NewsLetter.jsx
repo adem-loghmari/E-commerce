@@ -23,7 +23,7 @@ const NewsLetter = () => {
       sx={{
         width: '100%',
         py: { xs: 8, md: 12 },
-        bgcolor: '#ffffff',
+        bgcolor: 'background.paper',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -101,7 +101,7 @@ const NewsLetter = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
-              sx={{ bgcolor: '#f8fafc' }}
+              sx={{}}
             />
             <Button
               variant="contained"

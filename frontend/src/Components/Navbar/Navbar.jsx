@@ -25,10 +25,16 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import logo from '../Assets/logo.png';
 import { ShopContext } from '../../Context/ShopContext';
 import SearchBar from '../Search/SearchBar';
+import { useTheme } from '@mui/material/styles';
+import { useColorMode } from '../../context/ColorModeContext';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 
 const Navbar = () => {
   const location = useLocation();
   const { getTotalCartItems } = useContext(ShopContext);
+  const { mode, toggle } = useColorMode();
+  const muiTheme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -183,12 +189,20 @@ const Navbar = () => {
       position="fixed"
       elevation={0}
       sx={{
-        bgcolor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.88)',
+        bgcolor: mode === 'dark'
+          ? scrolled ? 'rgba(15,23,42,0.95)' : 'rgba(15,23,42,0.88)'
+          : scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.88)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         transition: 'all 0.3s ease',
-        borderBottom: `1px solid ${scrolled ? 'rgba(15,23,42,0.08)' : 'rgba(15,23,42,0.04)'}`,
-        boxShadow: scrolled ? '0 4px 24px rgba(15,23,42,0.06)' : 'none',
+        borderBottom: `1px solid ${
+          mode === 'dark'
+            ? scrolled ? 'rgba(248,250,252,0.08)' : 'rgba(248,250,252,0.04)'
+            : scrolled ? 'rgba(15,23,42,0.08)' : 'rgba(15,23,42,0.04)'
+        }`,
+        boxShadow: scrolled
+          ? mode === 'dark' ? '0 4px 24px rgba(0,0,0,0.3)' : '0 4px 24px rgba(15,23,42,0.06)'
+          : 'none',
       }}
     >
       <Toolbar sx={{ px: { xs: 2, md: 4 }, gap: 2, minHeight: '70px !important' }}>
@@ -320,12 +334,32 @@ const Navbar = () => {
             </Button>
           )}
 
+          <Tooltip title={mode === 'dark' ? 'Light mode' : 'Dark mode'}>
+            <IconButton
+              onClick={toggle}
+              sx={{
+                color: 'text.primary',
+                bgcolor: mode === 'dark' ? 'rgba(248,250,252,0.06)' : 'rgba(15,23,42,0.04)',
+                borderRadius: '12px',
+                width: 40,
+                height: 40,
+                '&:hover': { bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main' },
+                transition: 'all 0.2s',
+              }}
+            >
+              {mode === 'dark'
+                ? <LightModeOutlinedIcon sx={{ fontSize: 20 }} />
+                : <DarkModeOutlinedIcon sx={{ fontSize: 20 }} />
+              }
+            </IconButton>
+          </Tooltip>
+
           <IconButton
             component={Link}
             to="/cart"
             sx={{
               color: 'text.primary',
-              bgcolor: 'rgba(15,23,42,0.04)',
+              bgcolor: mode === 'dark' ? 'rgba(248,250,252,0.06)' : 'rgba(15,23,42,0.04)',
               borderRadius: '12px',
               width: 40,
               height: 40,
@@ -343,7 +377,7 @@ const Navbar = () => {
             sx={{
               display: { md: 'none' },
               color: 'text.primary',
-              bgcolor: 'rgba(15,23,42,0.04)',
+              bgcolor: mode === 'dark' ? 'rgba(248,250,252,0.06)' : 'rgba(15,23,42,0.04)',
               borderRadius: '12px',
               width: 40,
               height: 40,

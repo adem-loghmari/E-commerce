@@ -17,9 +17,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin123';
-
 export const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,18 +25,28 @@ export const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        localStorage.setItem('admin_logged_in', 'true');
-        navigate('/');
-      } else {
-        setError('Invalid username or password');
+    setError('');
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setError(data.errors || 'Invalid credentials');
+        return;
       }
+      localStorage.setItem('admin-token', data.token);
+      navigate('/');
+    } catch {
+      setError('Could not reach the server. Please try again.');
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   return (

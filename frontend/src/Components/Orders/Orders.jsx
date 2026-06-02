@@ -284,7 +284,8 @@ const Orders = () => {
                             </TableHead>
                             <TableBody>
                               {order.items?.map((item) => {
-                                const product = allProducts[item.productId];
+                                const product = allProducts.find((p) => p.id === Number(item.productId));
+                                if (!product) return null;
                                 return (
                                   <TableRow key={`${item.productId}-${order._id}`}>
                                     <TableCell>

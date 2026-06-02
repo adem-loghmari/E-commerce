@@ -23,6 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+import adminFetch from '../../utils/adminFetch';
 
 const ModifyOrder = () => {
   const { id: routeId } = useParams();
@@ -44,7 +45,7 @@ const ModifyOrder = () => {
     setStatus({ type: '', msg: '' });
     setOrder(null);
     try {
-      const resp = await fetch(`/api/order/${fetchId || orderId}`);
+      const resp = await adminFetch(`/api/order/${fetchId || orderId}`);
       if (!resp.ok) throw new Error('Order not found');
       const data = await resp.json();
       const cartItems = Object.entries(data.cartSnapshot).map(([id, quantity]) => ({ id: parseInt(id), quantity }));
@@ -100,7 +101,7 @@ const ModifyOrder = () => {
     setStatus({ type: '', msg: '' });
     try {
       const cartSnapshot = order.cartItems.reduce((acc, item) => { acc[item.id] = item.quantity; return acc; }, {});
-      const data = await fetch('/api/modifyOrder', {
+      const data = await adminFetch('/api/modifyOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...order, cartSnapshot }),
