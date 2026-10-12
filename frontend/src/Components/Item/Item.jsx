@@ -33,19 +33,12 @@ const Item = (props) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       sx={{
-        borderRadius: 3,
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
         border: '1px solid',
         borderColor: 'divider',
-        boxShadow: '0 1px 4px rgba(15,23,42,0.05)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        '&:hover': {
-          boxShadow: '0 12px 40px rgba(99,102,241,0.14)',
-          transform: 'translateY(-6px)',
-          borderColor: 'rgba(99,102,241,0.18)',
-        },
+        '&:hover': { borderColor: 'text.disabled' },
         bgcolor: 'background.paper',
         overflow: 'hidden',
       }}
@@ -73,8 +66,6 @@ const Item = (props) => {
               height: '100%',
               objectFit: 'contain',
               p: 2,
-              transition: 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
-              transform: hovered ? 'scale(1.06)' : 'scale(1)',
             }}
           />
         </Link>
@@ -88,7 +79,7 @@ const Item = (props) => {
               position: 'absolute',
               top: 10,
               left: 10,
-              bgcolor: '#ef4444',
+              bgcolor: 'primary.main',
               color: '#fff',
               fontWeight: 700,
               fontSize: '0.7rem',
@@ -109,8 +100,6 @@ const Item = (props) => {
             flexDirection: 'column',
             gap: 0.75,
             opacity: hovered ? 1 : 0,
-            transform: hovered ? 'translateX(0)' : 'translateX(12px)',
-            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
           <Tooltip title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'} placement="left">
@@ -119,16 +108,16 @@ const Item = (props) => {
               onClick={(e) => { e.preventDefault(); setWishlisted(!wishlisted); }}
               sx={{
                 bgcolor: 'background.paper',
-                boxShadow: '0 2px 10px rgba(15,23,42,0.12)',
+                border: '1px solid',
+                borderColor: 'divider',
                 width: 32,
                 height: 32,
-                '&:hover': { bgcolor: 'background.paper', transform: 'scale(1.1)' },
-                transition: 'transform 0.15s',
+                '&:hover': { bgcolor: 'background.paper' },
               }}
             >
               {wishlisted
-                ? <FavoriteIcon sx={{ fontSize: 16, color: '#ef4444' }} />
-                : <FavoriteBorderIcon sx={{ fontSize: 16, color: '#64748b' }} />
+                ? <FavoriteIcon sx={{ fontSize: 16, color: 'primary.main' }} />
+                : <FavoriteBorderIcon sx={{ fontSize: 16, color: '#78716c' }} />
               }
             </IconButton>
           </Tooltip>
@@ -140,14 +129,14 @@ const Item = (props) => {
               onClick={() => window.scrollTo(0, 0)}
               sx={{
                 bgcolor: 'background.paper',
-                boxShadow: '0 2px 10px rgba(15,23,42,0.12)',
+                border: '1px solid',
+                borderColor: 'divider',
                 width: 32,
                 height: 32,
-                '&:hover': { bgcolor: 'background.paper', transform: 'scale(1.1)' },
-                transition: 'transform 0.15s',
+                '&:hover': { bgcolor: 'background.paper' },
               }}
             >
-              <VisibilityOutlinedIcon sx={{ fontSize: 16, color: '#64748b' }} />
+              <VisibilityOutlinedIcon sx={{ fontSize: 16, color: '#78716c' }} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -160,7 +149,7 @@ const Item = (props) => {
             bottom: 0,
             left: 0,
             right: 0,
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            bgcolor: 'primary.main',
             color: '#fff',
             py: 1.1,
             display: 'flex',
@@ -169,13 +158,11 @@ const Item = (props) => {
             gap: 0.75,
             cursor: 'pointer',
             opacity: hovered ? 1 : 0,
-            transform: hovered ? 'translateY(0)' : 'translateY(100%)',
-            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
             fontWeight: 600,
             fontSize: '0.8125rem',
             letterSpacing: '-0.01em',
             userSelect: 'none',
-            '&:hover': { background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)' },
+            '&:hover': { bgcolor: 'primary.dark' },
           }}
         >
           <ShoppingCartIcon sx={{ fontSize: 16 }} />

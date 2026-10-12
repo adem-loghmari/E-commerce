@@ -153,8 +153,8 @@ const ModifyOrder = () => {
               <Grid container spacing={2.5}>
                 {/* Order details */}
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.light', fontSize: '0.9375rem' }}>
+                  <Box sx={{ bgcolor: 'background.default', borderRadius: 2, p: 2.5, border: '1px solid rgba(28,25,23,0.1)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.dark', fontSize: '0.9375rem' }}>
                       Order Details
                     </Typography>
                     <Stack spacing={1.75}>
@@ -167,8 +167,8 @@ const ModifyOrder = () => {
 
                 {/* Shipping */}
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.light', fontSize: '0.9375rem' }}>
+                  <Box sx={{ bgcolor: 'background.default', borderRadius: 2, p: 2.5, border: '1px solid rgba(28,25,23,0.1)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.dark', fontSize: '0.9375rem' }}>
                       Shipping Information
                     </Typography>
                     <Stack spacing={1.75}>
@@ -187,8 +187,8 @@ const ModifyOrder = () => {
 
                 {/* Status & payment */}
                 <Grid item xs={12}>
-                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.light', fontSize: '0.9375rem' }}>
+                  <Box sx={{ bgcolor: 'background.default', borderRadius: 2, p: 2.5, border: '1px solid rgba(28,25,23,0.1)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'primary.dark', fontSize: '0.9375rem' }}>
                       Order Status
                     </Typography>
                     <Grid container spacing={2}>
@@ -218,9 +218,9 @@ const ModifyOrder = () => {
 
                 {/* Order items */}
                 <Grid item xs={12}>
-                  <Box sx={{ bgcolor: 'rgba(15,23,42,0.5)', borderRadius: 2, p: 2.5, border: '1px solid rgba(248,250,252,0.06)' }}>
+                  <Box sx={{ bgcolor: 'background.default', borderRadius: 2, p: 2.5, border: '1px solid rgba(28,25,23,0.1)' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.light', fontSize: '0.9375rem' }}>
+                      <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.dark', fontSize: '0.9375rem' }}>
                         Order Items
                       </Typography>
                       <Button
@@ -236,7 +236,7 @@ const ModifyOrder = () => {
                     </Box>
 
                     {showProductSelector && (
-                      <Box sx={{ mb: 2.5, p: 2, bgcolor: 'rgba(99,102,241,0.06)', borderRadius: 2, border: '1px solid rgba(99,102,241,0.15)' }}>
+                      <Box sx={{ mb: 2.5, p: 2, bgcolor: 'rgba(234,88,12,0.06)', borderRadius: 2, border: '1px solid rgba(234,88,12,0.08)' }}>
                         <Box sx={{ display: 'flex', gap: 1.5 }}>
                           <FormControl fullWidth size="small">
                             <InputLabel>Select Product</InputLabel>
@@ -266,15 +266,15 @@ const ModifyOrder = () => {
                               gap: 1.5,
                               alignItems: 'center',
                               p: 1.5,
-                              bgcolor: 'rgba(15,23,42,0.4)',
+                              bgcolor: 'background.default',
                               borderRadius: 2,
-                              border: '1px solid rgba(248,250,252,0.06)',
+                              border: '1px solid rgba(28,25,23,0.1)',
                             }}
                           >
                             <Avatar
                               src={product.image}
                               variant="rounded"
-                              sx={{ width: 40, height: 40, bgcolor: 'rgba(15,23,42,0.5)' }}
+                              sx={{ width: 40, height: 40, bgcolor: 'background.default' }}
                             />
                             <FormControl size="small" fullWidth>
                               <Select value={item.id} onChange={(e) => handleProductChange(index, 'id', e.target.value)}>
@@ -295,7 +295,7 @@ const ModifyOrder = () => {
                             <IconButton
                               size="small"
                               onClick={() => removeProduct(index)}
-                              sx={{ color: 'error.light', bgcolor: 'rgba(239,68,68,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(239,68,68,0.2)' } }}
+                              sx={{ color: 'error.main', bgcolor: 'rgba(220,38,38,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(220,38,38,0.2)' } }}
                             >
                               <DeleteOutlineIcon sx={{ fontSize: 16 }} />
                             </IconButton>

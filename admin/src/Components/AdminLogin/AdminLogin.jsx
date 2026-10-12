@@ -56,27 +56,18 @@ export const AdminLogin = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)',
-        position: 'relative',
-        overflow: 'hidden',
+        bgcolor: 'background.default',
         p: 3,
       }}
     >
-      {/* Ambient blobs */}
-      <Box sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <Box sx={{ position: 'absolute', top: '15%', left: '10%', width: 400, height: 400, borderRadius: '50%', background: 'rgba(99,102,241,0.1)', filter: 'blur(80px)' }} />
-        <Box sx={{ position: 'absolute', bottom: '10%', right: '8%', width: 300, height: 300, borderRadius: '50%', background: 'rgba(139,92,246,0.15)', filter: 'blur(60px)' }} />
-      </Box>
-
-      <Box sx={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 1 }}>
+      <Box sx={{ width: '100%', maxWidth: 420 }}>
         {/* Logo */}
         <Box sx={{ textAlign: 'center', mb: 3.5 }}>
           <Box
             sx={{
-              width: 64, height: 64, mx: 'auto', mb: 2, borderRadius: 3,
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              width: 56, height: 56, mx: 'auto', mb: 2, borderRadius: 2,
+              bgcolor: 'primary.main',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 8px 32px rgba(99,102,241,0.4)',
             }}
           >
             <AdminPanelSettingsIcon sx={{ fontSize: 32, color: '#fff' }} />
@@ -84,27 +75,17 @@ export const AdminLogin = () => {
           <Typography
             variant="h4"
             sx={{
-              fontWeight: 900, mb: 0.5,
-              background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              fontWeight: 800, mb: 0.5, color: 'text.primary',
             }}
           >
             Shopper
           </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
             Admin Dashboard — Sign in to continue
           </Typography>
         </Box>
 
-        <Card
-          sx={{
-            bgcolor: 'rgba(30, 41, 59, 0.95)',
-            border: '1px solid rgba(248,250,252,0.08)',
-            borderRadius: 3,
-            boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(99,102,241,0.1)',
-            backdropFilter: 'blur(20px)',
-          }}
-        >
+        <Card>
           <CardContent sx={{ p: 4 }}>
             {error && (
               <Alert severity="error" sx={{ mb: 2.5, borderRadius: 2 }}>
@@ -167,7 +148,7 @@ export const AdminLogin = () => {
                   variant="contained"
                   size="large"
                   disabled={loading}
-                  sx={{ py: 1.5, mt: 0.5, borderRadius: 2.5, fontSize: '0.9375rem' }}
+                  sx={{ py: 1.25, mt: 0.5, fontSize: '0.9375rem' }}
                 >
                   {loading
                     ? <CircularProgress size={22} sx={{ color: 'rgba(255,255,255,0.8)' }} />

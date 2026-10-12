@@ -60,7 +60,7 @@ const UsersList = () => {
 
   const getInitials = (name = '') => name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
   const avatarColor = (name = '') => {
-    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6'];
+    const colors = ['#ea580c', '#c2410c', '#78716c', '#44403c'];
     return colors[name.charCodeAt(0) % colors.length];
   };
 
@@ -133,7 +133,7 @@ const UsersList = () => {
                         <IconButton
                           size="small"
                           onClick={() => { setModalUser(user); setConfirmName(''); setConfirmId(''); setDeleteError(''); setShowModal(true); }}
-                          sx={{ color: 'error.light', bgcolor: 'rgba(239,68,68,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(239,68,68,0.2)' } }}
+                          sx={{ color: 'error.main', bgcolor: 'rgba(220,38,38,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(220,38,38,0.2)' } }}
                         >
                           <DeleteOutlineIcon sx={{ fontSize: 16 }} />
                         </IconButton>

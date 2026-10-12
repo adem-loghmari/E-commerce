@@ -43,15 +43,15 @@ const ShopCategory = ({ category, banner }) => {
             sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
           />
         )}
-        <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(15,23,42,0.75) 0%, rgba(30,27,75,0.65) 50%, rgba(46,16,101,0.7) 100%)' }} />
+        <Box sx={{ position: 'absolute', inset: 0, bgcolor: 'rgba(28,25,23,0.6)' }} />
         <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', px: 3 }}>
-          <Typography variant="h2" sx={{ color: '#f8fafc', fontWeight: 900, textShadow: '0 2px 20px rgba(0,0,0,0.4)', mb: 1.5 }}>
+          <Typography variant="h2" sx={{ color: '#fafaf9', fontWeight: 800, mb: 1.5 }}>
             {categoryLabels[category] || 'Collection'}
           </Typography>
           <Chip
             label={`${filtered.length} products`}
             size="small"
-            sx={{ bgcolor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 600, border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(10px)', fontSize: '0.8125rem' }}
+            sx={{ bgcolor: '#ffffff', color: '#1c1917', fontWeight: 600, fontSize: '0.8125rem' }}
           />
         </Box>
       </Box>
@@ -79,8 +79,8 @@ const ShopCategory = ({ category, banner }) => {
             onClick={(e) => setSortAnchor(e.currentTarget)}
             sx={{
               borderRadius: 2.5, borderColor: 'divider', color: 'text.primary',
-              fontWeight: 600, fontSize: '0.875rem', background: 'transparent', boxShadow: 'none',
-              '&:hover': { borderColor: 'primary.main', color: 'primary.main', background: 'rgba(99,102,241,0.04)', transform: 'none', boxShadow: 'none' },
+              fontWeight: 600, fontSize: '0.875rem', background: 'transparent',
+              '&:hover': { borderColor: 'primary.main', color: 'primary.main', background: 'transparent' },
             }}
           >
             Sort By
@@ -101,7 +101,7 @@ const ShopCategory = ({ category, banner }) => {
                   fontSize: '0.875rem', fontWeight: sort === opt.value ? 700 : 400,
                   color: sort === opt.value ? 'primary.main' : 'text.primary',
                   mx: 1, borderRadius: 1.5, mb: 0.25,
-                  '&.Mui-selected': { bgcolor: 'rgba(99,102,241,0.08)', '&:hover': { bgcolor: 'rgba(99,102,241,0.12)' } },
+                  '&.Mui-selected': { bgcolor: 'rgba(234,88,12,0.08)', '&:hover': { bgcolor: 'rgba(234,88,12,0.12)' } },
                 }}
               >
                 {opt.label}

@@ -2,36 +2,36 @@ import { createTheme } from '@mui/material/styles';
 
 const adminTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
-      main: '#6366f1',
-      light: '#818cf8',
-      dark: '#4f46e5',
+      main: '#ea580c',
+      light: '#fb923c',
+      dark: '#c2410c',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#8b5cf6',
-      light: '#a78bfa',
-      dark: '#7c3aed',
+      main: '#c2410c',
+      light: '#ea580c',
+      dark: '#9a3412',
       contrastText: '#ffffff',
     },
-    success: { main: '#10b981', light: '#34d399' },
-    error: { main: '#ef4444', light: '#f87171' },
-    warning: { main: '#f59e0b', light: '#fbbf24' },
-    info: { main: '#3b82f6', light: '#60a5fa' },
+    success: { main: '#15803d', light: '#16a34a' },
+    error: { main: '#dc2626', light: '#ef4444' },
+    warning: { main: '#d97706', light: '#f59e0b' },
+    info: { main: '#57534e', light: '#78716c' },
     background: {
-      default: '#0f172a',
-      paper: '#1e293b',
+      default: '#fafaf9',
+      paper: '#ffffff',
     },
     text: {
-      primary: '#f1f5f9',
-      secondary: '#94a3b8',
-      disabled: '#475569',
+      primary: '#1c1917',
+      secondary: '#78716c',
+      disabled: '#a8a29e',
     },
-    divider: 'rgba(248,250,252,0.08)',
+    divider: 'rgba(28,25,23,0.1)',
     action: {
-      hover: 'rgba(99,102,241,0.08)',
-      selected: 'rgba(99,102,241,0.12)',
+      hover: 'rgba(28,25,23,0.04)',
+      selected: 'rgba(234,88,12,0.08)',
     },
   },
   typography: {
@@ -51,45 +51,17 @@ const adminTheme = createTheme({
   shape: { borderRadius: 10 },
   components: {
     MuiButton: {
+      defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
           borderRadius: 8,
           textTransform: 'none',
           fontWeight: 600,
           fontSize: '0.875rem',
-          transition: 'all 0.2s ease',
-        },
-        contained: {
-          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-          boxShadow: '0 4px 14px rgba(99,102,241,0.3)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-            boxShadow: '0 6px 20px rgba(99,102,241,0.45)',
-            transform: 'translateY(-1px)',
-          },
-          '&:active': { transform: 'translateY(0)' },
-          '&.Mui-disabled': { background: 'rgba(99,102,241,0.2)', color: 'rgba(255,255,255,0.4)' },
-        },
-        containedError: {
-          background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-          boxShadow: '0 4px 14px rgba(239,68,68,0.3)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-            boxShadow: '0 6px 20px rgba(239,68,68,0.4)',
-            transform: 'translateY(-1px)',
-          },
-        },
-        containedSuccess: {
-          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-          boxShadow: '0 4px 14px rgba(16,185,129,0.3)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-            transform: 'translateY(-1px)',
-          },
         },
         outlined: {
           borderWidth: '1.5px',
-          '&:hover': { borderWidth: '1.5px', bgcolor: 'rgba(99,102,241,0.08)' },
+          '&:hover': { borderWidth: '1.5px' },
         },
       },
     },
@@ -97,17 +69,16 @@ const adminTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          borderRadius: 12,
-          border: '1px solid rgba(248,250,252,0.06)',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15)',
-          transition: 'all 0.25s ease',
+          borderRadius: 10,
+          border: '1px solid rgba(28,25,23,0.1)',
+          boxShadow: 'none',
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: { backgroundImage: 'none' },
-        rounded: { borderRadius: 12 },
+        rounded: { borderRadius: 10 },
       },
     },
     MuiTextField: {
@@ -116,10 +87,9 @@ const adminTheme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
-            bgcolor: 'rgba(15,23,42,0.5)',
-            '& fieldset': { borderColor: 'rgba(248,250,252,0.1)' },
-            '&:hover fieldset': { borderColor: 'rgba(99,102,241,0.5)' },
-            '&.Mui-focused fieldset': { borderColor: '#6366f1', borderWidth: 2 },
+            '& fieldset': { borderColor: 'rgba(28,25,23,0.2)' },
+            '&:hover fieldset': { borderColor: '#ea580c' },
+            '&.Mui-focused fieldset': { borderColor: '#ea580c', borderWidth: 2 },
           },
         },
       },
@@ -133,27 +103,28 @@ const adminTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8,
-          '& fieldset': { borderColor: 'rgba(248,250,252,0.1)' },
-          '&:hover fieldset': { borderColor: 'rgba(99,102,241,0.5)' },
-          '&.Mui-focused fieldset': { borderColor: '#6366f1' },
+          '& fieldset': { borderColor: 'rgba(28,25,23,0.2)' },
+          '&:hover fieldset': { borderColor: '#ea580c' },
+          '&.Mui-focused fieldset': { borderColor: '#ea580c' },
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: '#1e293b',
-          borderBottom: '1px solid rgba(248,250,252,0.07)',
-          boxShadow: '0 1px 0 rgba(0,0,0,0.2)',
+          background: '#ffffff',
+          color: '#1c1917',
+          borderBottom: '1px solid rgba(28,25,23,0.1)',
+          boxShadow: 'none',
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          background: '#1e293b',
+          background: '#ffffff',
           border: 'none',
-          borderRight: '1px solid rgba(248,250,252,0.06)',
+          borderRight: '1px solid rgba(28,25,23,0.1)',
         },
       },
     },
@@ -162,13 +133,12 @@ const adminTheme = createTheme({
         root: {
           borderRadius: 8,
           mx: 1,
-          transition: 'all 0.15s',
           '&.Mui-selected': {
-            background: 'rgba(99,102,241,0.15)',
-            color: '#818cf8',
-            '&:hover': { background: 'rgba(99,102,241,0.2)' },
+            background: 'rgba(234,88,12,0.08)',
+            color: '#c2410c',
+            '&:hover': { background: 'rgba(234,88,12,0.12)' },
           },
-          '&:hover': { background: 'rgba(99,102,241,0.08)' },
+          '&:hover': { background: 'rgba(28,25,23,0.04)' },
         },
       },
     },
@@ -181,13 +151,13 @@ const adminTheme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-head': {
-            bgcolor: 'rgba(15,23,42,0.6)',
+            backgroundColor: '#fafaf9',
             fontWeight: 700,
             fontSize: '0.75rem',
             textTransform: 'uppercase',
             letterSpacing: '0.06em',
-            color: '#94a3b8',
-            borderBottom: '1px solid rgba(248,250,252,0.08)',
+            color: '#78716c',
+            borderBottom: '1px solid rgba(28,25,23,0.1)',
           },
         },
       },
@@ -195,7 +165,7 @@ const adminTheme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: '1px solid rgba(248,250,252,0.06)',
+          borderBottom: '1px solid rgba(28,25,23,0.1)',
           padding: '12px 16px',
         },
       },
@@ -203,8 +173,7 @@ const adminTheme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          transition: 'background 0.15s',
-          '&:hover': { background: 'rgba(99,102,241,0.05)' },
+          '&:hover': { background: 'rgba(28,25,23,0.03)' },
           '&:last-child td': { borderBottom: 'none' },
         },
       },
@@ -212,8 +181,8 @@ const adminTheme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 16,
-          border: '1px solid rgba(248,250,252,0.08)',
+          borderRadius: 12,
+          border: '1px solid rgba(28,25,23,0.1)',
           backgroundImage: 'none',
         },
       },
@@ -225,13 +194,14 @@ const adminTheme = createTheme({
     },
     MuiDivider: {
       styleOverrides: {
-        root: { borderColor: 'rgba(248,250,252,0.07)' },
+        root: { borderColor: 'rgba(28,25,23,0.1)' },
       },
     },
     MuiBadge: {
       styleOverrides: {
         badge: {
-          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+          backgroundColor: '#ea580c',
+          color: '#ffffff',
           fontWeight: 700,
         },
       },

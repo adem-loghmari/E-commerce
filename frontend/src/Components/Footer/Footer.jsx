@@ -35,7 +35,7 @@ const socialIcons = [
 
 const Footer = () => {
   return (
-    <Box component="footer" sx={{ bgcolor: '#0f172a', color: 'rgba(255,255,255,0.65)', pt: { xs: 6, md: 9 }, pb: 4 }}>
+    <Box component="footer" sx={{ bgcolor: '#1c1917', color: 'rgba(255,255,255,0.65)', pt: { xs: 6, md: 9 }, pb: 4 }}>
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 4, md: 6 }}>
           {/* Brand column */}
@@ -44,9 +44,7 @@ const Footer = () => {
               <img src={logo} alt="logo" style={{ height: 38, borderRadius: 8 }} />
               <Typography variant="h6" sx={{
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                color: '#fb923c',
               }}>
                 SHOPPER
               </Typography>
@@ -66,12 +64,10 @@ const Footer = () => {
                     border: '1px solid rgba(255,255,255,0.08)',
                     width: 36,
                     height: 36,
-                    transition: 'all 0.2s',
                     '&:hover': {
-                      bgcolor: 'rgba(99,102,241,0.25)',
-                      color: '#a5b4fc',
-                      borderColor: 'rgba(99,102,241,0.4)',
-                      transform: 'translateY(-2px)',
+                      bgcolor: 'rgba(255,255,255,0.06)',
+                      color: '#fb923c',
+                      borderColor: '#fb923c',
                     },
                   }}
                 >
@@ -100,8 +96,7 @@ const Footer = () => {
                     color: 'rgba(255,255,255,0.55)',
                     textDecoration: 'none',
                     display: 'block',
-                    transition: 'all 0.2s',
-                    '&:hover': { color: '#a5b4fc', transform: 'translateX(4px)' },
+                    '&:hover': { color: '#fb923c' },
                   }}
                 >
                   {label}
@@ -128,8 +123,7 @@ const Footer = () => {
                       color: 'rgba(255,255,255,0.55)',
                       cursor: 'pointer',
                       display: 'block',
-                      transition: 'all 0.2s',
-                      '&:hover': { color: '#a5b4fc', transform: 'translateX(4px)' },
+                      '&:hover': { color: '#fb923c' },
                     }}
                   >
                     {link}
@@ -157,7 +151,7 @@ const Footer = () => {
               <Typography
                 key={item}
                 variant="caption"
-                sx={{ opacity: 0.45, cursor: 'pointer', transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}
+                sx={{ opacity: 0.45, cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
               >
                 {item}
               </Typography>

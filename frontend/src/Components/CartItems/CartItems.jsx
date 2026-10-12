@@ -34,7 +34,7 @@ const CartItems = () => {
           Shopping Cart
           {cartProducts.length > 0 && (
             <Chip label={`${cartProducts.length} item${cartProducts.length > 1 ? 's' : ''}`} size="small"
-              sx={{ ml: 2, bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main', fontWeight: 700, borderRadius: '8px', verticalAlign: 'middle' }}
+              sx={{ ml: 2, bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main', fontWeight: 700, borderRadius: '8px', verticalAlign: 'middle' }}
             />
           )}
         </Typography>
@@ -86,14 +86,14 @@ const CartItems = () => {
 
                       <Box sx={{ display: 'inline-flex', alignItems: 'center', border: '1.5px solid', borderColor: 'divider', borderRadius: '10px', overflow: 'hidden', width: 'fit-content' }}>
                         <IconButton size="small" onClick={() => removeFromCart(p.id)}
-                          sx={{ borderRadius: 0, px: 1, py: 0.5, color: 'text.secondary', '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' } }}>
+                          sx={{ borderRadius: 0, px: 1, py: 0.5, color: 'text.secondary', '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' } }}>
                           <RemoveIcon sx={{ fontSize: 14 }} />
                         </IconButton>
                         <Typography sx={{ px: 2, py: 0.5, minWidth: 32, textAlign: 'center', fontWeight: 700, fontSize: '0.875rem', lineHeight: '28px', borderLeft: '1px solid', borderRight: '1px solid', borderColor: 'divider' }}>
                           {cartItems[p.id]}
                         </Typography>
                         <IconButton size="small" onClick={() => addToCart(p.id, 1)}
-                          sx={{ borderRadius: 0, px: 1, py: 0.5, color: 'text.secondary', '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' } }}>
+                          sx={{ borderRadius: 0, px: 1, py: 0.5, color: 'text.secondary', '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' } }}>
                           <AddIcon sx={{ fontSize: 14 }} />
                         </IconButton>
                       </Box>
@@ -103,7 +103,7 @@ const CartItems = () => {
                       </Typography>
 
                       <IconButton size="small" onClick={() => handleDelete(p.id)}
-                        sx={{ color: 'text.disabled', '&:hover': { color: 'error.main', bgcolor: 'rgba(239,68,68,0.08)' }, transition: 'all 0.15s' }}>
+                        sx={{ color: 'text.disabled', '&:hover': { color: 'error.main', bgcolor: 'rgba(220,38,38,0.08)' } }}>
                         <DeleteOutlineIcon sx={{ fontSize: 18 }} />
                       </IconButton>
                     </Box>
@@ -130,7 +130,7 @@ const CartItems = () => {
                         <LocalShippingOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>Shipping</Typography>
                       </Box>
-                      <Chip label="Free" size="small" sx={{ bgcolor: 'rgba(16,185,129,0.1)', color: '#10b981', fontWeight: 700, fontSize: '0.75rem', height: 22, borderRadius: '6px' }} />
+                      <Chip label="Free" size="small" sx={{ bgcolor: 'rgba(21,128,61,0.08)', color: 'success.main', fontWeight: 700, fontSize: '0.75rem', height: 22, borderRadius: '6px' }} />
                     </Box>
                     <Divider />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

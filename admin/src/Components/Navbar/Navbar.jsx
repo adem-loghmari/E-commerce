@@ -32,9 +32,8 @@ const Navbar = ({ onMobileToggle }) => {
           <Box
             sx={{
               width: 36, height: 36, borderRadius: 2,
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              bgcolor: 'primary.main',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(99,102,241,0.35)',
             }}
           >
             <AdminPanelSettingsIcon sx={{ fontSize: 20, color: '#fff' }} />
@@ -57,9 +56,10 @@ const Navbar = ({ onMobileToggle }) => {
           size="small"
           sx={{
             mr: 2,
-            bgcolor: 'rgba(16,185,129,0.15)',
-            color: '#34d399',
-            border: '1px solid rgba(16,185,129,0.25)',
+            bgcolor: 'transparent',
+            color: 'success.main',
+            border: '1px solid',
+            borderColor: 'divider',
             fontWeight: 700,
             fontSize: '0.7rem',
             height: 22,
@@ -75,16 +75,12 @@ const Navbar = ({ onMobileToggle }) => {
             size="small"
             sx={{
               color: 'text.secondary',
-              background: 'transparent',
-              boxShadow: 'none',
               fontWeight: 500,
               fontSize: '0.8125rem',
               px: 1.5,
               '&:hover': {
-                color: 'error.light',
-                background: 'rgba(239,68,68,0.1)',
-                transform: 'none',
-                boxShadow: 'none',
+                color: 'error.main',
+                background: 'rgba(220,38,38,0.06)',
               },
             }}
           >
@@ -95,8 +91,8 @@ const Navbar = ({ onMobileToggle }) => {
         <Avatar
           sx={{
             ml: 1, width: 34, height: 34,
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-            fontSize: '0.875rem', fontWeight: 800,
+            bgcolor: 'primary.main',
+            fontSize: '0.875rem', fontWeight: 700,
           }}
         >
           A

@@ -55,7 +55,8 @@ const Profile = () => {
         >
           <Box
             sx={{
-              background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)',
+              borderBottom: '1px solid',
+              borderColor: 'divider',
               p: 4,
               display: 'flex',
               alignItems: 'center',
@@ -66,27 +67,26 @@ const Profile = () => {
               sx={{
                 width: 64,
                 height: 64,
-                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                bgcolor: 'primary.main',
                 fontSize: '1.5rem',
-                fontWeight: 800,
-                boxShadow: '0 4px 20px rgba(99,102,241,0.4)',
-                border: '3px solid rgba(255,255,255,0.15)',
+                fontWeight: 700,
               }}
             >
               {initial}
             </Avatar>
             <Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, color: '#f8fafc', mb: 0.5 }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary', mb: 0.5 }}>
                 {userName}
               </Typography>
               <Chip
-                icon={<PersonOutlinedIcon sx={{ fontSize: '14px !important', color: '#a5b4fc !important' }} />}
+                icon={<PersonOutlinedIcon sx={{ fontSize: '14px !important', color: 'inherit !important' }} />}
                 label="Member"
                 size="small"
                 sx={{
-                  bgcolor: 'rgba(99,102,241,0.2)',
-                  color: '#a5b4fc',
-                  border: '1px solid rgba(99,102,241,0.3)',
+                  bgcolor: 'transparent',
+                  color: 'text.secondary',
+                  border: '1px solid',
+                  borderColor: 'divider',
                   fontWeight: 600,
                   fontSize: '0.75rem',
                   height: 24,
@@ -109,8 +109,7 @@ const Profile = () => {
                     borderBottomColor: 'divider',
                     textDecoration: 'none',
                     color: 'inherit',
-                    transition: 'all 0.15s',
-                    '&:hover': { bgcolor: 'rgba(99,102,241,0.04)' },
+                    '&:hover': { bgcolor: 'rgba(234,88,12,0.04)' },
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 42 }}>
@@ -119,7 +118,7 @@ const Profile = () => {
                         width: 36,
                         height: 36,
                         borderRadius: 2,
-                        bgcolor: 'rgba(99,102,241,0.08)',
+                        bgcolor: 'rgba(234,88,12,0.08)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',

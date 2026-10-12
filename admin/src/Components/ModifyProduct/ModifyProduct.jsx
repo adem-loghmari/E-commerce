@@ -178,11 +178,10 @@ const ModifyProduct = () => {
                     sx={{
                       display: 'flex', alignItems: 'center', gap: 2.5, p: 2,
                       border: '2px dashed',
-                      borderColor: image ? 'primary.main' : 'rgba(248,250,252,0.15)',
+                      borderColor: image ? 'primary.main' : 'rgba(28,25,23,0.2)',
                       borderRadius: 2, cursor: 'pointer',
-                      bgcolor: 'rgba(15,23,42,0.4)',
-                      '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(99,102,241,0.06)' },
-                      transition: 'all 0.2s',
+                      bgcolor: 'background.default',
+                      '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(234,88,12,0.06)' },
                     }}
                   >
                     <Box
@@ -191,7 +190,7 @@ const ModifyProduct = () => {
                       sx={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 1.5, flexShrink: 0 }}
                     />
                     <Box>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.light', mb: 0.25 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.dark', mb: 0.25 }}>
                         {image ? image.name : 'Click to replace image'}
                       </Typography>
                       <Typography variant="caption" sx={{ color: 'text.disabled' }}>

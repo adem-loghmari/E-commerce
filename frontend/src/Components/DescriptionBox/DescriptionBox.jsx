@@ -71,7 +71,7 @@ const DescriptionBox = () => {
                       <Box key={star} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.75 }}>
                         <Typography variant="caption" sx={{ width: 8, fontWeight: 600, color: 'text.secondary' }}>{star}</Typography>
                         <Box sx={{ flex: 1, height: 6, bgcolor: 'action.hover', borderRadius: 3, overflow: 'hidden' }}>
-                          <Box sx={{ height: '100%', width: `${star === 5 ? 72 : star === 4 ? 18 : star === 3 ? 6 : 3}%`, background: 'linear-gradient(90deg, #f59e0b, #fbbf24)', borderRadius: 3 }} />
+                          <Box sx={{ height: '100%', width: `${star === 5 ? 72 : star === 4 ? 18 : star === 3 ? 6 : 3}%`, background: '#f59e0b', borderRadius: 3 }} />
                         </Box>
                         <Typography variant="caption" sx={{ width: 28, color: 'text.disabled', textAlign: 'right' }}>
                           {star === 5 ? '88' : star === 4 ? '22' : star === 3 ? '7' : star === 2 ? '3' : '2'}
@@ -85,7 +85,7 @@ const DescriptionBox = () => {
                   {reviews.map((review, i) => (
                     <Box key={i}>
                       <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                        <Avatar sx={{ width: 42, height: 42, background: `linear-gradient(135deg, hsl(${i * 80 + 220}, 70%, 55%) 0%, hsl(${i * 80 + 260}, 70%, 55%) 100%)`, fontWeight: 700, fontSize: '0.9375rem' }}>
+                        <Avatar sx={{ width: 42, height: 42, bgcolor: 'primary.main', fontWeight: 700, fontSize: '0.9375rem' }}>
                           {review.name[0]}
                         </Avatar>
                         <Box sx={{ flex: 1 }}>
@@ -93,7 +93,7 @@ const DescriptionBox = () => {
                             <Typography variant="body2" sx={{ fontWeight: 700 }}>{review.name}</Typography>
                             {review.verified && (
                               <Chip label="Verified Purchase" size="small"
-                                sx={{ height: 20, fontSize: '0.7rem', fontWeight: 600, bgcolor: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '6px', '& .MuiChip-label': { px: 0.875 } }}
+                                sx={{ height: 20, fontSize: '0.7rem', fontWeight: 600, bgcolor: 'rgba(21,128,61,0.08)', color: 'success.main', borderRadius: '6px', '& .MuiChip-label': { px: 0.875 } }}
                               />
                             )}
                             <Typography variant="caption" sx={{ color: 'text.disabled', ml: 'auto' }}>{review.date}</Typography>

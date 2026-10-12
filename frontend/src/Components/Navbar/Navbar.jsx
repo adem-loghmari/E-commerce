@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -36,18 +36,12 @@ const Navbar = () => {
   const { mode, toggle } = useColorMode();
   const muiTheme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navLinks = [
     { label: 'Shop', to: '/' },
@@ -72,9 +66,7 @@ const Navbar = () => {
           <img src={logo} alt="logo" style={{ height: 34, borderRadius: 8 }} />
           <Typography variant="h6" sx={{
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            color: 'primary.main',
           }}>
             SHOPPER
           </Typography>
@@ -101,9 +93,9 @@ const Navbar = () => {
               onClick={() => setMobileOpen(false)}
               sx={{
                 borderRadius: 2,
-                bgcolor: isActive(item.to) ? 'rgba(99,102,241,0.08)' : 'transparent',
+                bgcolor: isActive(item.to) ? 'rgba(234,88,12,0.08)' : 'transparent',
                 color: isActive(item.to) ? 'primary.main' : 'text.primary',
-                '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' },
+                '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' },
               }}
             >
               <ListItemText
@@ -189,20 +181,9 @@ const Navbar = () => {
       position="fixed"
       elevation={0}
       sx={{
-        bgcolor: mode === 'dark'
-          ? scrolled ? 'rgba(15,23,42,0.95)' : 'rgba(15,23,42,0.88)'
-          : scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.88)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        transition: 'all 0.3s ease',
-        borderBottom: `1px solid ${
-          mode === 'dark'
-            ? scrolled ? 'rgba(248,250,252,0.08)' : 'rgba(248,250,252,0.04)'
-            : scrolled ? 'rgba(15,23,42,0.08)' : 'rgba(15,23,42,0.04)'
-        }`,
-        boxShadow: scrolled
-          ? mode === 'dark' ? '0 4px 24px rgba(0,0,0,0.3)' : '0 4px 24px rgba(15,23,42,0.06)'
-          : 'none',
+        bgcolor: 'background.paper',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
       }}
     >
       <Toolbar sx={{ px: { xs: 2, md: 4 }, gap: 2, minHeight: '70px !important' }}>
@@ -217,9 +198,7 @@ const Navbar = () => {
             variant="h6"
             sx={{
               fontWeight: 800,
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: 'primary.main',
               display: { xs: 'none', sm: 'block' },
             }}
           >
@@ -241,29 +220,13 @@ const Navbar = () => {
                 px: 1.75,
                 py: 0.75,
                 fontSize: '0.9375rem',
-                position: 'relative',
-                bgcolor: 'transparent',
-                background: 'transparent',
-                boxShadow: 'none !important',
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: 2,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: isActive(link.to) ? '55%' : '0%',
-                  height: '2px',
-                  borderRadius: 1,
-                  background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
-                  transition: 'width 0.25s ease',
-                },
+                borderRadius: 0,
+                borderBottom: '2px solid',
+                borderColor: isActive(link.to) ? 'primary.main' : 'transparent',
                 '&:hover': {
                   color: 'primary.main',
                   bgcolor: 'transparent',
-                  background: 'transparent',
-                  '&::after': { width: '55%' },
                 },
-                '&:hover.MuiButton-root': { transform: 'none' },
               }}
             >
               {link.label}
@@ -290,7 +253,7 @@ const Navbar = () => {
                     sx={{
                       width: 34,
                       height: 34,
-                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                      bgcolor: 'primary.main',
                       fontSize: '0.875rem',
                       fontWeight: 700,
                     }}
@@ -309,13 +272,9 @@ const Navbar = () => {
                   fontSize: '0.8125rem',
                   fontWeight: 500,
                   px: 1.5,
-                  background: 'transparent',
-                  boxShadow: 'none',
                   '&:hover': {
                     color: 'error.main',
-                    background: 'rgba(239,68,68,0.06)',
-                    transform: 'none',
-                    boxShadow: 'none',
+                    bgcolor: 'rgba(220,38,38,0.06)',
                   },
                 }}
               >
@@ -339,12 +298,11 @@ const Navbar = () => {
               onClick={toggle}
               sx={{
                 color: 'text.primary',
-                bgcolor: mode === 'dark' ? 'rgba(248,250,252,0.06)' : 'rgba(15,23,42,0.04)',
+                bgcolor: mode === 'dark' ? 'rgba(250,250,249,0.06)' : 'rgba(28,25,23,0.04)',
                 borderRadius: '12px',
                 width: 40,
                 height: 40,
-                '&:hover': { bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main' },
-                transition: 'all 0.2s',
+                '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' },
               }}
             >
               {mode === 'dark'
@@ -359,12 +317,11 @@ const Navbar = () => {
             to="/cart"
             sx={{
               color: 'text.primary',
-              bgcolor: mode === 'dark' ? 'rgba(248,250,252,0.06)' : 'rgba(15,23,42,0.04)',
+              bgcolor: mode === 'dark' ? 'rgba(250,250,249,0.06)' : 'rgba(28,25,23,0.04)',
               borderRadius: '12px',
               width: 40,
               height: 40,
-              '&:hover': { bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main' },
-              transition: 'all 0.2s',
+              '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' },
             }}
           >
             <Badge badgeContent={getTotalCartItems()} color="primary" max={99}>
@@ -377,11 +334,11 @@ const Navbar = () => {
             sx={{
               display: { md: 'none' },
               color: 'text.primary',
-              bgcolor: mode === 'dark' ? 'rgba(248,250,252,0.06)' : 'rgba(15,23,42,0.04)',
+              bgcolor: mode === 'dark' ? 'rgba(250,250,249,0.06)' : 'rgba(28,25,23,0.04)',
               borderRadius: '12px',
               width: 40,
               height: 40,
-              '&:hover': { bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.main' },
+              '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' },
             }}
             onClick={() => setMobileOpen(true)}
           >

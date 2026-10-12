@@ -38,9 +38,9 @@ const Admin = () => {
                 display: { md: 'none' },
                 color: 'text.primary',
                 bgcolor: 'background.paper',
-                border: '1px solid rgba(248,250,252,0.08)',
+                border: '1px solid rgba(28,25,23,0.1)',
                 width: 36, height: 36,
-                '&:hover': { bgcolor: 'rgba(99,102,241,0.1)' },
+                '&:hover': { bgcolor: 'background.default' },
               }}
             >
               <MenuIcon sx={{ fontSize: 18 }} />

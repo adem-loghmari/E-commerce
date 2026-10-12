@@ -49,10 +49,10 @@ const ProductDisplay = ({ product }) => {
                   <Box key={i} component="img" src={thumb} alt={`thumb-${i}`} onClick={() => setSelectedImg(i)}
                     sx={{
                       width: 60, height: 60, objectFit: 'contain', borderRadius: 2,
-                      border: selectedImg === i ? '2px solid #6366f1' : '1.5px solid',
-                      borderColor: selectedImg === i ? '#6366f1' : 'divider',
+                      border: selectedImg === i ? '2px solid #ea580c' : '1.5px solid',
+                      borderColor: selectedImg === i ? '#ea580c' : 'divider',
                       cursor: 'pointer', bgcolor: 'background.paper', p: 0.75,
-                      transition: 'all 0.15s', '&:hover': { borderColor: '#8b5cf6' },
+                      '&:hover': { borderColor: '#ea580c' },
                     }}
                   />
                 ))}
@@ -60,7 +60,7 @@ const ProductDisplay = ({ product }) => {
 
               <Box sx={{ bgcolor: 'background.paper', borderRadius: 2.5, border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, aspectRatio: '1', overflow: 'hidden' }}>
                 <Box component="img" src={product?.image} alt={product?.name}
-                  sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.04)' } }}
+                  sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                 />
               </Box>
             </Grid>
@@ -68,7 +68,7 @@ const ProductDisplay = ({ product }) => {
             {/* Right: Product info */}
             <Grid item xs={12} md={7} sx={{ p: { xs: 2.5, md: 5 } }}>
               <Chip label={product?.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : 'Fashion'} size="small"
-                sx={{ mb: 2, bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main', fontWeight: 600, borderRadius: '8px', fontSize: '0.8rem', border: '1px solid rgba(99,102,241,0.2)' }}
+                sx={{ mb: 2, bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main', fontWeight: 600, borderRadius: '8px', fontSize: '0.8rem', border: '1px solid rgba(234,88,12,0.2)' }}
               />
 
               <Typography variant="h4" sx={{ fontWeight: 800, mb: 1.5, lineHeight: 1.25 }}>{product?.name}</Typography>
@@ -80,7 +80,7 @@ const ProductDisplay = ({ product }) => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, p: 2.5, bgcolor: 'background.default', borderRadius: 2.5, border: '1px solid', borderColor: 'divider' }}>
-                <Typography variant="h4" sx={{ fontWeight: 900, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main' }}>
                   ${product?.new_price}
                 </Typography>
                 {product?.old_price && (
@@ -88,7 +88,7 @@ const ProductDisplay = ({ product }) => {
                 )}
                 {discount > 0 && (
                   <Chip label={`${discount}% OFF`} size="small"
-                    sx={{ bgcolor: 'rgba(16,185,129,0.1)', color: '#10b981', fontWeight: 700, fontSize: '0.8rem', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.2)' }}
+                    sx={{ bgcolor: 'rgba(21,128,61,0.08)', color: 'success.main', fontWeight: 700, fontSize: '0.8rem', borderRadius: '8px', border: '1px solid rgba(21,128,61,0.08)' }}
                   />
                 )}
               </Box>
@@ -114,14 +114,14 @@ const ProductDisplay = ({ product }) => {
               <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 3, flexWrap: 'wrap' }}>
                 <Box sx={{ display: 'inline-flex', alignItems: 'center', border: '1.5px solid', borderColor: 'divider', borderRadius: '12px', overflow: 'hidden' }}>
                   <IconButton size="small" onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    sx={{ borderRadius: 0, px: 1.25, py: 0.875, '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' } }}>
+                    sx={{ borderRadius: 0, px: 1.25, py: 0.875, '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' } }}>
                     <RemoveIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                   <Typography sx={{ px: 2.5, minWidth: 40, textAlign: 'center', fontWeight: 700, fontSize: '0.9375rem', borderLeft: '1px solid', borderRight: '1px solid', borderColor: 'divider', lineHeight: '36px' }}>
                     {quantity}
                   </Typography>
                   <IconButton size="small" onClick={() => setQuantity((q) => q + 1)}
-                    sx={{ borderRadius: 0, px: 1.25, py: 0.875, '&:hover': { bgcolor: 'rgba(99,102,241,0.08)', color: 'primary.main' } }}>
+                    sx={{ borderRadius: 0, px: 1.25, py: 0.875, '&:hover': { bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.main' } }}>
                     <AddIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Box>
@@ -132,8 +132,8 @@ const ProductDisplay = ({ product }) => {
 
                 <Tooltip title={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}>
                   <IconButton onClick={() => setWishlisted(!wishlisted)}
-                    sx={{ border: '1.5px solid', borderColor: 'divider', borderRadius: '12px', width: 46, height: 46, '&:hover': { borderColor: '#ef4444', bgcolor: 'rgba(239,68,68,0.06)' }, transition: 'all 0.2s' }}>
-                    {wishlisted ? <FavoriteIcon sx={{ color: '#ef4444', fontSize: 20 }} /> : <FavoriteBorderIcon sx={{ fontSize: 20 }} />}
+                    sx={{ border: '1.5px solid', borderColor: 'divider', borderRadius: '12px', width: 46, height: 46, '&:hover': { borderColor: 'primary.main', bgcolor: 'transparent' } }}>
+                    {wishlisted ? <FavoriteIcon sx={{ color: 'primary.main', fontSize: 20 }} /> : <FavoriteBorderIcon sx={{ fontSize: 20 }} />}
                   </IconButton>
                 </Tooltip>
               </Box>

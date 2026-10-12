@@ -19,42 +19,24 @@ const Offers = () => {
       <Container maxWidth="lg">
         <Box
           sx={{
-            borderRadius: 4,
+            borderRadius: 3,
             overflow: 'hidden',
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)',
-            position: 'relative',
-            boxShadow: '0 24px 80px rgba(99,102,241,0.2)',
+            bgcolor: (theme) => (theme.palette.mode === 'dark' ? theme.palette.background.paper : '#fff7ed'),
+            border: '1px solid',
+            borderColor: 'divider',
           }}
         >
-          {/* Background decorations */}
-          <Box sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-            <Box sx={{
-              position: 'absolute', top: '-20%', left: '20%',
-              width: 400, height: 400, borderRadius: '50%',
-              background: 'rgba(99,102,241,0.15)', filter: 'blur(80px)',
-            }} />
-            <Box sx={{
-              position: 'absolute', bottom: '-20%', right: '15%',
-              width: 300, height: 300, borderRadius: '50%',
-              background: 'rgba(236,72,153,0.1)', filter: 'blur(60px)',
-            }} />
-            <Box sx={{
-              position: 'absolute', inset: 0,
-              backgroundImage: 'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)',
-              backgroundSize: '50px 50px',
-            }} />
-          </Box>
-
           <Grid container alignItems="stretch">
-            <Grid item xs={12} md={6} sx={{ p: { xs: 4, md: 6, lg: 8 }, position: 'relative', zIndex: 1 }}>
+            <Grid item xs={12} md={6} sx={{ p: { xs: 4, md: 6, lg: 8 } }}>
               <Chip
-                icon={<LocalOfferIcon sx={{ fontSize: '15px !important', color: '#fbbf24 !important' }} />}
+                icon={<LocalOfferIcon sx={{ fontSize: '15px !important', color: 'inherit !important' }} />}
                 label="Best Sellers · Limited Time"
                 sx={{
                   mb: 3,
-                  bgcolor: 'rgba(251,191,36,0.1)',
-                  color: '#fbbf24',
-                  border: '1px solid rgba(251,191,36,0.25)',
+                  bgcolor: 'background.paper',
+                  color: 'primary.dark',
+                  border: '1px solid',
+                  borderColor: 'divider',
                   fontWeight: 600,
                   fontSize: '0.8rem',
                   height: 30,
@@ -62,33 +44,30 @@ const Offers = () => {
               />
               <Typography
                 variant="h2"
-                sx={{ color: '#f8fafc', fontWeight: 900, lineHeight: 1.1, mb: 0.5 }}
+                sx={{ color: 'text.primary', fontWeight: 800, lineHeight: 1.1, mb: 0.5 }}
               >
                 Exclusive
               </Typography>
               <Typography
                 variant="h2"
                 sx={{
-                  fontWeight: 900,
+                  fontWeight: 800,
                   lineHeight: 1.1,
                   mb: 3,
-                  background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  display: 'inline-block',
+                  color: 'primary.main',
                 }}
               >
                 Offer For You
               </Typography>
-              <Typography sx={{ color: 'rgba(248,250,252,0.6)', mb: 3.5, lineHeight: 1.7, fontSize: '0.9375rem' }}>
+              <Typography sx={{ color: 'text.secondary', mb: 3.5, lineHeight: 1.7, fontSize: '0.9375rem' }}>
                 Only on our best-selling products. Unbeatable prices on the styles everyone loves.
               </Typography>
 
               <Stack spacing={1.25} sx={{ mb: 4 }}>
                 {perks.map((perk) => (
                   <Box key={perk} sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
-                    <CheckCircleOutlineIcon sx={{ fontSize: 18, color: '#a5b4fc' }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(248,250,252,0.7)', fontWeight: 500 }}>
+                    <CheckCircleOutlineIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500 }}>
                       {perk}
                     </Typography>
                   </Box>
@@ -100,15 +79,8 @@ const Offers = () => {
                 size="large"
                 endIcon={<ArrowForwardIcon />}
                 sx={{
-                  px: 4, py: 1.625, borderRadius: 2.5,
-                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                  boxShadow: '0 8px 28px rgba(99,102,241,0.45)',
+                  px: 4, py: 1.5,
                   fontSize: '0.9375rem',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-                    boxShadow: '0 12px 36px rgba(99,102,241,0.55)',
-                    transform: 'translateY(-2px)',
-                  },
                 }}
               >
                 Check Now
@@ -121,8 +93,6 @@ const Offers = () => {
                 display: 'flex',
                 alignItems: 'flex-end',
                 justifyContent: 'center',
-                position: 'relative',
-                zIndex: 1,
                 pt: { xs: 0, md: 4 },
               }}
             >
@@ -136,8 +106,6 @@ const Offers = () => {
                   width: 'auto',
                   height: 'auto',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 24px 60px rgba(139,92,246,0.5))',
-                  transform: { xs: 'none', md: 'translateY(-16px)' },
                   display: 'block',
                 }}
               />

@@ -19,7 +19,6 @@ const Breadcrums = ({ product }) => {
             gap: 0.5,
             cursor: 'pointer',
             color: 'text.secondary',
-            transition: 'color 0.15s',
             '&:hover': { color: 'primary.main' },
           }}
         >

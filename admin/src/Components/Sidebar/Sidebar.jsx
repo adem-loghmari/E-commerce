@@ -98,22 +98,15 @@ const SidebarContent = ({ onClose }) => {
                       py: 0.875,
                       px: 1.5,
                       '&.Mui-selected': {
-                        background: 'rgba(99,102,241,0.15)',
-                        '& .MuiListItemIcon-root': { color: '#818cf8' },
-                        '& .MuiListItemText-primary': { color: '#818cf8', fontWeight: 700 },
-                        '&:hover': { background: 'rgba(99,102,241,0.2)' },
-                      },
-                      '&:hover': {
-                        background: 'rgba(99,102,241,0.08)',
-                        '& .MuiListItemIcon-root': { color: '#a5b4fc' },
+                        '& .MuiListItemIcon-root': { color: 'primary.dark' },
+                        '& .MuiListItemText-primary': { color: 'primary.dark', fontWeight: 700 },
                       },
                     }}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 36,
-                        color: active ? '#818cf8' : 'text.secondary',
-                        transition: 'color 0.15s',
+                        color: active ? 'primary.dark' : 'text.secondary',
                       }}
                     >
                       <Icon sx={{ fontSize: 20 }} />
@@ -123,19 +116,9 @@ const SidebarContent = ({ onClose }) => {
                       primaryTypographyProps={{
                         fontSize: '0.875rem',
                         fontWeight: active ? 700 : 500,
-                        color: active ? '#e0e7ff' : 'text.secondary',
+                        color: active ? 'primary.dark' : 'text.secondary',
                       }}
                     />
-                    {active && (
-                      <Box
-                        sx={{
-                          width: 6, height: 6, borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                          ml: 0.5,
-                          flexShrink: 0,
-                        }}
-                      />
-                    )}
                   </ListItemButton>
                 </ListItem>
               );

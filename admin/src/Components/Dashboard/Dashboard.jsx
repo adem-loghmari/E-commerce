@@ -24,30 +24,30 @@
       label: 'Total Products',
       value: totalProducts,
       icon: Inventory2OutlinedIcon,
-      color: '#6366f1',
-      bgColor: 'rgba(99,102,241,0.12)',
+      color: '#ea580c',
+      bgColor: 'rgba(234,88,12,0.08)',
     },
     {
       label: 'Total Sold',
       value: totalSold,
       icon: ShoppingBagOutlinedIcon,
-      color: '#10b981',
-      bgColor: 'rgba(16,185,129,0.12)',
+      color: '#ea580c',
+      bgColor: 'rgba(234,88,12,0.08)',
     },
     {
       label: 'Total Revenue',
       value: `$${totalRevenue.toLocaleString()}`,
       icon: AttachMoneyOutlinedIcon,
-      color: '#f59e0b',
-      bgColor: 'rgba(245,158,11,0.12)',
+      color: '#ea580c',
+      bgColor: 'rgba(234,88,12,0.08)',
     },
     {
       label: 'Best Seller',
       value: bestSeller?.name || '—',
       sub: bestSeller ? `${bestSeller.sold || 0} sold` : '',
       icon: EmojiEventsOutlinedIcon,
-      color: '#8b5cf6',
-      bgColor: 'rgba(139,92,246,0.12)',
+      color: '#ea580c',
+      bgColor: 'rgba(234,88,12,0.08)',
     },
   ];
 
@@ -96,10 +96,9 @@
             datasets: [{
               label: 'Products Sold',
               data: soldData,
-              backgroundColor: ['rgba(99,102,241,0.7)', 'rgba(139,92,246,0.7)', 'rgba(236,72,153,0.7)'],
-              borderColor: ['rgba(99,102,241,1)', 'rgba(139,92,246,1)', 'rgba(236,72,153,1)'],
-              borderWidth: 2,
-              borderRadius: 8,
+              backgroundColor: '#ea580c',
+              borderWidth: 0,
+              borderRadius: 4,
               borderSkipped: false,
             }],
           },
@@ -109,25 +108,25 @@
             plugins: {
               legend: { display: false },
               tooltip: {
-                backgroundColor: '#1e293b',
-                borderColor: 'rgba(99,102,241,0.3)',
+                backgroundColor: '#292524',
+                borderColor: 'rgba(234,88,12,0.3)',
                 borderWidth: 1,
-                titleColor: '#f1f5f9',
-                bodyColor: '#94a3b8',
+                titleColor: '#f5f5f4',
+                bodyColor: '#a8a29e',
                 padding: 12,
                 cornerRadius: 8,
               },
             },
             scales: {
               x: {
-                ticks: { color: '#64748b', font: { family: 'Inter', size: 12 } },
-                grid: { color: 'rgba(248,250,252,0.05)' },
-                border: { color: 'rgba(248,250,252,0.08)' },
+                ticks: { color: '#78716c', font: { family: 'Inter', size: 12 } },
+                grid: { color: 'rgba(28,25,23,0.1)' },
+                border: { color: 'rgba(28,25,23,0.1)' },
               },
               y: {
-                ticks: { color: '#64748b', font: { family: 'Inter', size: 12 } },
-                grid: { color: 'rgba(248,250,252,0.05)' },
-                border: { color: 'rgba(248,250,252,0.08)' },
+                ticks: { color: '#78716c', font: { family: 'Inter', size: 12 } },
+                grid: { color: 'rgba(28,25,23,0.1)' },
+                border: { color: 'rgba(28,25,23,0.1)' },
                 beginAtZero: true,
               },
             },
@@ -220,7 +219,7 @@
                 <Chip
                   label={`${totalProducts} total`}
                   size="small"
-                  sx={{ bgcolor: 'rgba(99,102,241,0.12)', color: 'primary.light', fontWeight: 600, borderRadius: '6px' }}
+                  sx={{ bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.dark', fontWeight: 600, borderRadius: '6px' }}
                 />
               </Box>
               <TableContainer>
@@ -242,7 +241,7 @@
                               src={p.image}
                               alt={p.name}
                               variant="rounded"
-                              sx={{ width: 36, height: 36, bgcolor: 'rgba(15,23,42,0.5)', border: '1px solid rgba(248,250,252,0.08)' }}
+                              sx={{ width: 36, height: 36, bgcolor: 'background.default', border: '1px solid rgba(28,25,23,0.1)' }}
                             />
                             <Typography variant="body2" sx={{ fontWeight: 600, maxWidth: 200 }} noWrap>
                               {p.name}
@@ -254,8 +253,8 @@
                             label={p.category}
                             size="small"
                             sx={{
-                              bgcolor: 'rgba(99,102,241,0.1)',
-                              color: 'primary.light',
+                              bgcolor: 'rgba(234,88,12,0.08)',
+                              color: 'primary.dark',
                               fontSize: '0.7rem',
                               height: 20,
                               textTransform: 'capitalize',

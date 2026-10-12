@@ -26,11 +26,11 @@ import adminFetch from '../../utils/adminFetch';
 import DeleteConfirmDialog from '../DeleteConfirmDialog/DeleteConfirmDialog';
 
 const statusConfig = {
-  pending: { color: '#fbbf24', bgcolor: 'rgba(251,191,36,0.12)' },
-  processing: { color: '#60a5fa', bgcolor: 'rgba(96,165,250,0.12)' },
-  shipped: { color: '#818cf8', bgcolor: 'rgba(129,140,248,0.12)' },
-  delivered: { color: '#34d399', bgcolor: 'rgba(52,211,153,0.12)' },
-  cancelled: { color: '#f87171', bgcolor: 'rgba(248,113,113,0.12)' },
+  pending: { color: '#b45309', bgcolor: 'rgba(217,119,6,0.1)' },
+  processing: { color: '#57534e', bgcolor: 'rgba(28,25,23,0.06)' },
+  shipped: { color: '#c2410c', bgcolor: 'rgba(234,88,12,0.08)' },
+  delivered: { color: '#15803d', bgcolor: 'rgba(21,128,61,0.08)' },
+  cancelled: { color: '#dc2626', bgcolor: 'rgba(220,38,38,0.08)' },
 };
 
 const AdminOrders = () => {
@@ -194,7 +194,7 @@ const AdminOrders = () => {
                           <Chip
                             label={Object.keys(order.cartSnapshot || {}).length}
                             size="small"
-                            sx={{ bgcolor: 'rgba(99,102,241,0.1)', color: 'primary.light', fontWeight: 700, height: 20, borderRadius: '5px', fontSize: '0.7rem' }}
+                            sx={{ bgcolor: 'rgba(234,88,12,0.08)', color: 'primary.dark', fontWeight: 700, height: 20, borderRadius: '5px', fontSize: '0.7rem' }}
                           />
                         </TableCell>
                         <TableCell align="center">
@@ -203,14 +203,14 @@ const AdminOrders = () => {
                               component={Link}
                               to={`/modifyorder/${order.id}`}
                               size="small"
-                              sx={{ color: 'primary.light', bgcolor: 'rgba(99,102,241,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(99,102,241,0.2)' } }}
+                              sx={{ color: 'primary.dark', bgcolor: 'rgba(234,88,12,0.08)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(234,88,12,0.14)' } }}
                             >
                               <EditOutlinedIcon sx={{ fontSize: 16 }} />
                             </IconButton>
                             <IconButton
                               size="small"
                               onClick={() => { setModalOrder(order); setConfirmId(''); setDeleteError(''); setShowModal(true); }}
-                              sx={{ color: 'error.light', bgcolor: 'rgba(239,68,68,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(239,68,68,0.2)' } }}
+                              sx={{ color: 'error.main', bgcolor: 'rgba(220,38,38,0.1)', borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(220,38,38,0.2)' } }}
                             >
                               <DeleteOutlineIcon sx={{ fontSize: 16 }} />
                             </IconButton>

@@ -78,10 +78,10 @@ const ListProduct = () => {
   };
 
   const categoryColor = (cat) => ({
-    women: { bgcolor: 'rgba(236,72,153,0.12)', color: '#f472b6' },
-    men: { bgcolor: 'rgba(59,130,246,0.12)', color: '#60a5fa' },
-    kid: { bgcolor: 'rgba(16,185,129,0.12)', color: '#34d399' },
-  }[cat] || { bgcolor: 'rgba(99,102,241,0.12)', color: '#818cf8' });
+    women: { bgcolor: 'rgba(234,88,12,0.08)', color: '#c2410c' },
+    men: { bgcolor: 'rgba(28,25,23,0.06)', color: '#57534e' },
+    kid: { bgcolor: 'rgba(217,119,6,0.1)', color: '#b45309' },
+  }[cat] || { bgcolor: 'rgba(28,25,23,0.06)', color: '#57534e' });
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3 } }}>
@@ -132,7 +132,7 @@ const ListProduct = () => {
                             src={product.image}
                             alt={product.name}
                             variant="rounded"
-                            sx={{ width: 40, height: 40, bgcolor: 'rgba(15,23,42,0.5)', border: '1px solid rgba(248,250,252,0.08)' }}
+                            sx={{ width: 40, height: 40, bgcolor: 'background.default', border: '1px solid rgba(28,25,23,0.1)' }}
                           />
                           <Typography variant="body2" sx={{ fontWeight: 600, maxWidth: 180 }} noWrap>
                             {product.name}
@@ -152,7 +152,7 @@ const ListProduct = () => {
                         </Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'primary.light' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'primary.dark' }}>
                           ${product.new_price}
                         </Typography>
                       </TableCell>
@@ -169,10 +169,10 @@ const ListProduct = () => {
                             to={`/modifyproduct/${product.id}`}
                             size="small"
                             sx={{
-                              color: 'primary.light',
-                              bgcolor: 'rgba(99,102,241,0.1)',
+                              color: 'primary.dark',
+                              bgcolor: 'rgba(234,88,12,0.08)',
                               borderRadius: 1.5,
-                              '&:hover': { bgcolor: 'rgba(99,102,241,0.2)' },
+                              '&:hover': { bgcolor: 'rgba(234,88,12,0.14)' },
                             }}
                           >
                             <EditOutlinedIcon sx={{ fontSize: 16 }} />
@@ -181,10 +181,10 @@ const ListProduct = () => {
                             size="small"
                             onClick={() => openDeleteModal(product)}
                             sx={{
-                              color: 'error.light',
-                              bgcolor: 'rgba(239,68,68,0.1)',
+                              color: 'error.main',
+                              bgcolor: 'rgba(220,38,38,0.1)',
                               borderRadius: 1.5,
-                              '&:hover': { bgcolor: 'rgba(239,68,68,0.2)' },
+                              '&:hover': { bgcolor: 'rgba(220,38,38,0.2)' },
                             }}
                           >
                             <DeleteOutlineIcon sx={{ fontSize: 16 }} />

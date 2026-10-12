@@ -18,9 +18,9 @@ const RelatedProducts = () => {
             label="You May Also Like"
             sx={{
               mb: 2.5,
-              bgcolor: 'rgba(99,102,241,0.08)',
+              bgcolor: 'rgba(234,88,12,0.08)',
               color: 'primary.main',
-              border: '1px solid rgba(99,102,241,0.2)',
+              border: '1px solid rgba(234,88,12,0.2)',
               fontWeight: 600,
               fontSize: '0.8rem',
               height: 30,

@@ -172,15 +172,14 @@ const AddProduct = () => {
                   gap: 1.5,
                   height: 180,
                   border: '2px dashed',
-                  borderColor: image ? 'primary.main' : 'rgba(248,250,252,0.15)',
+                  borderColor: image ? 'primary.main' : 'rgba(28,25,23,0.2)',
                   borderRadius: 2.5,
                   cursor: 'pointer',
-                  bgcolor: 'rgba(15,23,42,0.4)',
-                  transition: 'all 0.2s',
+                  bgcolor: 'background.default',
                   overflow: 'hidden',
                   '&:hover': {
                     borderColor: 'primary.main',
-                    bgcolor: 'rgba(99,102,241,0.06)',
+                    bgcolor: 'rgba(234,88,12,0.06)',
                   },
                 }}
               >
@@ -195,7 +194,7 @@ const AddProduct = () => {
                   <>
                     <CloudUploadOutlinedIcon sx={{ fontSize: 36, color: 'text.disabled' }} />
                     <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.light' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.dark' }}>
                         Click to upload
                       </Typography>
                       <Typography variant="caption" sx={{ color: 'text.disabled' }}>

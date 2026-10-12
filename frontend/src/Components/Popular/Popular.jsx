@@ -16,13 +16,13 @@ const Popular = () => {
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 } }}>
           <Chip
-            icon={<WhatshotIcon sx={{ color: '#f59e0b !important', fontSize: '16px !important' }} />}
+            icon={<WhatshotIcon sx={{ color: 'inherit !important', fontSize: '16px !important' }} />}
             label="Trending Now"
             sx={{
               mb: 2.5,
-              bgcolor: 'rgba(245,158,11,0.08)',
-              color: '#d97706',
-              border: '1px solid rgba(245,158,11,0.22)',
+              bgcolor: 'rgba(234,88,12,0.08)',
+              color: 'primary.main',
+              border: '1px solid rgba(234,88,12,0.2)',
               fontWeight: 600,
               fontSize: '0.8rem',
               height: 30,

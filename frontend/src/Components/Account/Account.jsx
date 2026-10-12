@@ -198,14 +198,13 @@ const Profile = () => {
             title="Your Profile"
             subheader="Review your information before editing"
             sx={{
-              background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)",
-              color: "white",
-              "& .MuiCardHeader-subheader": { color: "rgba(255,255,255,0.7)" },
+              borderBottom: "1px solid",
+              borderColor: "divider",
             }}
           />
           <CardContent sx={{ pt: 3 }}>
             <Stack spacing={3}>
-              <Box sx={{ pb: 2, borderBottom: "1px solid #e0e0e0" }}>
+              <Box sx={{ pb: 2, borderBottom: "1px solid", borderColor: "divider" }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
                   <Person sx={{ mr: 1, fontSize: 20, verticalAlign: "middle" }} />
                   Personal Information
@@ -295,9 +294,8 @@ const Profile = () => {
               : "Update your profile information"
           }
           sx={{
-            background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)",
-            color: "white",
-            "& .MuiCardHeader-subheader": { color: "rgba(255,255,255,0.7)" },
+            borderBottom: "1px solid",
+            borderColor: "divider",
           }}
         />
         <CardContent sx={{ pt: 3 }}>

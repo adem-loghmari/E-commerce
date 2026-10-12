@@ -115,46 +115,29 @@ const LoginSignUp = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #2e1065 100%)',
+        bgcolor: 'background.default',
         py: 4,
-        position: 'relative',
-        overflow: 'hidden',
       }}
     >
-      {/* Ambient blobs */}
-      <Box sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <Box sx={{ position: 'absolute', top: '20%', left: '10%', width: 350, height: 350, borderRadius: '50%', background: 'rgba(99,102,241,0.12)', filter: 'blur(80px)' }} />
-        <Box sx={{ position: 'absolute', bottom: '15%', right: '8%', width: 280, height: 280, borderRadius: '50%', background: 'rgba(139,92,246,0.15)', filter: 'blur(60px)' }} />
-      </Box>
-
-      <Container maxWidth="xs" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xs">
         {/* Logo */}
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Typography
             variant="h4"
             sx={{
-              fontWeight: 900,
-              background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              fontWeight: 800,
+              color: 'primary.main',
               mb: 0.5,
             }}
           >
             SHOPPER
           </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {isSignUp ? 'Create your account' : 'Welcome back'}
           </Typography>
         </Box>
 
-        <Card
-          sx={{
-            boxShadow: '0 32px 80px rgba(0,0,0,0.4), 0 8px 24px rgba(99,102,241,0.15)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 3,
-            bgcolor: 'rgba(255,255,255,0.98)',
-          }}
-        >
+        <Card>
           <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
             {/* Tab toggle */}
             <Box
@@ -176,19 +159,11 @@ const LoginSignUp = () => {
                   sx={{
                     borderRadius: 2,
                     py: 0.875,
-                    background: state === tab
-                      ? 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)'
-                      : 'transparent',
+                    bgcolor: state === tab ? 'primary.main' : 'transparent',
                     color: state === tab ? '#fff' : 'text.secondary',
-                    boxShadow: state === tab ? '0 4px 12px rgba(99,102,241,0.3)' : 'none',
                     '&:hover': {
-                      background: state === tab
-                        ? 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)'
-                        : 'rgba(99,102,241,0.06)',
-                      transform: 'none',
-                      boxShadow: state === tab ? '0 4px 12px rgba(99,102,241,0.3)' : 'none',
+                      bgcolor: state === tab ? 'primary.dark' : 'action.hover',
                     },
-                    transition: 'all 0.2s ease',
                     fontSize: '0.9rem',
                     fontWeight: state === tab ? 700 : 500,
                   }}

@@ -16,8 +16,8 @@ const DeleteConfirmDialog = ({ open, onClose, onConfirm, title, subtitle, fields
   <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
     <DialogTitle sx={{ pb: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Box sx={{ width: 36, height: 36, borderRadius: 2, bgcolor: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <WarningAmberIcon sx={{ color: 'error.light', fontSize: 20 }} />
+        <Box sx={{ width: 36, height: 36, borderRadius: 2, bgcolor: 'rgba(220,38,38,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <WarningAmberIcon sx={{ color: 'error.main', fontSize: 20 }} />
         </Box>
         <Box>
           <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1 }}>{title}</Typography>
