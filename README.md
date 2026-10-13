@@ -32,10 +32,11 @@ A full-stack e-commerce application with a customer-facing storefront, persisten
 | Layer | Technology |
 |---|---|
 | Customer Frontend | React 18 (Create React App), React Router v6, MUI |
-| Admin Panel | React 18 + Vite, MUI, Chart.js, Tailwind CSS |
+| Admin Panel | React 18 + Vite, MUI, Chart.js |
 | Backend | Node.js, Express |
 | Database | MongoDB (Mongoose ODM) |
 | Auth | JWT + bcrypt |
+| Security | Helmet (CSP), rate limiting, server-side validation |
 | File Storage | Multer (local disk) |
 
 ---
@@ -68,21 +69,26 @@ cd E-commerce
 
 ### 2. Configure environment variables
 
-Create `backend/.env` with the following:
+Copy `backend/.env.example` to `backend/.env` and fill it in:
 
 ```env
 MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=a_long_random_string
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD_HASH=your_bcrypt_hashed_password
-CORS_ORIGIN=http://localhost:4000
+CORS_ORIGIN=
 PORT=4000
 ```
 
-To generate an admin password hash:
+`CORS_ORIGIN` can stay empty when the backend serves both apps itself (the default setup). The server refuses to start if a required variable is missing.
+
+To generate a JWT secret and an admin password hash:
 ```bash
-node -e "const bcrypt = require('bcrypt'); bcrypt.hash('yourpassword', 10).then(console.log)"
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+node -e "require('bcrypt').hash('yourpassword', 12).then(console.log)"
 ```
+
+Never commit `.env`. Use a strong admin password, since the admin panel is reachable by anyone who knows the URL.
 
 ### 3. Install dependencies
 
@@ -108,21 +114,49 @@ cd backend && npm start
 The app is now available at `http://localhost:4000`.  
 Admin panel: `http://localhost:4000/admin`
 
+### Development
+
+Run the three dev servers together from the repository root:
+
+```bash
+npm install
+npm run dev
+```
+
+Storefront: `http://localhost:3000`, admin: `http://localhost:5173/admin`, API: `http://localhost:4000`.
+
 ---
 
 ## API Overview
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
-| GET | `/api/allproducts` | — | List all products |
-| GET | `/api/search?q=` | — | Search products |
-| POST | `/api/signup` | — | Register user |
-| POST | `/api/login` | — | Login user |
+| GET | `/api/allproducts` | Public | List all products |
+| GET | `/api/search/suggestions?q=` | Public | Search autocomplete |
+| POST | `/api/signup` | Public | Register user |
+| POST | `/api/login` | Public | Login user |
+| POST | `/api/addtocart` | User JWT | Add a product to the cart |
+| POST | `/api/updateProfile` | User JWT | Update profile or change password |
 | POST | `/api/orders` | User JWT | Place an order |
 | POST | `/api/orderslog` | User JWT | Get user's orders |
-| GET | `/api/allorders` | Admin | Get all orders |
-| POST | `/api/addproduct` | Admin | Add a product |
-| POST | `/api/removeproduct` | Admin | Delete a product |
+| POST | `/api/admin/login` | Public | Admin login |
+| GET | `/api/allorders` | Admin JWT | Get all orders |
+| GET | `/api/allusers` | Admin JWT | Get all users |
+| POST | `/api/addproduct` | Admin JWT | Add a product |
+| POST | `/api/removeproduct` | Admin JWT | Delete a product |
+| POST | `/api/upload` | Admin JWT | Upload a product image |
+
+---
+
+## Security
+
+- Passwords are hashed with bcrypt and never returned by the API.
+- Customer sessions use JWTs that expire after 7 days; admin sessions expire after 8 hours.
+- Login and signup endpoints are rate limited.
+- Order totals are calculated on the server from catalog prices, not from values sent by the browser.
+- Request bodies are validated, and search input is escaped before it is used in a query.
+- Image uploads are limited to PNG, JPG and WEBP files up to 5 MB.
+- Helmet sets security headers, including a Content Security Policy.
 
 ---
 
