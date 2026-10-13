@@ -76,7 +76,7 @@ app.use("/admin", (req, res) => {
   res.sendFile(path.join(adminPath, "index.html"));
 });
 
-// ─── Customer frontend (CRA) ───────────────────────────────────────────────────
+// ─── Customer frontend (Vite) ───────────────────────────────────────────────────
 const frontendPath = path.join(__dirname, "../frontend/build");
 
 app.use(express.static(frontendPath));

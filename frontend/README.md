@@ -1,6 +1,6 @@
 # Shopper storefront
 
-The customer-facing React app (Create React App, React Router, MUI).
+The customer-facing React app (Vite, React Router, MUI).
 
 ```bash
 npm install

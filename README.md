@@ -31,7 +31,7 @@ A full-stack e-commerce application with a customer-facing storefront, persisten
 
 | Layer | Technology |
 |---|---|
-| Customer Frontend | React 18 (Create React App), React Router v6, MUI |
+| Customer Frontend | React 18 + Vite, React Router v6, MUI |
 | Admin Panel | React 18 + Vite, MUI, Chart.js |
 | Backend | Node.js, Express |
 | Database | MongoDB (Mongoose ODM) |
@@ -46,7 +46,7 @@ A full-stack e-commerce application with a customer-facing storefront, persisten
 ```
 E-commerce/
 ├── backend/       # Express API + static file serving
-├── frontend/      # Customer-facing React app (CRA)
+├── frontend/      # Customer-facing React app (Vite)
 └── admin/         # Admin dashboard (Vite + React)
 ```
 
