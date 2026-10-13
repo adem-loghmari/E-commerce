@@ -1,5 +1,5 @@
-import React from 'react';
-import data_product from '../Assets/data';
+import React, { useContext } from 'react';
+import { ShopContext } from '../../Context/ShopContext';
 import Item from '../Item/Item';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -8,7 +8,17 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import GridViewIcon from '@mui/icons-material/GridView';
 
-const RelatedProducts = () => {
+const MAX_RELATED = 4;
+
+const RelatedProducts = ({ product }) => {
+  const { all_products } = useContext(ShopContext);
+  // Other products from the same category as the one being viewed.
+  const related = all_products
+    .filter((item) => item.category === product.category && item.id !== product.id)
+    .slice(0, MAX_RELATED);
+
+  if (related.length === 0) return null;
+
   return (
     <Box component="section" sx={{ width: '100%', py: { xs: 6, md: 9 }, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
@@ -32,8 +42,8 @@ const RelatedProducts = () => {
         </Box>
 
         <Grid container spacing={{ xs: 2, md: 3 }}>
-          {data_product.map((item, i) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+          {related.map((item) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
               <Item
                 id={item.id}
                 name={item.name}

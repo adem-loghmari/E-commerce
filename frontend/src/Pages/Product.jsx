@@ -33,7 +33,7 @@ const Product = () => {
     <Box sx={{ pt: 8, pb: 4 }}>
       <ProductDisplay product={product} />
       <DescriptionBox />
-      <RelatedProducts />
+      <RelatedProducts product={product} />
     </Box>
   );
 };

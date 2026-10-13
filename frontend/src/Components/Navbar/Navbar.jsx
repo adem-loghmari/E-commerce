@@ -25,8 +25,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import logo from '../Assets/logo.png';
 import { ShopContext } from '../../Context/ShopContext';
 import SearchBar from '../Search/SearchBar';
-import { useTheme } from '@mui/material/styles';
-import { useColorMode } from '../../context/ColorModeContext';
+import { useColorMode } from '../../Context/ColorModeContext';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 
@@ -34,7 +33,6 @@ const Navbar = () => {
   const location = useLocation();
   const { getTotalCartItems } = useContext(ShopContext);
   const { mode, toggle } = useColorMode();
-  const muiTheme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (path) => {

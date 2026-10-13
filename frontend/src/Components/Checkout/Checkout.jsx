@@ -46,7 +46,7 @@ const Checkout = () => {
       const token = localStorage.getItem('auth-token');
       if (!token) throw new Error('User not authenticated');
 
-      const orderData = { cartSnapshot, total: getTotalCartAmount(), shippingAddress: shippingInfo, paymentMethod };
+      const orderData = { cartSnapshot, shippingAddress: shippingInfo, paymentMethod };
       const response = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json', 'auth-token': token }, body: JSON.stringify(orderData) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to place order');

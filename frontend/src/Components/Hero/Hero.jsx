@@ -24,7 +24,7 @@ const Hero = () => {
       <Box sx={{ maxWidth: 780, px: 3, textAlign: 'center' }}>
         <Chip
           icon={<LocalFireDepartmentIcon sx={{ color: 'inherit !important', fontSize: '16px !important' }} />}
-          label="New Season — 2024 Collections"
+          label="New Season Collections"
           sx={{
             mb: 3.5,
             bgcolor: 'background.paper',

@@ -144,7 +144,7 @@ const Footer = () => {
           gap: 2,
         }}>
           <Typography variant="caption" sx={{ opacity: 0.45 }}>
-            © 2024 SHOPPER. All rights reserved.
+            © {new Date().getFullYear()} SHOPPER. All rights reserved.
           </Typography>
           <Stack direction="row" spacing={3}>
             {['Privacy Policy', 'Terms of Use', 'Sitemap'].map((item) => (

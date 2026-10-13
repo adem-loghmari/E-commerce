@@ -13,7 +13,6 @@ import {
   Typography,
   Stack,
   Divider,
-  Paper,
 } from "@mui/material";
 import { Person, Lock, ArrowBack } from "@mui/icons-material";
 
@@ -102,7 +101,8 @@ const Profile = () => {
         if (formData.phone) payload.phone = formData.phone;
       }
       if (editMode === "password" || editMode === "all") {
-        if (formData.newPassword) payload.password = formData.newPassword;
+        payload.currentPassword = formData.currentPassword;
+        payload.newPassword = formData.newPassword;
       }
 
       // Add the user ID from the token (handled by fetchUser middleware)
@@ -121,7 +121,8 @@ const Profile = () => {
         throw new Error(data.error || "Update failed");
       }
 
-      setSuccessMessage("Profile updated successfully!");
+      if (data.user?.name) localStorage.setItem("user-name", data.user.name);
+      setSuccessMessage("Profile updated successfully.");
       setTimeout(() => {
         navigate("/profile");
       }, 1500);

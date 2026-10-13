@@ -2,12 +2,11 @@ import React, { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 import ShopContextProvider from './Context/ShopContext';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import getTheme from './theme';
-import { ColorModeContext } from './context/ColorModeContext';
+import { ColorModeContext } from './Context/ColorModeContext';
 
 const Root = () => {
   const [mode, setMode] = useState(() => localStorage.getItem('colorMode') || 'light');
@@ -41,5 +40,3 @@ root.render(
     <Root />
   </React.StrictMode>
 );
-
-reportWebVitals();

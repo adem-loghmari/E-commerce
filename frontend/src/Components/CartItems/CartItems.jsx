@@ -19,13 +19,9 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const CartItems = () => {
-  const { all_products, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(ShopContext);
+  const { all_products, cartItems, addToCart, removeFromCart, removeLineFromCart, getTotalCartAmount } = useContext(ShopContext);
   const cartProducts = all_products.filter((p) => cartItems[p.id] > 0);
 
-  const handleDelete = (id) => {
-    const qty = cartItems[id];
-    for (let i = 0; i < qty; i++) removeFromCart(id);
-  };
 
   return (
     <Box component="section" sx={{ width: '100%', py: { xs: 4, md: 6 }, bgcolor: 'background.default', minHeight: '60vh' }}>
@@ -102,7 +98,7 @@ const CartItems = () => {
                         ${(p.new_price * cartItems[p.id]).toFixed(2)}
                       </Typography>
 
-                      <IconButton size="small" onClick={() => handleDelete(p.id)}
+                      <IconButton size="small" onClick={() => removeLineFromCart(p.id)}
                         sx={{ color: 'text.disabled', '&:hover': { color: 'error.main', bgcolor: 'rgba(220,38,38,0.08)' } }}>
                         <DeleteOutlineIcon sx={{ fontSize: 18 }} />
                       </IconButton>
