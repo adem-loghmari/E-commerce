@@ -7,7 +7,7 @@ const adminAuth = (req, res, next) => {
   }
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET);
-    if (data.role !== "admin") {
+    if (data.role !== "admin" || !data.exp) {
       return res.status(403).json({ errors: "Forbidden" });
     }
     next();

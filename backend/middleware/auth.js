@@ -7,7 +7,8 @@ const fetchUser = (req, res, next) => {
   }
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET);
-    if (!data.user || !Number.isInteger(data.user.id)) {
+    // Tokens issued before expiry was introduced carry no "exp" claim and are no longer accepted.
+    if (!data.exp || !data.user || !Number.isInteger(data.user.id)) {
       return res.status(401).json({ errors: "please authenticate using a valid token" });
     }
     req.user = data.user;
