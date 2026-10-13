@@ -12,7 +12,6 @@
   import TableHead from '@mui/material/TableHead';
   import TableRow from '@mui/material/TableRow';
   import Chip from '@mui/material/Chip';
-  import Paper from '@mui/material/Paper';
   import Avatar from '@mui/material/Avatar';
   import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
   import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
@@ -83,10 +82,13 @@
       categories[p.category].count++;
       categories[p.category].sold += p.sold || 0;
     });
-    const categoryLabels = Object.keys(categories);
-    const soldData = Object.values(categories).map((v) => v.sold);
+    // Serialized so the chart effect only re-runs when the numbers actually change.
+    const chartKey = JSON.stringify(categories);
 
     useEffect(() => {
+      const byCategory = JSON.parse(chartKey);
+      const categoryLabels = Object.keys(byCategory);
+      const soldData = Object.values(byCategory).map((v) => v.sold);
       if (chartRef.current && categoryLabels.length > 0) {
         if (chartInstanceRef.current) chartInstanceRef.current.destroy();
         chartInstanceRef.current = new Chart(chartRef.current, {
@@ -134,7 +136,7 @@
         });
       }
       return () => { if (chartInstanceRef.current) { chartInstanceRef.current.destroy(); chartInstanceRef.current = null; } };
-    }, [categoryLabels.join(','), soldData.join(',')]);
+    }, [chartKey]);
 
     if (loading) {
       return (
@@ -156,7 +158,7 @@
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>Dashboard</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Welcome back — here's what's happening with your store today.
+              Welcome back. Here is what is happening with your store today.
             </Typography>
           </Box>
 

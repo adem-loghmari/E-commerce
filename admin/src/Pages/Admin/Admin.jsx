@@ -7,7 +7,7 @@ import AddProduct from '../../Components/AddProduct/AddProduct';
 import ListProduct from '../../Components/ListProduct/ListProduct';
 import Dashboard from '../../Components/Dashboard/Dashboard';
 import { AdminLogin } from '../../Components/AdminLogin/AdminLogin';
-import Navbar, { NAVBAR_HEIGHT, SIDEBAR_WIDTH } from '../../Components/Navbar/Navbar';
+import Navbar, { NAVBAR_HEIGHT } from '../../Components/Navbar/Navbar';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import ProtectedRoute from '../../Components/ProtectedRoute/ProtectedRoute';
 import ModifyProduct from '../../Components/ModifyProduct/ModifyProduct';

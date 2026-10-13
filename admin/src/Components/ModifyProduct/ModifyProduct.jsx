@@ -14,7 +14,6 @@ import Stack from '@mui/material/Stack';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import upload_area from '../../assets/upload_area.svg';
 import adminFetch from '../../utils/adminFetch';
 
@@ -28,6 +27,7 @@ const ModifyProduct = () => {
 
   useEffect(() => {
     if (routeId) { setProductId(routeId); handleFetch(routeId); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routeId]);
 
   const handleFetch = async (fetchId) => {

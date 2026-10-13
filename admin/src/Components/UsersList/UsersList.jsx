@@ -48,7 +48,7 @@ const UsersList = () => {
       return;
     }
     setDeleting(true);
-    const data = await adminFetch('/api/removeUser', {
+    const data = await adminFetch('/api/removeuser', {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: modalUser.id }),

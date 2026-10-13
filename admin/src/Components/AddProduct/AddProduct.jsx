@@ -12,7 +12,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import upload_area from '../../assets/upload_area.svg';
 import adminFetch from '../../utils/adminFetch';
 
 const AddProduct = () => {

@@ -17,7 +17,6 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
@@ -38,6 +37,7 @@ const ModifyOrder = () => {
   useEffect(() => {
     fetch('/api/allproducts').then((r) => r.json()).then(setAllProducts);
     if (routeId) handleFetch(routeId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routeId]);
 
   const handleFetch = async (fetchId) => {

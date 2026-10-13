@@ -61,7 +61,7 @@ const ListProduct = () => {
       return;
     }
     setDeleting(true);
-    const data = await adminFetch('/api/removeProduct', {
+    const data = await adminFetch('/api/removeproduct', {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: modalProduct.id }),

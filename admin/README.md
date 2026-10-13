@@ -1,8 +1,11 @@
-# React + Vite
+# Shopper admin panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The admin dashboard (Vite, React, MUI, Chart.js). It is served under `/admin`.
 
-Currently, two official plugins are available:
+```bash
+npm install
+npm start        # dev server on http://localhost:5173/admin, API calls are proxied to http://localhost:4000
+npm run build    # production build in dist/, served by the backend at /admin
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+See the [root README](../README.md) for the full setup.

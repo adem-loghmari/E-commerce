@@ -4,20 +4,19 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { clearAdminSession } from '../../utils/adminFetch';
 
 export const NAVBAR_HEIGHT = 64;
 export const SIDEBAR_WIDTH = 260;
 
-const Navbar = ({ onMobileToggle }) => {
+const Navbar = () => {
   const handleLogout = () => {
-    localStorage.removeItem('admin-token');
-    window.location.href = '/admin/login';
+    clearAdminSession();
   };
 
   return (
