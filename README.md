@@ -1,5 +1,7 @@
 # Shopper — Full-Stack E-Commerce Platform
 
+[![CI](https://github.com/adem-loghmari/E-commerce/actions/workflows/ci.yml/badge.svg)](https://github.com/adem-loghmari/E-commerce/actions/workflows/ci.yml)
+
 Live demo: https://smartshop-lqyf.onrender.com
 
 A full-stack e-commerce application with a customer-facing storefront, persistent shopping cart, JWT authentication, order management, and a separate admin dashboard — all served from a single Node.js backend.
