@@ -140,7 +140,8 @@
         });
       }
       return () => { if (chartInstanceRef.current) { chartInstanceRef.current.destroy(); chartInstanceRef.current = null; } };
-    }, [chartKey]);
+    // loading is a dependency because the canvas only exists once the spinner is gone.
+    }, [chartKey, loading]);
 
     if (loading) {
       return (
