@@ -1,14 +1,41 @@
 const Users = require("../models/UsersModel");
-const Product = require("../models/ProductModel");
+const Order = require("../models/OrderModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { isNonEmptyString, isEmail, isPositiveInt } = require("../utils/validate");
 
 const SALT_ROUNDS = 10;
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 72; // bcrypt ignores anything past 72 bytes
+const MAX_CART_QUANTITY = 99;
+const TOKEN_TTL = "7d";
+
+const signToken = (user) =>
+  jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET, { expiresIn: TOKEN_TTL });
+
+const isValidPassword = (v) =>
+  typeof v === "string" && v.length >= MIN_PASSWORD_LENGTH && v.length <= MAX_PASSWORD_LENGTH;
+
+// Never send the password hash to a client.
+const publicUser = (user) => ({
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  phone: user.phone,
+  date: user.date,
+});
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await Users.find();
-    res.status(200).json(users);
+    const [users, totals] = await Promise.all([
+      Users.find({}, { password: 0, cartData: 0 }).lean(),
+      Order.aggregate([
+        { $match: { status: { $ne: "cancelled" } } },
+        { $group: { _id: "$user_id", spent: { $sum: "$total" } } },
+      ]),
+    ]);
+    const spentByUser = new Map(totals.map((t) => [t._id, t.spent]));
+    res.status(200).json(users.map((u) => ({ ...u, spent: spentByUser.get(u.id) || 0 })));
   } catch {
     res.status(500).json({ message: "Error fetching users" });
   }
@@ -16,32 +43,45 @@ const getAllUsers = async (req, res) => {
 
 const signupUser = async (req, res) => {
   try {
-    const existing = await Users.findOne({ email: req.body.email });
+    const name = req.body.username || req.body.name;
+    const { email, password, phone } = req.body;
+
+    if (!isNonEmptyString(name, 80)) {
+      return res.status(400).json({ success: false, errors: "Please enter your name" });
+    }
+    if (!isEmail(email)) {
+      return res.status(400).json({ success: false, errors: "Please enter a valid email address" });
+    }
+    if (!isValidPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        errors: `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters`,
+      });
+    }
+    if (phone !== undefined && phone !== "" && !isNonEmptyString(phone, 30)) {
+      return res.status(400).json({ success: false, errors: "Please enter a valid phone number" });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const existing = await Users.findOne({ email: normalizedEmail });
     if (existing) {
       return res.status(400).json({ success: false, errors: "existing user found with same email address" });
     }
 
-    const num_products = await Product.countDocuments();
-    const cart = {};
-    for (let i = 0; i < num_products; i++) cart[i] = 0;
-
     const lastUser = await Users.findOne().sort({ id: -1 });
     const id = lastUser ? lastUser.id + 1 : 1;
 
-    const hashedPassword = await bcrypt.hash(req.body.password, SALT_ROUNDS);
-
     const user = new Users({
       id,
-      name: req.body.username || req.body.name,
-      email: req.body.email,
-      password: hashedPassword,
-      phone: req.body.phone || "",
-      cartData: cart,
+      name: name.trim(),
+      email: normalizedEmail,
+      password: await bcrypt.hash(password, SALT_ROUNDS),
+      phone: phone ? phone.trim() : "",
+      cartData: {},
     });
     await user.save();
 
-    const token = jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET);
-    res.json({ success: true, token, name: user.name });
+    res.json({ success: true, token: signToken(user), name: user.name });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ success: false, errors: "User already exists" });
@@ -52,14 +92,21 @@ const signupUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const user = await Users.findOne({ email: req.body.email });
-    if (!user) return res.json({ success: false, errors: "Wrong Email" });
+    const { email, password } = req.body;
+    // Type checks also stop query-operator objects such as { "$ne": null } from reaching MongoDB.
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({ success: false, errors: "Email and password are required" });
+    }
 
-    const passCompare = await bcrypt.compare(req.body.password, user.password);
-    if (!passCompare) return res.json({ success: false, errors: "Wrong Password" });
+    const trimmed = email.trim();
+    const user = await Users.findOne({ email: { $in: [trimmed, trimmed.toLowerCase()] } });
+    // Same message for both cases so the response does not reveal which emails are registered.
+    const passCompare = user ? await bcrypt.compare(password, user.password) : false;
+    if (!passCompare) {
+      return res.json({ success: false, errors: "Incorrect email or password" });
+    }
 
-    const token = jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET);
-    res.json({ success: true, token, name: user.name });
+    res.json({ success: true, token: signToken(user), name: user.name });
   } catch {
     res.status(500).json({ success: false, errors: "Login failed. Please try again." });
   }
@@ -67,23 +114,29 @@ const loginUser = async (req, res) => {
 
 const removeUser = async (req, res) => {
   try {
-    if (!req.body.id) return res.status(400).json({ success: false, error: "User id required" });
-    const deleted = await Users.findOneAndDelete({ id: req.body.id });
+    const id = Number(req.body.id);
+    if (!isPositiveInt(id)) return res.status(400).json({ success: false, error: "User id required" });
+    const deleted = await Users.findOneAndDelete({ id });
     if (!deleted) return res.status(404).json({ success: false, error: "User not found" });
-    res.json({ success: true, id: req.body.id });
+    res.json({ success: true, id });
   } catch {
     res.status(500).json({ success: false, error: "Failed to remove user" });
   }
 };
 
+// Cart updates run as single atomic pipeline updates so rapid clicks cannot overwrite each other.
+const cartQuantity = (itemId) => ({ $ifNull: [`$cartData.${itemId}`, 0] });
+
 const addToCart = async (req, res) => {
   try {
-    const userData = await Users.findOne({ id: req.user.id });
-    if (!userData) return res.status(404).json({ success: false, error: "User not found" });
+    const itemId = Number(req.body.itemId);
+    if (!isPositiveInt(itemId)) return res.status(400).json({ success: false, error: "Invalid product id" });
+    const count = isPositiveInt(req.body.count) ? Math.min(req.body.count, MAX_CART_QUANTITY) : 1;
 
-    const count = Number.isInteger(req.body.count) && req.body.count > 0 ? req.body.count : 1;
-    userData.cartData[req.body.itemId] = (userData.cartData[req.body.itemId] || 0) + count;
-    await Users.findOneAndUpdate({ id: req.user.id }, { cartData: userData.cartData });
+    const result = await Users.updateOne({ id: req.user.id }, [
+      { $set: { [`cartData.${itemId}`]: { $min: [MAX_CART_QUANTITY, { $add: [cartQuantity(itemId), count] }] } } },
+    ]);
+    if (!result.matchedCount) return res.status(404).json({ success: false, error: "User not found" });
     res.json({ success: true });
   } catch {
     res.status(500).json({ success: false, error: "Failed to update cart" });
@@ -92,14 +145,13 @@ const addToCart = async (req, res) => {
 
 const removefromcart = async (req, res) => {
   try {
-    const userData = await Users.findOne({ id: req.user.id });
-    if (!userData) return res.status(404).json({ success: false, error: "User not found" });
+    const itemId = Number(req.body.itemId);
+    if (!isPositiveInt(itemId)) return res.status(400).json({ success: false, error: "Invalid product id" });
+    // removeAll clears the whole line; otherwise one unit is removed.
+    const next = req.body.removeAll === true ? 0 : { $max: [0, { $subtract: [cartQuantity(itemId), 1] }] };
 
-    const current = userData.cartData[req.body.itemId] || 0;
-    if (current <= 0) return res.status(400).json({ success: false, error: "Item not in cart" });
-
-    userData.cartData[req.body.itemId] = current - 1;
-    await Users.findOneAndUpdate({ id: req.user.id }, { cartData: userData.cartData });
+    const result = await Users.updateOne({ id: req.user.id }, [{ $set: { [`cartData.${itemId}`]: next } }]);
+    if (!result.matchedCount) return res.status(404).json({ success: false, error: "User not found" });
     res.json({ success: true });
   } catch {
     res.status(500).json({ success: false, error: "Failed to update cart" });
@@ -110,41 +162,66 @@ const getCart = async (req, res) => {
   try {
     const userData = await Users.findOne({ id: req.user.id });
     if (!userData) return res.status(404).json({ success: false, error: "User not found" });
-    res.json(userData.cartData);
+    res.json(userData.cartData || {});
   } catch {
     res.status(500).json({ success: false, error: "Failed to fetch cart" });
   }
 };
 
 const updateProfile = async (req, res) => {
-  const id = req.user.id;
-  if (!id) return res.status(400).json({ success: false, error: "User id required" });
-
-  const fields = { ...req.body };
-  Object.keys(fields).forEach((key) => {
-    if (fields[key] === undefined || fields[key] === "") delete fields[key];
-  });
-
   try {
-    const updated = await Users.findOneAndUpdate(
-      { id: Number(id) },
-      { $set: fields },
-      { new: true }
-    );
-    if (!updated) return res.status(404).json({ success: false, error: "User not found" });
-    res.json({ success: true, user: updated });
-  } catch {
+    const { name, email, phone, currentPassword, newPassword } = req.body;
+    const user = await Users.findOne({ id: req.user.id });
+    if (!user) return res.status(404).json({ success: false, error: "User not found" });
+
+    // Only these fields can be changed; everything else in the body is ignored.
+    const fields = {};
+
+    if (name !== undefined && name !== "") {
+      if (!isNonEmptyString(name, 80)) return res.status(400).json({ success: false, error: "Please enter a valid name" });
+      fields.name = name.trim();
+    }
+    if (phone !== undefined && phone !== "") {
+      if (!isNonEmptyString(phone, 30)) return res.status(400).json({ success: false, error: "Please enter a valid phone number" });
+      fields.phone = phone.trim();
+    }
+    if (email !== undefined && email !== "") {
+      if (!isEmail(email)) return res.status(400).json({ success: false, error: "Please enter a valid email address" });
+      const normalizedEmail = email.trim().toLowerCase();
+      if (normalizedEmail !== user.email) {
+        const taken = await Users.findOne({ email: normalizedEmail, id: { $ne: user.id } });
+        if (taken) return res.status(400).json({ success: false, error: "That email address is already in use" });
+        fields.email = normalizedEmail;
+      }
+    }
+    if (newPassword !== undefined && newPassword !== "") {
+      if (typeof currentPassword !== "string" || !(await bcrypt.compare(currentPassword, user.password))) {
+        return res.status(400).json({ success: false, error: "Current password is incorrect" });
+      }
+      if (!isValidPassword(newPassword)) {
+        return res.status(400).json({
+          success: false,
+          error: `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters`,
+        });
+      }
+      fields.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
+
+    const updated = await Users.findOneAndUpdate({ id: user.id }, { $set: fields }, { new: true });
+    res.json({ success: true, user: publicUser(updated) });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, error: "That email address is already in use" });
+    }
     res.status(500).json({ success: false, error: "Update failed" });
   }
 };
 
 const getUser = async (req, res) => {
   try {
-    const id = req.user.id;
-    if (!id) return res.status(400).json({ error: "User id required" });
-    const user = await Users.findOne({ id });
+    const user = await Users.findOne({ id: req.user.id });
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    res.json(publicUser(user));
   } catch {
     res.status(500).json({ error: "Failed to fetch user" });
   }

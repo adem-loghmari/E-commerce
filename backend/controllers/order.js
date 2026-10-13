@@ -1,51 +1,84 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/ProductModel");
 const Users = require("../models/UsersModel");
+const { isNonEmptyString, isPositiveInt } = require("../utils/validate");
+
+const PAYMENT_METHODS = ["cash", "card", "paypal"];
+const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled", "completed"];
+const MAX_LINE_QUANTITY = 99;
+
+// Validates a { productId: quantity } map against the catalog and prices it from the database,
+// so totals never depend on numbers sent by the client.
+const priceCart = async (cartSnapshot) => {
+  if (!cartSnapshot || typeof cartSnapshot !== "object" || Array.isArray(cartSnapshot)) return null;
+  const entries = Object.entries(cartSnapshot).map(([id, qty]) => [Number(id), Number(qty)]);
+  if (entries.length === 0 || entries.length > 200) return null;
+  if (!entries.every(([id, qty]) => isPositiveInt(id) && isPositiveInt(qty) && qty <= MAX_LINE_QUANTITY)) return null;
+
+  const products = await Product.find({ id: { $in: entries.map(([id]) => id) } }, { id: 1, new_price: 1 }).lean();
+  if (products.length !== entries.length) return null;
+
+  const priceById = new Map(products.map((p) => [p.id, p.new_price]));
+  const total = entries.reduce((sum, [id, qty]) => sum + priceById.get(id) * qty, 0);
+  return { items: Object.fromEntries(entries), total: Math.round(total * 100) / 100 };
+};
+
+const cleanAddress = (address) => {
+  if (!address || typeof address !== "object") return null;
+  const { street, city, state, zipCode, country } = address;
+  if (![street, city, state, zipCode].every((v) => isNonEmptyString(v, 120))) return null;
+  return {
+    street: street.trim(),
+    city: city.trim(),
+    state: state.trim(),
+    zipCode: zipCode.trim(),
+    country: isNonEmptyString(country, 60) ? country.trim() : "US",
+  };
+};
 
 const createOrder = async (req, res) => {
   try {
-    const { cartSnapshot, total, shippingAddress, paymentMethod } = req.body;
+    const { cartSnapshot, shippingAddress, paymentMethod } = req.body;
 
-    const lastOrder = await Order.findOne().sort({ id: -1 });
-    const id = lastOrder ? lastOrder.id + 1 : 1;
+    const address = cleanAddress(shippingAddress);
+    if (!address) {
+      return res.status(400).json({ success: false, message: "Please fill in all required shipping fields" });
+    }
+    if (!PAYMENT_METHODS.includes(paymentMethod)) {
+      return res.status(400).json({ success: false, message: "Please select a valid payment method" });
+    }
+    const priced = await priceCart(cartSnapshot);
+    if (!priced) {
+      return res.status(400).json({ success: false, message: "Your cart is empty or contains invalid items" });
+    }
 
     const userData = await Users.findOne({ id: req.user.id });
     if (!userData) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const newOrder = new Order({
+    const lastOrder = await Order.findOne().sort({ id: -1 });
+    const id = lastOrder ? lastOrder.id + 1 : 1;
+
+    const savedOrder = await new Order({
       id,
       user: userData._id,
       user_name: userData.name,
       user_phone: userData.phone,
       user_id: userData.id,
-      cartSnapshot,
-      total,
-      shippingAddress,
+      cartSnapshot: priced.items,
+      total: priced.total,
+      shippingAddress: address,
       paymentMethod,
       status: "pending",
-    });
+    }).save();
 
-    const savedOrder = await newOrder.save();
-
-    // Reset user's cart
-    const numProducts = await Product.countDocuments();
-    await Users.findOneAndUpdate(
-      { id: req.user.id },
-      {
-        $set: {
-          cartData: Object.fromEntries(
-            Array.from({ length: numProducts }, (_, i) => [i + 1, 0])
-          ),
-        },
-      }
-    );
+    await Users.updateOne({ id: req.user.id }, { $set: { cartData: {} } });
 
     res.status(201).json({ success: true, order: savedOrder });
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(500).json({ success: false, message: "Failed to create order", error: error.message });
+    res.status(500).json({ success: false, message: "Failed to create order" });
   }
 };
 
@@ -79,7 +112,7 @@ const removeOrder = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { id, status } = req.body;
-    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled", "completed"];
+    const validStatuses = ORDER_STATUSES;
     if (!id) {
       return res.status(400).json({ success: false, message: "Order id is required" });
     }
@@ -103,7 +136,7 @@ const updateOrderStatus = async (req, res) => {
 
 const modifyOrder = async (req, res) => {
   try {
-    const { id, user_name, shippingAddress, status, paymentMethod, cartSnapshot, total } = req.body;
+    const { id, user_name, shippingAddress, status, paymentMethod, cartSnapshot } = req.body;
     if (!id) {
       return res.status(400).json({ success: false, message: "Order id is required" });
     }
@@ -114,12 +147,36 @@ const modifyOrder = async (req, res) => {
     }
 
     const updateFields = {};
-    if (user_name !== undefined) updateFields.user_name = user_name;
-    if (shippingAddress) updateFields.shippingAddress = shippingAddress;
-    if (status) updateFields.status = status;
-    if (paymentMethod) updateFields.paymentMethod = paymentMethod;
-    if (cartSnapshot) updateFields.cartSnapshot = cartSnapshot;
-    if (total !== undefined) updateFields.total = total;
+    if (user_name !== undefined) {
+      if (!isNonEmptyString(user_name, 80)) {
+        return res.status(400).json({ success: false, message: "Invalid customer name" });
+      }
+      updateFields.user_name = user_name.trim();
+    }
+    if (shippingAddress) {
+      // The admin form has no state field, so keep the stored one when it is not sent.
+      const address = cleanAddress({ ...order.toObject().shippingAddress, ...shippingAddress });
+      if (!address) return res.status(400).json({ success: false, message: "Invalid shipping address" });
+      updateFields.shippingAddress = address;
+    }
+    if (status) {
+      if (!ORDER_STATUSES.includes(status)) {
+        return res.status(400).json({ success: false, message: "Invalid status" });
+      }
+      updateFields.status = status;
+    }
+    if (paymentMethod) {
+      if (!PAYMENT_METHODS.includes(paymentMethod)) {
+        return res.status(400).json({ success: false, message: "Invalid payment method" });
+      }
+      updateFields.paymentMethod = paymentMethod;
+    }
+    if (cartSnapshot) {
+      const priced = await priceCart(cartSnapshot);
+      if (!priced) return res.status(400).json({ success: false, message: "Invalid order items" });
+      updateFields.cartSnapshot = priced.items;
+      updateFields.total = priced.total;
+    }
 
     const updated = await Order.findOneAndUpdate(
       { id: Number(id) },

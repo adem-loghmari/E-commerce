@@ -1,4 +1,49 @@
 const Product = require("../models/ProductModel");
+const { isNonEmptyString, isPositiveInt, escapeRegex } = require("../utils/validate");
+
+const CATEGORIES = ["women", "men", "kid"];
+
+// Reads the editable product fields from a request body. Returns { error } on bad input.
+// With partial = true, missing fields are skipped instead of rejected.
+const readProductFields = (body, partial = false) => {
+  const fields = {};
+  const has = (key) => body[key] !== undefined && body[key] !== "";
+
+  if (has("name")) {
+    if (!isNonEmptyString(body.name, 150)) return { error: "Invalid product name" };
+    fields.name = body.name.trim();
+  } else if (!partial) return { error: "Product name is required" };
+
+  if (has("image")) {
+    // Only images served by this app (uploaded through /api/upload) are accepted.
+    if (typeof body.image !== "string" || !/^\/images\/[\w.-]+$/.test(body.image)) {
+      return { error: "Invalid product image" };
+    }
+    fields.image = body.image;
+  } else if (!partial) return { error: "Product image is required" };
+
+  if (has("category")) {
+    if (!CATEGORIES.includes(body.category)) return { error: "Invalid category" };
+    fields.category = body.category;
+  } else if (!partial) return { error: "Category is required" };
+
+  for (const key of ["new_price", "old_price"]) {
+    if (has(key)) {
+      const price = Number(body[key]);
+      if (!Number.isFinite(price) || price < 0 || price > 1000000) return { error: "Invalid price" };
+      fields[key] = price;
+    } else if (!partial) return { error: "Both prices are required" };
+  }
+
+  for (const key of ["stock", "sold"]) {
+    if (has(key)) {
+      const amount = Number(body[key]);
+      if (!Number.isInteger(amount) || amount < 0) return { error: `Invalid ${key} value` };
+      fields[key] = amount;
+    }
+  }
+  return { fields };
+};
 
 const getAllProducts = async (req, res) => {
   try {
@@ -11,20 +56,15 @@ const getAllProducts = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+    const { fields, error } = readProductFields(req.body);
+    if (error) return res.status(400).json({ success: false, error });
+
     const lastProduct = await Product.findOne().sort({ id: -1 });
     const id = lastProduct ? lastProduct.id + 1 : 1;
 
-    const product = new Product({
-      id,
-      name: req.body.name,
-      image: req.body.image,
-      category: req.body.category,
-      new_price: req.body.new_price,
-      old_price: req.body.old_price,
-      stock: req.body.stock,
-    });
+    const product = new Product({ id, ...fields, sold: 0 });
     await product.save();
-    res.json({ success: true, name: req.body.name });
+    res.json({ success: true, name: product.name });
   } catch {
     res.status(500).json({ success: false, error: "Failed to add product" });
   }
@@ -32,9 +72,11 @@ const addProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const deleted = await Product.findOneAndDelete({ id: req.body.id });
+    const id = Number(req.body.id);
+    if (!isPositiveInt(id)) return res.status(400).json({ success: false, error: "Product id required" });
+    const deleted = await Product.findOneAndDelete({ id });
     if (!deleted) return res.status(404).json({ success: false, error: "Product not found" });
-    res.json({ success: true, id: req.body.id });
+    res.json({ success: true, id });
   } catch {
     res.status(500).json({ success: false, error: "Failed to delete product" });
   }
@@ -42,6 +84,7 @@ const deleteProduct = async (req, res) => {
 
 const uploadImage = async (req, res) => {
   try {
+    if (!req.file) return res.status(400).json({ success: 0, error: "No image uploaded" });
     res.json({ success: 1, image_url: `/images/${req.file.filename}` });
   } catch {
     res.status(500).json({ success: 0, error: "Image upload failed" });
@@ -49,19 +92,14 @@ const uploadImage = async (req, res) => {
 };
 
 const modifyProduct = async (req, res) => {
-  const { id, ...fields } = req.body;
-  if (!id) return res.status(400).json({ success: false, error: "Product id required" });
+  const id = Number(req.body.id);
+  if (!isPositiveInt(id)) return res.status(400).json({ success: false, error: "Product id required" });
 
-  Object.keys(fields).forEach((key) => {
-    if (fields[key] === undefined || fields[key] === "") delete fields[key];
-  });
+  const { fields, error } = readProductFields(req.body, true);
+  if (error) return res.status(400).json({ success: false, error });
 
   try {
-    const updated = await Product.findOneAndUpdate(
-      { id: Number(id) },
-      { $set: fields },
-      { new: true }
-    );
+    const updated = await Product.findOneAndUpdate({ id }, { $set: fields }, { new: true });
     if (!updated) return res.status(404).json({ success: false, error: "Product not found" });
     res.json({ success: true, product: updated });
   } catch {
@@ -103,13 +141,13 @@ const getPopularWomen = async (req, res) => {
 const searchProducts = async (req, res) => {
   try {
     const searchTerm = req.query.q;
-    if (!searchTerm || searchTerm.trim().length < 2) {
+    if (typeof searchTerm !== "string" || searchTerm.trim().length < 2 || searchTerm.length > 100) {
       return res.status(400).json({ success: false, error: "Search term must be at least 2 characters" });
     }
     const results = await Product.find({
       $or: [
-        { name: { $regex: searchTerm, $options: "i" } },
-        { category: { $regex: searchTerm, $options: "i" } },
+        { name: { $regex: escapeRegex(searchTerm.trim()), $options: "i" } },
+        { category: { $regex: escapeRegex(searchTerm.trim()), $options: "i" } },
       ],
     }).limit(10);
     res.json({ success: true, products: results });
@@ -121,11 +159,11 @@ const searchProducts = async (req, res) => {
 const searchSuggestions = async (req, res) => {
   try {
     const searchTerm = req.query.q;
-    if (!searchTerm || searchTerm.trim().length < 2) {
+    if (typeof searchTerm !== "string" || searchTerm.trim().length < 2 || searchTerm.length > 100) {
       return res.json({ success: true, suggestions: [] });
     }
     const suggestions = await Product.find(
-      { name: { $regex: `^${searchTerm}`, $options: "i" } },
+      { name: { $regex: `^${escapeRegex(searchTerm.trim())}`, $options: "i" } },
       { id: 1, name: 1, image: 1, category: 1, new_price: 1 }
     ).limit(5);
     res.json({ success: true, suggestions });
