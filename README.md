@@ -9,20 +9,21 @@ A full-stack e-commerce application with a customer-facing storefront, persisten
 ## Features
 
 ### Customer Storefront
-- Browse products by category (Men, Women, Kids)
+- Browse products by category (Men, Women, Kids) with price and name sorting
 - Product detail pages with size selection
 - Real-time search with autocomplete suggestions
 - Persistent shopping cart (synced to database when logged in)
 - Checkout flow with shipping address and payment method selection
 - Order history with status tracking
 - User profile management
+- Light and dark themes
 
 ### Admin Dashboard
 - Secure admin login (separate credentials from user accounts)
 - Product management: add, edit, and delete products with image upload
 - Order management: view all orders, update status, modify or remove orders
 - User management: view and remove user accounts
-- Analytics dashboard with Charts.js
+- Analytics dashboard with Chart.js
 
 ---
 
@@ -113,7 +114,7 @@ Admin panel: `http://localhost:4000/admin`
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
-| GET | `/api/products` | — | List all products |
+| GET | `/api/allproducts` | — | List all products |
 | GET | `/api/search?q=` | — | Search products |
 | POST | `/api/signup` | — | Register user |
 | POST | `/api/login` | — | Login user |
@@ -125,12 +126,64 @@ Admin panel: `http://localhost:4000/admin`
 
 ---
 
+## Demo
+
+**Storefront: browsing and sorting the catalog**
+
+![Browsing the storefront](./screenshots/demo/storefront-browse.gif)
+
+**Storefront: search, cart, checkout and order history**
+
+![Search, cart and checkout](./screenshots/demo/storefront-checkout.gif)
+
+**Admin panel: login, dashboard, products, orders and users**
+
+![Admin panel walkthrough](./screenshots/demo/admin-panel.gif)
+
+---
+
 ## Screenshots
 
-![Catalog](./screenshots/1.png)
-![Product page](./screenshots/2.png)
-![Cart](./screenshots/3.png)
-![Admin dashboard](./screenshots/4.png)
-![Product management](./screenshots/5.png)
-![Order management](./screenshots/6.png)
-![User management](./screenshots/7.png)
+### Customer Storefront
+
+| Home | Category |
+|---|---|
+| ![Home](./screenshots/store-home.png) | ![Category](./screenshots/store-category.png) |
+
+| Product page | Search with autocomplete |
+|---|---|
+| ![Product page](./screenshots/store-product.png) | ![Search](./screenshots/store-search.png) |
+
+| Cart | Checkout |
+|---|---|
+| ![Cart](./screenshots/store-cart.png) | ![Checkout](./screenshots/store-checkout.png) |
+
+| Order history | Account settings |
+|---|---|
+| ![Order history](./screenshots/store-orders.png) | ![Account settings](./screenshots/store-account.png) |
+
+| Login and sign up | Dark mode |
+|---|---|
+| ![Login](./screenshots/store-login.png) | ![Dark mode home](./screenshots/store-home-dark.png) |
+
+![Product page in dark mode](./screenshots/store-product-dark.png)
+
+### Admin Dashboard
+
+| Admin login | Dashboard |
+|---|---|
+| ![Admin login](./screenshots/admin-login.png) | ![Dashboard](./screenshots/admin-dashboard.png) |
+
+| Product management | Add product |
+|---|---|
+| ![Product management](./screenshots/admin-products.png) | ![Add product](./screenshots/admin-add-product.png) |
+
+| Edit product | Order management |
+|---|---|
+| ![Edit product](./screenshots/admin-edit-product.png) | ![Order management](./screenshots/admin-orders.png) |
+
+| Edit order | User management |
+|---|---|
+| ![Edit order](./screenshots/admin-edit-order.png) | ![User management](./screenshots/admin-users.png) |
+
+Customer emails and phone numbers are blurred in the admin captures.
