@@ -22,7 +22,6 @@ if (missing.length) {
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-connectDB();
 
 // The app runs behind a reverse proxy in production; needed for correct client IPs in rate limiting.
 app.set("trust proxy", 1);
@@ -104,6 +103,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, error: "Internal server error" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Accept requests only once the database is reachable (connectDB exits the process on failure).
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
