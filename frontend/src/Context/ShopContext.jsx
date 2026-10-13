@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 export const ShopContext = createContext(null);
 
 const authPost = (url, body = {}) =>
@@ -25,22 +25,32 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
   const [orders, setOrders] = useState([]);
 
+  const refreshOrders = useCallback(() => {
+    if (!localStorage.getItem("auth-token")) return Promise.resolve();
+    return authPost("/api/orderslog")
+      .then((r) => r.json())
+      .then((data) => setOrders(Array.isArray(data) ? data : []));
+  }, []);
+  // Loads the logged-in user's cart and orders (on app start and after login).
+  const loadUserData = useCallback(() => {
+    if (!localStorage.getItem("auth-token")) return;
+    authPost("/api/getcart").then((r) => r.json()).then(setCartItems);
+    refreshOrders();
+  }, [refreshOrders]);
+
   useEffect(() => {
     fetch("/api/allproducts")
       .then((resp) => resp.json())
       .then((data) => setAll_Products(data));
-    if (localStorage.getItem("auth-token")) {
-      authPost("/api/getcart").then((r) => r.json()).then(setCartItems);
-      authPost("/api/orderslog").then((r) => r.json()).then(setOrders);
-    }
-  }, []);
+    loadUserData();
+  }, [loadUserData]);
   const addToCart = (itemId, count = 1) => {
     setCartItems((prev) => ({
       ...prev,
       [itemId]: (prev[itemId] || 0) + count, // Default to 0 if undefined
     }));
     if (localStorage.getItem("auth-token")) {
-      authPost("/api/addtocart", { itemId });
+      authPost("/api/addtocart", { itemId, count });
     }
   };
   const removeFromCart = (itemId) => {
@@ -83,6 +93,8 @@ const ShopContextProvider = (props) => {
     getTotalCartItems,
     resetCart,
     orders,
+    refreshOrders,
+    loadUserData,
   };
   return (
     <ShopContext.Provider value={contextValue}>

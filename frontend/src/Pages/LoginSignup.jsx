@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Box,
   Card,
@@ -22,9 +22,11 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { useNavigate } from 'react-router-dom';
+import { ShopContext } from '../Context/ShopContext';
 
 const LoginSignUp = () => {
   const navigate = useNavigate();
+  const { loadUserData } = useContext(ShopContext);
   const [state, setState] = useState('Login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -55,6 +57,7 @@ const LoginSignUp = () => {
       if (data.success === true) {
         localStorage.setItem('auth-token', data.token);
         if (data.name) localStorage.setItem('user-name', data.name);
+        loadUserData();
         navigate('/');
       } else {
         setError(data.errors || 'Login failed. Please check your credentials.');
@@ -79,6 +82,7 @@ const LoginSignUp = () => {
       if (data.success === true) {
         localStorage.setItem('auth-token', data.token);
         if (data.name) localStorage.setItem('user-name', data.name);
+        loadUserData();
         navigate('/');
       } else {
         setError(data.errors || 'Signup failed. Please try again.');

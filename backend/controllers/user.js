@@ -81,7 +81,8 @@ const addToCart = async (req, res) => {
     const userData = await Users.findOne({ id: req.user.id });
     if (!userData) return res.status(404).json({ success: false, error: "User not found" });
 
-    userData.cartData[req.body.itemId] = (userData.cartData[req.body.itemId] || 0) + 1;
+    const count = Number.isInteger(req.body.count) && req.body.count > 0 ? req.body.count : 1;
+    userData.cartData[req.body.itemId] = (userData.cartData[req.body.itemId] || 0) + count;
     await Users.findOneAndUpdate({ id: req.user.id }, { cartData: userData.cartData });
     res.json({ success: true });
   } catch {

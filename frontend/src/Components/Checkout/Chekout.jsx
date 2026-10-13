@@ -16,7 +16,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 
 const Checkout = () => {
-  const { cartItems, getTotalCartAmount, getTotalCartItems, all_products, resetCart } = useContext(ShopContext);
+  const { cartItems, getTotalCartAmount, getTotalCartItems, all_products, resetCart, refreshOrders } = useContext(ShopContext);
 
   const [shippingInfo, setShippingInfo] = useState({ street: '', city: '', state: '', zipCode: '', country: 'US' });
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -54,6 +54,7 @@ const Checkout = () => {
       const successCartProducts = [...cartProducts];
       const successCartItems = { ...cartItems };
       resetCart();
+      refreshOrders();
       setOrderDetails({ ...data.order, displayProducts: successCartProducts, displayItems: successCartItems });
       setOrderSuccess(true);
     } catch (err) {

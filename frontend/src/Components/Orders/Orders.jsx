@@ -40,7 +40,11 @@ const Orders = () => {
   const [allProducts, setAllProducts] = useState([]);
   const navigate = useNavigate();
 
-  const { orders } = useContext(ShopContext);
+  const { orders, refreshOrders } = useContext(ShopContext);
+
+  useEffect(() => {
+    refreshOrders();
+  }, [refreshOrders]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -156,7 +160,7 @@ const Orders = () => {
 
           <Stack spacing={2}>
             {filteredOrders.map((order) => (
-              <Card key={order._id}>
+              <Card key={order.id}>
                 <CardHeader
                   title={
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ xs: "flex-start", sm: "center" }}>
@@ -182,11 +186,11 @@ const Orders = () => {
                   action={
                     <Button
                       size="small"
-                      onClick={() => toggleOrderDetails(order._id)}
-                      endIcon={expandedOrder === order._id ? <ExpandLess /> : <ExpandMore />}
+                      onClick={() => toggleOrderDetails(order.id)}
+                      endIcon={expandedOrder === order.id ? <ExpandLess /> : <ExpandMore />}
                       sx={{ textTransform: "none" }}
                     >
-                      {expandedOrder === order._id ? "Hide" : "View"}
+                      {expandedOrder === order.id ? "Hide" : "View"}
                     </Button>
                   }
                   sx={{ pb: 2 }}
@@ -219,7 +223,7 @@ const Orders = () => {
                     </Typography>
                   </Stack>
 
-                  {expandedOrder === order._id && (
+                  {expandedOrder === order.id && (
                     <>
                       <Divider sx={{ my: 2 }} />
                       <Grid container spacing={3} sx={{ mt: 0 }}>
@@ -287,7 +291,7 @@ const Orders = () => {
                                 const product = allProducts.find((p) => p.id === Number(item.productId));
                                 if (!product) return null;
                                 return (
-                                  <TableRow key={`${item.productId}-${order._id}`}>
+                                  <TableRow key={`${item.productId}-${order.id}`}>
                                     <TableCell>
                                       <Stack direction="row" spacing={1} alignItems="center">
                                         <Box
