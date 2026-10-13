@@ -15,5 +15,6 @@ router.get("/popularinwomen", productController.getPopularWomen);
 router.get("/search", productController.searchProducts);
 router.get("/search/suggestions", productController.searchSuggestions);
 router.get("/getTotalProducts", productController.getTotalProducts);
+router.get("/stats", adminAuth, productController.getStats);
 
 module.exports = router;

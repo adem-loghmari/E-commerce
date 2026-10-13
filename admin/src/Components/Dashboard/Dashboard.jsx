@@ -1,5 +1,6 @@
   import React, { useEffect, useState, useRef } from 'react';
   import Chart from 'chart.js/auto';
+  import adminFetch from '../../utils/adminFetch';
   import Box from '@mui/material/Box';
   import Card from '@mui/material/Card';
   import CardContent from '@mui/material/CardContent';
@@ -52,6 +53,7 @@
 
   const Dashboard = () => {
     const [allproducts, setAllProducts] = useState([]);
+    const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const chartRef = useRef(null);
     const chartInstanceRef = useRef(null);
@@ -59,11 +61,12 @@
     useEffect(() => {
       const load = async () => {
         try {
-          const resp = await fetch('/api/allproducts');
-          const data = await resp.json();
+          const [productsResp, statsResp] = await Promise.all([fetch('/api/allproducts'), adminFetch('/api/stats')]);
+          const data = await productsResp.json();
           setAllProducts(Array.isArray(data) ? data : []);
+          if (statsResp.ok) setStats(await statsResp.json());
         } catch (err) {
-          console.error('Failed to fetch products:', err);
+          console.error('Failed to load dashboard data:', err);
         } finally {
           setLoading(false);
         }
@@ -72,8 +75,9 @@
     }, []);
 
     const totalProducts = allproducts.length;
-    const totalSold = allproducts.reduce((s, p) => s + (p.sold || 0), 0);
-    const totalRevenue = allproducts.reduce((s, p) => s + (p.sold || 0) * (p.new_price || 0), 0);
+    // Sales figures come from orders: units from each order's items, revenue from order totals.
+    const totalSold = stats?.unitsSold ?? 0;
+    const totalRevenue = stats?.revenue ?? 0;
     const bestSeller = allproducts.reduce((max, p) => (p.sold > (max?.sold || 0) ? p : max), null);
 
     const categories = {};

@@ -160,7 +160,7 @@ const ModifyProduct = () => {
                     </TextField>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField fullWidth label="Sold" name="sold" type="number" value={product.sold || ''} onChange={handleChange} />
+                    <TextField fullWidth disabled label="Sold (from orders)" value={product.sold ?? 0} />
                   </Grid>
                   <Grid item xs={4}>
                     <TextField fullWidth label="Stock" name="stock" type="number" value={product.stock || ''} onChange={handleChange} />

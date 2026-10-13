@@ -1,5 +1,6 @@
 const Product = require("../models/ProductModel");
 const { isNonEmptyString, isPositiveInt, escapeRegex } = require("../utils/validate");
+const { soldByProduct, orderTotals } = require("../utils/sales");
 
 const CATEGORIES = ["women", "men", "kid"];
 
@@ -35,20 +36,19 @@ const readProductFields = (body, partial = false) => {
     } else if (!partial) return { error: "Both prices are required" };
   }
 
-  for (const key of ["stock", "sold"]) {
-    if (has(key)) {
-      const amount = Number(body[key]);
-      if (!Number.isInteger(amount) || amount < 0) return { error: `Invalid ${key} value` };
-      fields[key] = amount;
-    }
+  // "sold" is not editable: it is derived from orders (see utils/sales.js).
+  if (has("stock")) {
+    const stock = Number(body.stock);
+    if (!Number.isInteger(stock) || stock < 0) return { error: "Invalid stock value" };
+    fields.stock = stock;
   }
   return { fields };
 };
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    res.status(200).json(products);
+    const [products, sold] = await Promise.all([Product.find().lean(), soldByProduct()]);
+    res.status(200).json(products.map((p) => ({ ...p, sold: sold.get(p.id) || 0 })));
   } catch {
     res.status(500).json({ message: "Error fetching products" });
   }
@@ -62,7 +62,7 @@ const addProduct = async (req, res) => {
     const lastProduct = await Product.findOne().sort({ id: -1 });
     const id = lastProduct ? lastProduct.id + 1 : 1;
 
-    const product = new Product({ id, ...fields, sold: 0 });
+    const product = new Product({ id, ...fields });
     await product.save();
     res.json({ success: true, name: product.name });
   } catch {
@@ -111,9 +111,9 @@ const getSingleProduct = async (req, res) => {
   try {
     const id = Number(req.params.id);
     if (!id) return res.status(400).json({ error: "Invalid product id" });
-    const product = await Product.findOne({ id });
+    const [product, sold] = await Promise.all([Product.findOne({ id }).lean(), soldByProduct()]);
     if (!product) return res.status(404).json({ error: "Product not found" });
-    res.json(product);
+    res.json({ ...product, sold: sold.get(product.id) || 0 });
   } catch {
     res.status(500).json({ error: "Error fetching product" });
   }
@@ -181,7 +181,19 @@ const getTotalProducts = async (req, res) => {
   }
 };
 
+// Store-wide figures for the admin dashboard, all derived from orders.
+const getStats = async (req, res) => {
+  try {
+    const [sold, totals] = await Promise.all([soldByProduct(), orderTotals()]);
+    const unitsSold = [...sold.values()].reduce((sum, n) => sum + n, 0);
+    res.json({ success: true, unitsSold, ...totals });
+  } catch {
+    res.status(500).json({ success: false, error: "Failed to fetch stats" });
+  }
+};
+
 module.exports = {
+  getStats,
   getAllProducts,
   addProduct,
   deleteProduct,
