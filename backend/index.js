@@ -72,8 +72,11 @@ app.use("/admin", express.static(adminPath));
 
 // SPA fallback: any /admin/* path that is not a real file (e.g. /admin/orders
 // on a hard refresh) gets index.html so React Router handles it client-side.
+// Paths the admin app has no page for get the same file with a 404 status, and the
+// app shows its "Page not found" screen. Keep this list in sync with admin/src/Pages/Admin/Admin.jsx.
+const ADMIN_ROUTES = /^\/(login|addproduct|listproduct|users|orders|modifyproduct(\/\d+)?|modifyorder(\/\d+)?)?\/?$/;
 app.use("/admin", (req, res) => {
-  res.sendFile(path.join(adminPath, "index.html"));
+  res.status(ADMIN_ROUTES.test(req.path) ? 200 : 404).sendFile(path.join(adminPath, "index.html"));
 });
 
 // ─── Customer frontend (Vite) ───────────────────────────────────────────────────
@@ -83,8 +86,11 @@ app.use(express.static(frontendPath));
 
 // SPA fallback for the customer app — must come last.
 // API and image routes are already handled above so they won't reach here.
+// Unknown paths get the same file with a 404 status, and the app shows its "Page not found" screen.
+// Keep this list in sync with frontend/src/App.jsx.
+const STORE_ROUTES = /^\/(mens|womens|kids|cart|checkout|orders|login|profile|account|product(\/\d+)?)?\/?$/;
 app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+  res.status(STORE_ROUTES.test(req.path) ? 200 : 404).sendFile(path.join(frontendPath, "index.html"));
 });
 
 // Central error handler: malformed JSON, oversized or rejected uploads, and anything unexpected.

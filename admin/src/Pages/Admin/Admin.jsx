@@ -14,6 +14,7 @@ import ModifyProduct from '../../Components/ModifyProduct/ModifyProduct';
 import UsersList from '../../Components/UsersList/UsersList';
 import OrdersList from '../../Components/OrdersList/OrdersList';
 import ModifyOrder from '../../Components/ModifyOrder/ModifyOrder';
+import NotFound from '../../Components/NotFound/NotFound';
 
 const Admin = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -68,6 +69,7 @@ const Admin = () => {
                 <Route path="/orders" element={<OrdersList />} />
                 <Route path="/modifyorder" element={<ModifyOrder />} />
                 <Route path="/modifyorder/:id" element={<ModifyOrder />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Box>
           </Box>

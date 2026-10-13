@@ -14,6 +14,7 @@ import Checkout from "./Components/Checkout/Checkout";
 import Orders from "./Components/Orders/Orders";
 import Profile from "./Pages/Profile";
 import Account from "./Components/Account/Account";
+import NotFound from "./Pages/NotFound";
 
 // Pages that need a logged-in customer send everyone else to the login page.
 const RequireAuth = ({ children }) =>
@@ -54,6 +55,7 @@ function App() {
               <Route path="/login" element={<LoginSignup />} />
               <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
               <Route path="/account" element={<RequireAuth><Account /></RequireAuth>} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Box>
           <Footer />
